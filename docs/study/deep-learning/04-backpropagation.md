@@ -8,6 +8,9 @@ tags: [딥러닝, Backpropagation, Gradient Descent, TensorFlow]
 
 # Backpropagation
 
+작성일 2023-07-15 · 최종 수정일 2023-07-16
+{ .post-date }
+
 ```python
 from __future__ import absolute_import, division, print_function, unicode_literals
 

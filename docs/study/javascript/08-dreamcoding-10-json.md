@@ -8,6 +8,9 @@ tags: [JavaScript, 드림코딩, JSON, 직렬화]
 
 # 드림코딩 10: JSON
 
+작성일 2022-12-25
+{ .post-date }
+
 브라우저 위에서 동작하고 있는 웹사이트와 웹 애플리케이션이 어떻게 서버와 통신할 수 있는가를 정의한 규격이 바로 HTTP이다. (Hypertext Transfer Protocol) 
 
 HTTP는 클라이언트(웹 사이트)가 웹 서버에 요청(request)을 보내면, 서버는 이에 대한 응답(response)을 보내주는 클라이언트에게 보내주는 방식으로 진행된다.

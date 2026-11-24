@@ -8,6 +8,8 @@ tags: [네트워크구조및설계, Host, Router, Protocol, Access Network]
 
 # Network의 기본 구성요소
 
+작성일 2023-09-22 · 최종 수정일 2023-12-07
+{ .post-date }
 
 > **네트워크**란?  
 > 통신할 수 있는 두 개 이상의 기기들이 interconnect 되어서 서로 데이터를 주고 받는 것. 네트워크 프로그래밍은 서로 다른 기기에서 Protocol을 맞춰서 tight하게 작성해야 한다.  

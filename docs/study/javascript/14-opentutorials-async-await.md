@@ -8,6 +8,9 @@ tags: [JavaScript, 생활코딩, async/await, Promise]
 
 # 생활코딩: async/await
 
+작성일 2023-01-26 · 최종 수정일 2023-03-12
+{ .post-date }
+
 - timer (callback hell…)
 
 ```javascript

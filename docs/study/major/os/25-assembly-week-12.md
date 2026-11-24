@@ -8,6 +8,9 @@ tags: [운영체제, Assembly, 분기, 서브루틴, 스택]
 
 # 12주차 (Assembly)
 
+작성일 2023-06-02 · 최종 수정일 2023-06-05
+{ .post-date }
+
 ## Assembly
 
 - JMP label : 무조건 분기 해주는 명령어.

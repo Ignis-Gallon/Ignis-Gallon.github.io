@@ -8,6 +8,9 @@ tags: [PatchTST, 시계열 예측, Transformer, Patching, Channel Independence]
 
 # PatchTST 논문 요약
 
+작성일 2023-11-26
+{ .post-date }
+
 [PatchTST 성능 개선 프로젝트](../../projects/ai-course/03-patchtst.md)를 진행하면서 "A Time Series is Worth 64 Words: Long-term Forecasting with Transformers"(ICLR 2023)를 처음 읽고 절 순서대로 요약한 노트이다. 논문의 흐름을 옮기는 사이사이에 용어 풀이와, 행렬의 shape을 직접 따져 본 내용을 함께 적었다. 노트는 지도 학습 결과 표에서 끝난다.
 
 같은 논문을 1년 뒤에 선행 연구와 함께 다시 정리한 글은 [PatchTST 리뷰](../../papers/2024-11-25-patchtst.md)에 있다.

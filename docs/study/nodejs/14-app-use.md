@@ -8,6 +8,9 @@ tags: [Node.js, Express, 미들웨어, 라우터]
 
 # app.use()
 
+작성일 2022-11-25
+{ .post-date }
+
 const app = express() 로 생성된 app 오브젝트에는 use()라는 함수가 존재한다. use() 함수를 이용하여 미들웨어를 등록하면 순서대로 실행된다.
 
 ![](../../assets/img/study/nodejs/14-app-use/01.webp)

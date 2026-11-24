@@ -8,6 +8,9 @@ tags: [오픈소스SW설계, 쓰레드, pthread, Multi-Threading]
 
 # 13주차 온라인 강의: 쓰레드, Multi-Threading
 
+작성일 2022-12-01
+{ .post-date }
+
 - 지금까지 우리가 만든 프로그램은 한 번에 하나의 일만 처리할 수 있었다. 하지만 프로그래밍을 하다보면 동시에 여러 일을 처리하도록 만들어야 할 때가 있다. 이를 Multi-Threading이라고 한다. Thread가 무엇인지 개념을 살펴보고, Thread들을 어떻게 생성하고 종료시키는지 POSIX-Thread Library를 통해 살펴본다.
 
 ![](../../../assets/img/study/major/open-source-sw/21-week13-online-thread-multi-threading/01.webp)

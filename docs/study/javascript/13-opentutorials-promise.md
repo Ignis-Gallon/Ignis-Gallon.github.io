@@ -8,6 +8,9 @@ tags: [JavaScript, 생활코딩, Promise, fetch]
 
 # 생활코딩: Promise
 
+작성일 2023-01-26
+{ .post-date }
+
 - Synchronous/Asynchronous
 
 javascript에서 비동기 작업은 어떤 작업이 언제 끝날지 예측하기 어렵거나 주가 되는 작업이 아닐 때 주로 사용한다. 서버와 웹브라우저가 통신할 때는 작업이 언제 끝날지 예측하기 어렵기 때문에 비동기 작업을 사용한다.

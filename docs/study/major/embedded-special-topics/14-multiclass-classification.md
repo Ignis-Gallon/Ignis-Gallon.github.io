@@ -8,6 +8,9 @@ tags: [임베디드시스템특강, Multiclass Classification, Softmax, Cross En
 
 # Multiclass Classification
 
+작성일 2023-12-10 · 최종 수정일 2024-11-15
+{ .post-date }
+
 ## &lt;Multiclass Classification&gt;
 
 > 이전까지는 고양이 사진인지 아닌지를 구분하는 Binary Classification을 다뤘었다. 이제는 Multi-class Classification에 대해 알아본다.

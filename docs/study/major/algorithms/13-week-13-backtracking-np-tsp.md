@@ -8,6 +8,9 @@ tags: [알고리즘, Backtracking, NP, TSP]
 
 # 13주차: Backtracking, NP, TSP
 
+작성일 2022-11-24 · 최종 수정일 2024-11-15
+{ .post-date }
+
 - Backtracking Algorithm
 
 백트래킹을 하는 이유는 해 탐색, 전체 큰 카테고리는 optimal solution 중 하나이다.

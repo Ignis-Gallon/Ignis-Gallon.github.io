@@ -8,6 +8,9 @@ tags: [객체기반SW설계, C++, STL, vector, list]
 
 # Vector List
 
+작성일 2022-11-30 · 최종 수정일 2022-12-01
+{ .post-date }
+
 - Vector : array기반의 STL. 사용할 수 있는 메서드는 다음과 같다.
 
 선언 : vector&lt;T&gt; name;

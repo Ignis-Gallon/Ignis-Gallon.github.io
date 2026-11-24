@@ -8,6 +8,9 @@ tags: [Flutter, 노마드코더, Extract Widget, Key]
 
 # 3.5 Reusable Widgets
 
+작성일 2023-02-28 · 최종 수정일 2023-03-04
+{ .post-date }
+
 - Error Lens 설치
 
 Error의 내용을 출력해서 자세히 알려준다.

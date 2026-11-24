@@ -8,6 +8,9 @@ tags: [임베디드시스템특강, Weight Initialization, Normalization, Gradie
 
 # Weight Initialization
 
+작성일 2023-12-10 · 최종 수정일 2024-11-15
+{ .post-date }
+
 ## &lt;Preprocessing of inputs&gt;
 
 > 이전에 우리가 다뤘던 고양이 예측 문제에서는 Image를 Data로 다뤘다. 특히 Image는 0~255 사이의 uint값을 갖기 때문에 우리는 Input Data를 255로 나눠서 float32로 만들어 주었다.  

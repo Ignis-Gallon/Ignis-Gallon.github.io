@@ -8,6 +8,9 @@ tags: [Autoencoder, Manifold Learning, Bias-Variance, Regularization, 차원 축
 
 # Autoencoder: manifold learning, 규제, 응용
 
+작성일 2024-11-24
+{ .post-date }
+
 Autoencoder를 소개하는 공개 세미나 영상을 보고 정리한 글이다. Autoencoder가 무엇이고 왜 쓰는지, bias-variance tradeoff의 관점에서 어떤 변형들이 나왔는지, 그리고 어디에 쓰이는지를 차례로 본다. 세미나가 manifold learning 쪽을 중심으로 설명하므로 이 글도 그 범위를 따른다.
 
 ## Autoencoder란

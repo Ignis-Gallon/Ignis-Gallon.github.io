@@ -8,6 +8,9 @@ tags: [알고리즘, 정렬, 분할 정복, 퀵 정렬, 힙 정렬]
 
 # 4주차(Merge, Quick, Heap)
 
+작성일 2022-09-28 · 최종 수정일 2022-10-17
+{ .post-date }
+
 ## # `Merge Sort`
 
 **`Merge Sort`**

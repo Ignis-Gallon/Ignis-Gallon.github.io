@@ -8,6 +8,9 @@ tags: [Seq2Seq, Attention, RNN, 기계 번역, Context Vector]
 
 # Seq2Seq와 Attention으로 보는 기계 번역 과정
 
+작성일 2023-11-23
+{ .post-date }
+
 2023년 11월, PatchTST 프로젝트를 준비하면서 Transformer를 처음 공부할 때 쓴 노트다. Transformer를 이해하려면 그 앞 단계인 Seq2Seq와 attention을 먼저 알아야 해서, "[딥러닝 기계번역] 시퀀스 투 시퀀스 + 어텐션 모델" 강의를 보고 번역이 이루어지는 과정을 순서대로 정리했다. 강의는 "Neural Machine Translation by Jointly Learning to Align and Translate" 논문의 내용을 "I love you"를 "난 널 사랑해"로 번역하는 예제로 풀어 설명한다.
 
 ## 단어별 번역의 한계

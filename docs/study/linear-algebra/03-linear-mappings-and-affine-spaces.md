@@ -8,6 +8,9 @@ tags: [선형대수, 선형 사상, 기저 변환, 커널, 아핀 공간, MML]
 
 # MML 2.7 ~ 2.8: 선형 사상과 아핀 공간
 
+작성일 2025-06-12
+{ .post-date }
+
 "Mathematics for Machine Learning"(이하 MML) 2장의 마지막 부분인 2.7 Linear Mappings와 2.8 Affine Spaces를 읽고 정리한 글이다. [앞 글](02-vector-spaces-and-basis.md)까지는 vector space 하나의 구조를 봤다면, 여기서는 vector space 사이의 mapping을 다룬다. 선형 사상이 행렬로 표현되는 과정, basis를 바꿀 때 그 행렬이 어떻게 변하는지, image와 kernel, 그리고 원점을 지나지 않는 공간인 affine space까지 이어진다.
 
 ## 2.7 선형 사상

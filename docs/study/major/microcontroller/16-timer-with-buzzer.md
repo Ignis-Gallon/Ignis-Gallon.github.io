@@ -8,6 +8,9 @@ tags: [마이크로컨트롤러응용, AVR, Timer, PWM, Buzzer]
 
 # Timer(with Buzzer)
 
+작성일 2022-12-07 · 최종 수정일 2026-03-30
+{ .post-date }
+
 ## Timer 및 PWM(Pulse Width Modulation)
 
 - 8bit timer, 16bit timer  

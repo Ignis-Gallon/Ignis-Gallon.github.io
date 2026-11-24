@@ -8,6 +8,9 @@ tags: [LSTM Autoencoder, 희귀 이벤트, Curve Shifting, Pandas]
 
 # Concepts of LSTM > 2)
 
+작성일 2023-07-14
+{ .post-date }
+
 [LSTM Autoencoder for Extreme Rare Event Classification in Keras](https://towardsdatascience.com/lstm-autoencoder-for-extreme-rare-event-classification-in-keras-ce209a224cfb)
 
 ## Data Preparation

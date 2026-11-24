@@ -8,6 +8,9 @@ tags: [XAI, mechanistic interpretability, Transformer, in-context learning, circ
 
 # Interpreting Affine Recurrence Learning in GPT-style Transformers
 
+작성일 2025-03-04
+{ .post-date }
+
 작은 GPT 구조의 Transformer가 수열의 규칙을 문맥만 보고 알아내 다음 값을 예측할 때, 내부에서 어떤 계산이 일어나는지를 layer와 attention head 단위로 분석한 논문이다. 모델 내부를 회로(circuit) 단위로 해석하는 연구를 처음 읽은 것이어서, in-context learning, induction head, QK/OV circuit 같은 용어를 하나씩 찾아 가며 요약했다. 며칠 앞서 읽은 "Position-aware Automatic Circuit Discovery"의 서론 노트도 회로 분석이 무엇인지 정리한 것이어서 뒤에 함께 실었다.
 
 ## 한 줄 요약

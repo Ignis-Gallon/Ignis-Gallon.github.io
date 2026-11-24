@@ -8,6 +8,9 @@ tags: [모바일SW, XAML, StackLayout, C#, namespace]
 
 # 6주차: Layout Options, C# 클래스와 namespace
 
+작성일 2024-04-09 · 최종 수정일 2024-04-12
+{ .post-date }
+
 ## &lt;수업(2024-04-09, 화)&gt;
 
 ```xml

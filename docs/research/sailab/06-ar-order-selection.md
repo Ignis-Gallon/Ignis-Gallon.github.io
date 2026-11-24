@@ -8,6 +8,9 @@ tags: [시계열, AR, 정상성, ADF, Box-Cox, STL, AIC, BIC]
 
 # AirPassengers 정상화와 AR 차수 선택
 
+작성일 2025-04-15
+{ .post-date }
+
 [시계열 통계 기초](../../study/time-series-statistics/index.md)를 공부하면서 정상성, ACF와 PACF, AIC와 BIC를 개념으로만 정리해 두었다. 이 글은 그것들을 데이터 하나에 처음부터 끝까지 적용해 본 실험 기록이다. 월별 항공 승객 수 데이터(AirPassengers)를 여러 방법으로 정상 시계열로 바꾸고, 방법마다 AR 모델의 차수를 바꿔 가며 예측 성능을 비교했다.
 
 먼저 밝혀 둘 점이 있다. 이 실험에는 테스트 구간의 정보가 학습 과정에 섞인 test leakage가 있었다. 아래의 수치는 방법들 사이의 상대적인 경향을 보는 용도로만 읽어야 하고, 깨끗한 예측 성능으로 볼 수 없다. 자세한 내용은 [한계와 할 일](#limitations)에 적었다.

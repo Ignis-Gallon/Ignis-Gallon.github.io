@@ -8,6 +8,9 @@ tags: [알고리즘, Dynamic Programming, Knapsack, 맵 매칭]
 
 # 11주차: 맵 매칭, Dynamic Programming, Knapsack
 
+작성일 2022-11-10 · 최종 수정일 2024-11-15
+{ .post-date }
+
 ![](../../../assets/img/study/major/algorithms/11-week-11-map-matching-dp-knapsack/01.webp)
 
 - 실제로 우리가 고려하는 경로는 교차점에서 P1 → P2 → P3 라고 하자. 그러면 이걸 어느 곳에 매칭 시킬 것인가? 

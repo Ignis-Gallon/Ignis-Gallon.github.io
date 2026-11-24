@@ -8,6 +8,9 @@ tags: [인공지능, 탐색, Greedy Best-First, "A*", Minimax]
 
 # 다양한 탐색 기법
 
+작성일 2023-10-09 · 최종 수정일 2023-12-09
+{ .post-date }
+
 ## &lt;(탐욕적)최고우선탐색(Greedy best-first)&gt;
 
 ![](../../../assets/img/study/major/ai/04-search-techniques/01.webp)

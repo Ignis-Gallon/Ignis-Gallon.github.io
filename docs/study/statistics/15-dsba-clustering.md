@@ -8,6 +8,9 @@ tags: [클러스터링, K-Means, DBSCAN, Mean-Shift, 군집 타당성]
 
 # DSBA 클러스터링
 
+작성일 2024-02-05
+{ .post-date }
+
 [07-1: Clustering - Overview](https://www.youtube.com/watch?v=X6kCkqQPRvE)
 
 ## &lt;Clustering Overview&gt;

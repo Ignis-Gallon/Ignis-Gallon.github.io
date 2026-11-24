@@ -8,6 +8,9 @@ tags: [임베디드시스템특강, TensorFlow, Keras, MNIST]
 
 # Tensorflow/Keras Laboratory
 
+작성일 2023-12-12 · 최종 수정일 2025-06-09
+{ .post-date }
+
 ## &lt;Tensorflow&gt;
 
 ### module import

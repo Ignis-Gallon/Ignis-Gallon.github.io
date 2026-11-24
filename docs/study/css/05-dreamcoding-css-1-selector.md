@@ -8,6 +8,9 @@ tags: [CSS, 드림코딩, selector, cascading]
 
 # 드림코딩 CSS 1: selector
 
+작성일 2023-07-23
+{ .post-date }
+
 - CSS(Cascading Style Sheet)
 
 CSS는 cascading 방식을 사용한다. 브라우저를 구성하는 요소들에 Custom으로 정의된 Style이 있는지 먼저 체크하고, 있다면 그 Style을 적용한다. 만약 Style이 없다면 브라우저에서 기본으로 정의한 Style을 적용한다.

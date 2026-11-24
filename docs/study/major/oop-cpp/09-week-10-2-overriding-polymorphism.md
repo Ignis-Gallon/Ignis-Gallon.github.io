@@ -8,6 +8,9 @@ tags: [객체기반SW설계, C++, overriding, 다형성, virtual]
 
 # 10주차(2): overriding, 다형성
 
+작성일 2022-11-07 · 최종 수정일 2022-11-27
+{ .post-date }
+
 ## 멤버 함수의 재정의(method overriding)
 
 - function overloading :

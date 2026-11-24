@@ -8,6 +8,9 @@ tags: [JavaScript, window.onload, DOM]
 
 # window.onload
 
+작성일 2023-02-03 · 최종 수정일 2023-02-04
+{ .post-date }
+
 [javaScript - window.onload()란?](https://velog.io/@leyuri/javaScript-window.onload%EB%9E%80)
 
 자바스크립트가 문서가 준비된 상황 이후에만 발동하도록 할려면 선언 위치는 상관 없어지는데, 이 때 사용하는 것이 바로 window.onload()이다.

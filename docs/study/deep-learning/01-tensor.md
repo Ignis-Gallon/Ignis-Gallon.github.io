@@ -8,6 +8,9 @@ tags: [딥러닝, Tensor, One-hot Encoding, Mini-batch]
 
 # Tensor
 
+작성일 2023-07-15 · 최종 수정일 2023-07-16
+{ .post-date }
+
 [[딥러닝] 텐서가 무엇인가요?](https://www.youtube.com/watch?v=m0qwxNA7IzI&list=PLVNY1HnUlO241gILgQloWAs0xrrkqQfKe&index=24)
 
 - DL에서 Tensor란?

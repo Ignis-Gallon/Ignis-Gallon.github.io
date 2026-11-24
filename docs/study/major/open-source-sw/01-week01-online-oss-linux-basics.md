@@ -8,6 +8,9 @@ tags: [오픈소스SW설계, Linux, 부팅, I/O redirection]
 
 # 1주차 온라인 강의: 오픈소스SW, Linux 기본 명령, I/O redirection
 
+작성일 2022-10-02 · 최종 수정일 2022-10-20
+{ .post-date }
+
 ## `오픈소스SW`
 
 - 오픈소스SW : SW 및 소스코드의 자유로운 사용과 변경이 가능한 SW

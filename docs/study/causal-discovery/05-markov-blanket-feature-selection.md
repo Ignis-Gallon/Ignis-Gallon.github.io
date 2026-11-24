@@ -8,6 +8,9 @@ tags: [인과 발견, Markov blanket, 변수 선택, 베이지안 네트워크, 
 
 # Markov blanket과 변수 선택
 
+작성일 2025-05-04 · 최종 수정일 2025-05-08
+{ .post-date }
+
 인과 그래프 전체를 복원하는 대신, 관심 있는 변수 하나의 주변 구조만 찾는 접근이 있다. 그 중심에 있는 개념이 Markov blanket이다. 이 글에서는 Markov blanket과 Markov boundary의 정의, 베이지안 네트워크에서 그것이 어떤 노드로 이루어지는지, 이를 찾는 대표적인 알고리즘인 HITON과 MMPC, 그리고 Markov blanket이 간접 원인을 담지 못한다는 점을 다룬 문헌을 정리하고자 한다.
 
 ## 1. 정의

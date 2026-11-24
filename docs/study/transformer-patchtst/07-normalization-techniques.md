@@ -8,6 +8,9 @@ tags: [Normalization, Batch Normalization, Layer Normalization, Instance Normali
 
 # 정규화 기법 네 가지: Batch, Layer, Instance, Group Normalization
 
+작성일 2023-11-24
+{ .post-date }
+
 [PatchTST 공식 코드](05-patchtst-code-analysis.md)에 나오는 RevIN(Reversible Instance Normalization)을 이해하려고, instance normalization이 다른 정규화 기법과 어떻게 다른지 블로그 글을 보고 짧게 정리한 노트이다.
 
 네 기법은 모두 feature를 평균 0, 분산 1이 되도록 정규화한다. 차이는 평균과 분산을 어느 범위에서 구하느냐에 있다. 이미지를 다루는 CNN의 feature가 (batch, channel, 높이, 너비) 모양이라고 할 때 다음과 같이 나뉜다.

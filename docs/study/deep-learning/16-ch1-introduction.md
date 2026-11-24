@@ -8,6 +8,9 @@ tags: [딥러닝, 머신러닝, 지도학습, 비지도학습, 강화학습]
 
 # Deep Learning 강의 > Ch1. Introduction
 
+작성일 2023-06-03
+{ .post-date }
+
 ![](../../assets/img/study/deep-learning/16-ch1-introduction/01.webp)
 
 ![](../../assets/img/study/deep-learning/16-ch1-introduction/02.webp)

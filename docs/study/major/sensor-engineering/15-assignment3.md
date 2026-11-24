@@ -8,6 +8,9 @@ tags: [센서공학, GPS, Point Cloud]
 
 # 과제3
 
+작성일 2023-05-18 · 최종 수정일 2023-06-07
+{ .post-date }
+
 [https://bigbigpark.tistory.com/36](https://bigbigpark.tistory.com/36)
 
 현재 필요한 것

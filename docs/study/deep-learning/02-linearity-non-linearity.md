@@ -8,6 +8,9 @@ tags: [딥러닝, 선형 모델, 비선형, Logistic Regression]
 
 # Linearity, Non-linearity
 
+작성일 2023-07-15
+{ .post-date }
+
 [선형과 비선형의 차이 (머신러닝, 딥러닝)](https://www.youtube.com/watch?v=umiqnfQxlac&list=PLVNY1HnUlO241gILgQloWAs0xrrkqQfKe&index=25)
 
 - 선형 : 머신러닝 공식에서 계수들(coefficients)이 선형 모델의 관계에 있는 것.

@@ -8,6 +8,9 @@ tags: [딥러닝, 지도학습, Linear Regression, Logistic Regression, Cross-En
 
 # Deep Learning 강의 > Ch2-1. Introduction to Supervised Learning
 
+작성일 2023-06-03
+{ .post-date }
+
 ## Linear Regression
 
 ![](../../assets/img/study/deep-learning/17-ch2-1-supervised-learning/01.webp)

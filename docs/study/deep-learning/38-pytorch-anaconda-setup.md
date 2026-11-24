@@ -8,6 +8,9 @@ tags: [PyTorch, Anaconda, 환경 설정]
 
 # PyTorch 실습을 위한 Anaconda 설정
 
+작성일 2023-07-13 · 최종 수정일 2023-11-24
+{ .post-date }
+
 [[Python] Anaconda 활용하여 Pytorch 설치하기](https://velog.io/@hyeongjun/Python-Anaconda-활용하여-Pytorch-설치하기)
 
 [Pytorch(GPU)를 위한 Python 환경 구축 - conda 외 가상환경](https://qlsenddl-lab.tistory.com/59)

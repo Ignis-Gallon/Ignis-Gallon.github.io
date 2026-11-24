@@ -8,6 +8,9 @@ tags: [임베디드시스템특강, Loss Function, Gradient Descent, Back Propag
 
 # 3주차 수업 중 정리: Loss Function, Gradient Descent, Back Propagation
 
+작성일 2023-09-25 · 최종 수정일 2023-09-28
+{ .post-date }
+
 ## Logistic Regression (cont.)
 
 - output을 얻어냈음. (ŷ)

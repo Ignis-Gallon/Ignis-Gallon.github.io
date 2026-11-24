@@ -8,6 +8,9 @@ tags: [마이크로컨트롤러응용, AVR, UART, FSM, ADC]
 
 # 13주차: UART 커맨드 프로토콜, ADC
 
+작성일 2022-11-28 · 최종 수정일 2022-12-07
+{ .post-date }
+
 지금까지는 String을 보내서 했는데, 이번에는 미리 맞춰놓은 Command를 보내도록 해보자. 미리 명령어를 만들고 보낸다고 생각.  
 ⇒ 이런걸 하려면, 사전에 규약이 정해져 있어야 함. 이를 프로토콜이라고 하는데, 프로토콜의 요소에는 1) 데이터 타입(hex or ASCII), 2) len(FIXED or Variable), 3) Start delimiter & Termination Delimiter(STX, 0x02 / ETX, 0x03)
 

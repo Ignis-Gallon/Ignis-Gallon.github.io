@@ -8,6 +8,9 @@ tags: [AWS, RDS, 다중 AZ, 고가용성]
 
 # 다중 AZ DB 인스턴스
 
+작성일 2024-01-07
+{ .post-date }
+
 [다중 AZ DB 인스턴스 배포 - Amazon Relational Database Service](https://docs.aws.amazon.com/ko_kr/AmazonRDS/latest/UserGuide/Concepts.MultiAZSingleStandby.html)
 
 Amazon RDS는 **단일 대기 DB 인스턴스**와 함께 **다중 AZ 배포**를 사용하여 DB 인스턴스에 대한 고가용성 및 장애 조치 지원을 제공한다.

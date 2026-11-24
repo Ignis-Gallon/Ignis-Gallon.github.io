@@ -8,6 +8,9 @@ tags: [시계열, 추세 필터링, extreme value, abrupt change, distribution s
 
 # Extreme value와 abrupt change
 
+작성일 2025-02-07 · 최종 수정일 2025-02-23
+{ .post-date }
+
 DTF-net 논문은 기존 trend filtering의 문제를 "extreme value와 abrupt change를 구분하지 못한다"는 말로 설명한다. 두 값 모두 분포의 꼬리에서 나타나는데, 기존 방법은 이를 가리지 않고 함께 smoothing한다는 것이다. 이 설명을 이해하려면 두 개념이 어떻게 다른지부터 알아야 했다. 이 글은 논문과 관련 자료를 읽으며 두 개념의 정의와 차이, 그리고 abrupt change를 찾는 일이 왜 더 어려운지를 정리한 노트다.
 
 [1편](01-decomposition-vs-trend-filtering.md)에서 trend filtering이 무엇인지 정리했고, 이 글은 그 trend filtering이 지키려는 것(abrupt change)과 버리려는 것(노이즈, extreme value)을 다룬다.

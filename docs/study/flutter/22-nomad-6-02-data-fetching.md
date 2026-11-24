@@ -8,6 +8,9 @@ tags: [Flutter, 노마드코더, http, Future, async/await]
 
 # 6.2 Data Fetching
 
+작성일 2023-03-01 · 최종 수정일 2023-03-04
+{ .post-date }
+
 - URL에 요청을 보내기 위해서는 http라는 패키지를 먼저 설치해야 된다. Flutter나 Dart 패키지를 찾고 싶으면 pub.dev로 가면 된다. 마치 Node.js의 npm이나 Python의 PyPI와 비슷한 개념이다.
 
     여기다가 http라고 검색하면 된다. 설치 방법은 커맨드를 입력하거나, pubspec.yaml 파일에 파일을 붙여넣으면 된다. pubspec은 프로젝트에 대한 정보와 설정이 담긴 파일이다. 

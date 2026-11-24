@@ -8,6 +8,9 @@ tags: [사물인터넷, 네트워크, Multicast, Ad-Hoc]
 
 # 12주차: Shared Tree, Ad-Hoc 라우팅
 
+작성일 2023-11-22 · 최종 수정일 2024-11-15
+{ .post-date }
+
 ## &lt;Lecture Note 24&gt;
 
 - PIM : Multicasting Routing인데, 큰 지역을 포함하는 방법. RPM은 큰 지역에는 적합하지 않았기 때문임.

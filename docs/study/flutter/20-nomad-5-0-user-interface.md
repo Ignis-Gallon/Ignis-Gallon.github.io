@@ -8,6 +8,9 @@ tags: [Flutter, 노마드코더, Flexible, Expanded, 레이아웃]
 
 # 5.0 User Interface
 
+작성일 2023-03-01 · 최종 수정일 2023-03-04
+{ .post-date }
+
 - MaterialApp의 home은 Scaffold를 return해야 함. (비계)
 - ColorScheme
 - Flexible : UI를 비율에 기반해서 더 유연하게 만들 수 있도록 해준다.

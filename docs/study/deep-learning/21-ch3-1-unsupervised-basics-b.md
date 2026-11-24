@@ -8,6 +8,9 @@ tags: [딥러닝, Maximum Likelihood, Negative Log-Likelihood, 생성 모델, Ma
 
 # Deep Learning 강의 > Ch.3-1 비지도학습 기초 B
 
+작성일 2023-07-12 · 최종 수정일 2023-07-13
+{ .post-date }
+
 ## Maximum Likelihood
 
 딥러닝에서 아주 중요한 개념으로, 이를 정확히 이해해야 지도학습/비지도학습의 원리를 정확히 이해할 수 있다.

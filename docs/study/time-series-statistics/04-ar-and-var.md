@@ -8,6 +8,9 @@ tags: [시계열, AR, VAR, ARIMA, 선형 회귀]
 
 # AR과 VAR
 
+작성일 2025-03-18 · 최종 수정일 2025-04-05
+{ .post-date }
+
 Autoregressive(AR) 모델은 시계열 예측의 기초가 되는 모델이고, Vector Autoregressive(VAR) 모델은 그것을 여러 변수로 확장한 것이다. 이 글에서는 두 모델의 목적과 식, 계수를 추정하는 방법, 공부하며 가졌던 질문을 정리한다. 유가 데이터로 AR 모델링 절차를 따라가 본 기록과, 2024년 12월에 ARIMA 강의를 들으며 적은 메모도 함께 묶었다. [정상성](02-stationarity-and-unit-root-test.md)과 [ACF, PACF](03-autocovariance-acf-pacf.md)를 전제로 한다.
 
 ## AR 모델

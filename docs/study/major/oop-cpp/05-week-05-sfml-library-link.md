@@ -8,6 +8,9 @@ tags: [객체기반SW설계, C++, SFML, 라이브러리, DLL]
 
 # 5주차: SFML 설정, 라이브러리 링크
 
+작성일 2022-10-05 · 최종 수정일 2022-10-27
+{ .post-date }
+
 ## `SFML`
 
 개발할 때는 include directory와 lib directory가 중요하다.

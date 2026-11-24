@@ -8,6 +8,9 @@ tags: [Flutter, Provider, MultiProvider]
 
 # Learn App Code 2. What is MultiProvider?
 
+작성일 2023-07-11
+{ .post-date }
+
 [Flutter Multi Provider Simply Explained](https://www.youtube.com/watch?v=GYmrmo5eShg&list=PLgG0-B2KlM1sr3MRmqaV2tVKJf_7Zk7f3&index=2)
 
 - Provider는 여러 개 만들 수 있다.

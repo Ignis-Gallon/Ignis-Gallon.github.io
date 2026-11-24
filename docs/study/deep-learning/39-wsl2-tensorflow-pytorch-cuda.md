@@ -8,6 +8,9 @@ tags: [WSL2, CUDA, TensorFlow, PyTorch, 환경 설정]
 
 # WSL2 Tensorflow PyTorch CUDA
 
+작성일 2024-05-07
+{ .post-date }
+
 1. WSL2에 mini-conda 설치
 2. nvidia-smi로 버젼 확인
 

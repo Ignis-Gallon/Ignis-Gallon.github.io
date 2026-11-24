@@ -8,6 +8,9 @@ tags: [운영체제, CPU 스케줄링, FCFS]
 
 # Assignment: FCFS와 스케줄링 평가 기준
 
+작성일 2023-04-04
+{ .post-date }
+
 - FCFS(First Come First Served)
 
 우선 데이터 셋을 가진다. CPU Burst를 갖는 Process data set있을 것이다.

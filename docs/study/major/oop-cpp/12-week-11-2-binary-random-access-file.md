@@ -8,6 +8,9 @@ tags: [객체기반SW설계, C++, 파일 입출력, 이진 파일, 예외 처리
 
 # 11주차 (2): 이진 파일, 임의 접근 파일
 
+작성일 2022-11-16
+{ .post-date }
+
 - 이진파일
 
 binary file | text file, ascii file, .txt 를 의미한다. text file은 저장 내용이 ascii code로 기록된다.

@@ -8,6 +8,9 @@ tags: [AWS, WinSCP, PuTTY, pm2]
 
 # AWS(서버 운영 도구 메모)
 
+작성일 2023-02-28
+{ .post-date }
+
 - WinSCP : 로컬 호스트(서버로 돌아가는 PC)에 원격으로 접속할 수 있는 프로그램
 - Putty : WinSCP에서 terminal을 열어주는 프로그램
 

@@ -8,6 +8,9 @@ tags: [딥러닝, CNN, Convolution, Pooling]
 
 # CNN(Convolutional Neural Network)
 
+작성일 2023-07-15
+{ .post-date }
+
 CNN을 이해하려면 이전에 있었던 딥러닝 모델의 단점을 이해하는 것이 크게 도움이 된다.
 
 - Multi-Layer Perceptron : 가장 기초적이고 단순한 Dense Layer의 결합인 딥러닝 모델이지만, 이미지 분류에 사용하기에는 큰 단점이 있다.

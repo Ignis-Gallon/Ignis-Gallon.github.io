@@ -8,6 +8,9 @@ tags: [Flutter, 노마드코더, 생명 주기, initState, dispose]
 
 # 4.4 Widget Lifecycle
 
+작성일 2023-03-01 · 최종 수정일 2023-03-04
+{ .post-date }
+
 - StatefulWidget은 살아있으며, 생명 주기(Life Cycle)를 갖고 있다. 이 것들은 이벤트에만 반응한다.
 - MyLargeTitle 위젯을 StatefulWidget으로 바꿔보자.
 

@@ -8,6 +8,9 @@ tags: [Flutter, 노마드코더, FutureBuilder, snapshot]
 
 # 6.6 FutureBuilder
 
+작성일 2023-03-01 · 최종 수정일 2023-03-04
+{ .post-date }
+
 - 데이터를 fetch해서 State에 넣는 방법이 있다.
 
 하지만, State는 최대한 사용하지 않는 것이 좋다. 왜냐면 State는 그렇게 많이 사용되지 않으며 State를 전혀 안쓰는 좋은 Widget과 Framework가 많이 있다. 그러므로, State 파트를 모두 제거한다. 그리고 사실 ApiService는 사용하지 않을 수 있다.

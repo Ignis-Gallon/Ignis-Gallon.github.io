@@ -8,6 +8,9 @@ tags: [CSS, 드림코딩, Flexbox, vh]
 
 # 드림코딩 CSS 3: flexBox
 
+작성일 2023-07-23
+{ .post-date }
+
 ## Container
 
 - display

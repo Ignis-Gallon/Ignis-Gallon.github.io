@@ -8,6 +8,9 @@ tags: [사물인터넷, 네트워크, Multicast, 라우팅]
 
 # Multicasting
 
+작성일 2023-12-12
+{ .post-date }
+
 ## &lt;Multicasting&gt;
 
 ![](../../../assets/img/study/major/iot/10-multicasting/01.webp)

@@ -8,6 +8,9 @@ tags: [JavaScript, 드림코딩, 배열, 배열 API]
 
 # 드림코딩 9: array APIs
 
+작성일 2022-12-24 · 최종 수정일 2022-12-25
+{ .post-date }
+
 ```javascript
 // Q1. make a string out of an array
 

@@ -8,6 +8,9 @@ tags: [임베디드시스템특강, Logistic Regression, Forward Pass, Loss Func
 
 # Forward Pass
 
+작성일 2023-09-18 · 최종 수정일 2025-04-18
+{ .post-date }
+
 ## [Logistic Regression]
 
 > Deep learning의 기본이 되는 Logistic Regression

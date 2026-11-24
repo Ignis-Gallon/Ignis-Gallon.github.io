@@ -8,6 +8,9 @@ tags: [선형대수, Determinant, Eigenvalue, SVD, PCA, Eigenface]
 
 # 선형대수 복습: determinant, eigenvalue, 행렬 분해, PCA
 
+작성일 2024-12-01
+{ .post-date }
+
 머신러닝에서 자주 쓰는 선형대수 개념을 PCA까지 이어지도록 짧게 복습한 노트다. 분산과 공분산에서 시작해 determinant, eigenvalue, 행렬 분해(EVD, SVD)를 거쳐 PCA에 이르고, 마지막에 학부 때 했던 얼굴 인식 프로젝트를 PCA의 예로 다시 정리했다. 선형대수의 기초(연립방정식, 벡터 공간, 선형 사상)는 나중에 [선형대수 (MML 2장)](../linear-algebra/index.md) 시리즈로 따로 공부했다.
 
 ## 기본 용어

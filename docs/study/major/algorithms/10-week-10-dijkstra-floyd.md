@@ -8,6 +8,9 @@ tags: [알고리즘, Dijkstra, Floyd, 최단 경로, 맵 매칭]
 
 # 10주차: Dijkstra, Floyd
 
+작성일 2022-11-03 · 최종 수정일 2024-11-15
+{ .post-date }
+
 ![](../../../assets/img/study/major/algorithms/10-week-10-dijkstra-floyd/01.webp)
 
 - 배열 D : 시작 정점으로부터 각 정점까지의 최단 거리 (return)

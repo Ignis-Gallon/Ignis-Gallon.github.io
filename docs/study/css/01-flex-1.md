@@ -8,6 +8,9 @@ tags: [CSS, Flexbox, Container, Items]
 
 # Flex 1
 
+작성일 2023-07-21 · 최종 수정일 2023-07-23
+{ .post-date }
+
 [CSS Flex(Flexible Box) 완벽 가이드](https://heropy.blog/2018/11/24/css-flexible-box/)
 
 Flex는 크게 두 개의 개념으로 나뉘어진다.

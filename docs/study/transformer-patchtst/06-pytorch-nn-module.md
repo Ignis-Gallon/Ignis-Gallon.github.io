@@ -8,6 +8,9 @@ tags: [PyTorch, nn.Module, DataLoader, 학습 루프]
 
 # PyTorch 기본: nn.Module과 학습 루프
 
+작성일 2023-11-24
+{ .post-date }
+
 [PatchTST 공식 코드](05-patchtst-code-analysis.md)를 읽다가, 모델 객체에 데이터를 넣기만 하면 여러 클래스의 계산이 차례로 실행되는 것이 이해되지 않아 PyTorch에서 모델을 만들고 학습시키는 기본 형태를 따로 정리한 노트이다.
 
 ## nn.Module을 상속받는 클래스

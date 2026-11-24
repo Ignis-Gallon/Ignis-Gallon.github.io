@@ -8,6 +8,9 @@ tags: [임베디드시스템특강, Hyperparameter, Learning Rate, Random Search
 
 # Hyperparameter Tuning
 
+작성일 2023-12-10 · 최종 수정일 2024-11-15
+{ .post-date }
+
 ## &lt;Hyperparameter Tuning&gt;
 
 > 이전까지는 Hyperparameter의 수가 그렇게 많지는 않았다. 하지만 다양한 Regularization 방법론들을 배워보면서, 많은 Hyperparameter들이 추가되었다.

@@ -8,6 +8,9 @@ tags: [강화학습, PPO, Importance Sampling, Clipping, GAE, Stable-Baselines3]
 
 # 강화학습 5: PPO
 
+작성일 2025-03-13
+{ .post-date }
+
 [A3C](04-actor-critic.md)까지의 on-policy 방법은 한 번 갱신에 쓴 표본을 바로 버렸다. PPO(Proximal Policy Optimization)의 가장 큰 차이는 이미 만든 데이터를 여러 번 다시 쓴다는 것이다. 이 글은 이를 가능하게 하는 세 가지를 차례로 정리한다.
 
 1. **Importance Sampling**: 표본을 재사용할 수 있게 되는 원리

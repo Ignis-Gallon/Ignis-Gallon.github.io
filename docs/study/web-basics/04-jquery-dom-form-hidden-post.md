@@ -8,6 +8,9 @@ tags: [JavaScript, jQuery, DOM, HTML form, HTTP]
 
 # jQuery와 DOM, form의 hidden 값, POST
 
+작성일 2023-02-02
+{ .post-date }
+
 - \$.
 
 \$는 jquery 객체라는 뜻이다. 예컨대 \$m은 jquery 객체라서 선언문 안봐도 저 뒤에 홀로 쓰이고 있어도 뭐하는 역할인지 알 수 있다. 예로, number은 nTemp1, object는 oTemp1, array는 aTemp1 등등으로 사용한다.

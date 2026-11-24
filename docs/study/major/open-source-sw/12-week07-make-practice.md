@@ -8,6 +8,9 @@ tags: [오픈소스SW설계, Makefile, make]
 
 # 7주차: Make 실습
 
+작성일 2022-10-13 · 최종 수정일 2022-11-03
+{ .post-date }
+
 ## `Make`
 
 kernel.org 에서 latest version linux kernel을 다운로드 받는다.

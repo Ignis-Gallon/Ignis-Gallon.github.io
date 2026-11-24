@@ -8,6 +8,9 @@ tags: [Node.js, JWT, 인증, 토큰]
 
 # JWT(Web Token)
 
+작성일 2022-11-21 · 최종 수정일 2023-03-13
+{ .post-date }
+
 > 참고  
 >   
 > [https://charming-kyu.tistory.com/44](https://charming-kyu.tistory.com/44)

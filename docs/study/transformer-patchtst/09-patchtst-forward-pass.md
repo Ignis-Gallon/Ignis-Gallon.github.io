@@ -8,6 +8,9 @@ tags: [PatchTST, Transformer, Self-Attention, PyTorch, 코드 분석]
 
 # PatchTST의 forward 과정 따라가기
 
+작성일 2023-11-25
+{ .post-date }
+
 [PatchTST 공식 코드 분석](05-patchtst-code-analysis.md)에서 모델이 어떤 클래스들로 구성되는지를 읽은 뒤, 입력 하나가 모델 안에서 실제로 어떤 순서로 처리되는지를 `forward()` 호출을 따라가며 정리한 기록이다. 클래스가 여러 겹으로 감싸져 있어서, 어느 클래스의 `forward()`가 어느 클래스를 부르는지를 순서대로 적었다.
 
 호출 순서를 먼저 요약하면 다음과 같다.

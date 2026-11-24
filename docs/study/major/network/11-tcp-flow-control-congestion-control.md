@@ -8,6 +8,8 @@ tags: [네트워크구조및설계, TCP, Flow Control, Congestion Control, 3-way
 
 # TCP Flow Control & Congestion Control
 
+작성일 2023-11-20 · 최종 수정일 2023-12-11
+{ .post-date }
 
 ## &lt;Connection Oriented Transport (TCP)&gt;
 

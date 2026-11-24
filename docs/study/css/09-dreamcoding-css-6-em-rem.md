@@ -8,6 +8,9 @@ tags: [CSS, 드림코딩, em, rem, 단위]
 
 # 드림코딩 CSS 6: EM & REM
 
+작성일 2023-07-24
+{ .post-date }
+
 **Terms**
 
 - 사이즈를 결정하는 Unit은 크게 두 개의 Category로 나누어서 정리할 수 있다.

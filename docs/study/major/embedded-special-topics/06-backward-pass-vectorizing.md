@@ -8,6 +8,9 @@ tags: [임베디드시스템특강, Backward Pass, Vectorization, Logistic Regre
 
 # Backward Pass & Vectorizing
 
+작성일 2023-09-28 · 최종 수정일 2024-11-23
+{ .post-date }
+
 ## [Backward Pass & Vectorizing]
 
 > Forward Pass를 거쳐 최종적으로 얻어낸 값을 바탕으로 Parameter를 업데이트 하는 과정인 Backward Pass를 다루고, Logistic Regression을 효율적으로 만드는 Vectorizing을 알아본다.

@@ -8,6 +8,9 @@ tags: [센서공학, Dead Reckoning, Stanley, 경로 추종, MATLAB]
 
 # 12주차(Dead-Reckoning & Stanley)
 
+작성일 2023-05-23 · 최종 수정일 2026-04-14
+{ .post-date }
+
 ![](../../../assets/img/study/major/sensor-engineering/14-week12-dead-reckoning-stanley/01.webp)
 
 Exact가 정답이라고 가정하고 진행하지만, 실제로 정답인 것은 아니다. 수학적으로 가장 정확한 것인 거고, 근사적인 거지, 완전한 정답은 아니다. 자율주행 영역에는 정답이 존재하지 않고 항상 근사적으로 해결해 나간다. 그러므로 자율주행은 Probabilistic Robotics (확률적 로봇학) 이라고 한다.

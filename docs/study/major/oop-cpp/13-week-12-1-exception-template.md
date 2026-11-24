@@ -8,6 +8,9 @@ tags: [객체기반SW설계, C++, 예외 처리, template, STL]
 
 # 12주차 (1): 예외 처리, template
 
+작성일 2022-11-21 · 최종 수정일 2022-11-23
+{ .post-date }
+
 - multiple catch
 
 ```cpp

@@ -8,6 +8,9 @@ tags: [AWS, RDS, DMS, mysqldump]
 
 # RDS에서 데이터를 내보내는 방법
 
+작성일 2023-12-18 · 최종 수정일 2023-12-23
+{ .post-date }
+
 사용 중인 AWS RDS에서 데이터를 내보내는 동안 컴퓨팅 자원의 사용을 최소화하는 것이 중요하다면, 다음 두 가지 방법이 효과적일 수 있다.
 
 ## 1. AWS DMS (Database Migration Service) 사용

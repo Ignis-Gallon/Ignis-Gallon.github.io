@@ -8,6 +8,9 @@ tags: [Flutter, 노마드코더, 코드 챌린지, Dart]
 
 # 3.9 Code Challenge
 
+작성일 2023-02-28 · 최종 수정일 2023-03-04
+{ .post-date }
+
 **main.dart**
 
 ```dart

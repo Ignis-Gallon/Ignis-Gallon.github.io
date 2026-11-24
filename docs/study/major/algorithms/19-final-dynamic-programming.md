@@ -8,6 +8,9 @@ tags: [알고리즘, Dynamic Programming, Knapsack]
 
 # Dynamic Programming
 
+작성일 2022-12-04
+{ .post-date }
+
 - Dynamic Programming : 최적화 문제를 해결하는 방법으로써, 입력 크기가 작은 걸로 최대한 쪼개고 작은 부분 문제들을 해결한 후에, 그 해들을 이용하여 큰 크기의 부분 문제들을 해결하여 최종적으로 원래 주어진 입력의 문제를 해결하는 방법이다.
 
 ![](../../../assets/img/study/major/algorithms/19-final-dynamic-programming/01.webp)

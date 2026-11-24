@@ -8,6 +8,9 @@ tags: [마이크로컨트롤러응용, AVR, Timer, PWM, CTC]
 
 # 14주차: Timer, PWM, CTC 모드
 
+작성일 2022-12-05
+{ .post-date }
+
 ## Timer 및 PWM(Pulse Width Modulation)
 
 - 8bit timer, 16bit timer  

@@ -8,6 +8,9 @@ tags: [임베디드시스템특강, 선형대수, Vector, Matrix, Eigenvalue]
 
 # Math for ML
 
+작성일 2023-09-28 · 최종 수정일 2026-02-17
+{ .post-date }
+
 ## [Math for ML]
 
 > Machine Learning을 하는데 필요한 기본적인 수학을 복습한다.

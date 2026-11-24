@@ -8,6 +8,9 @@ tags: [Dart, 변수, null safety, final, const]
 
 # Dart 3: Variables
 
+작성일 2023-02-15 · 최종 수정일 2023-02-16
+{ .post-date }
+
 ## main
 
 - main 함수는 모든 Dart 프로그램의 Entry Point이기 때문에 아주 중요하다.

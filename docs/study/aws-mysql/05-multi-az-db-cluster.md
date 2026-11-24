@@ -8,6 +8,9 @@ tags: [AWS, RDS, 다중 AZ, Endpoint]
 
 # 다중 AZ DB 클러스터
 
+작성일 2024-01-07
+{ .post-date }
+
 > 다중 AZ DB 클러스터와 다중 AZ DB 인스턴스는 서로 다른 것이다.
 
 [AWS RDS 다중 AZ DB 클러스터란?](https://omty.tistory.com/46)

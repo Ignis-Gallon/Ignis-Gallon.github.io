@@ -8,6 +8,9 @@ tags: [임베디드시스템특강, Batch Normalization, Moving Average, CNN]
 
 # Batch Normalization
 
+작성일 2023-12-10 · 최종 수정일 2025-06-09
+{ .post-date }
+
 ## &lt;Batch Normalization&gt;
 
 ### Batch Normalization

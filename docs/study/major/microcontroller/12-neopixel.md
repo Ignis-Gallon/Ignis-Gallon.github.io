@@ -8,6 +8,9 @@ tags: [마이크로컨트롤러응용, AVR, Neopixel, WS2812]
 
 # Neopixel
 
+작성일 2022-12-07 · 최종 수정일 2023-09-22
+{ .post-date }
+
 ![](../../../assets/img/study/major/microcontroller/12-neopixel/01.webp)
 
 > 색깔을 조절하는 방법  

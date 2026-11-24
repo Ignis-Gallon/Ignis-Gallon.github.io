@@ -8,6 +8,9 @@ tags: [Flutter, 노마드코더, Column, Row, Developer Tools]
 
 # 3.1 Developer Tools
 
+작성일 2023-02-28 · 최종 수정일 2023-03-04
+{ .post-date }
+
 - UI 디자인을 할 때 서로를 위 아래에 놓고 싶을 때는 Column을 쓰고, 서로를 옆에 놓고 싶을 때는 Row를 쓴다.
 - Column과 Row는 Alignment를 가지고 있다. 내부의 item들을 움직이는 방식을 가지고 있다.
 - Row와 Column은 MainAxis(수평, 가로)와 CrossAxis(수직, 세로)를 가지고 있다.

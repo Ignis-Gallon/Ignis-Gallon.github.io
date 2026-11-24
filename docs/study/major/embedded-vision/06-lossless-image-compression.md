@@ -8,6 +8,9 @@ tags: [임베디드비젼시스템, 영상 압축, Lossless JPEG, CALIC]
 
 # 7주차 (Chpt. 7 : Lossless Image Compression)
 
+작성일 2023-05-25 · 최종 수정일 2025-05-24
+{ .post-date }
+
 ## Lossless Image Compression
 
 ![](../../../assets/img/study/major/embedded-vision/06-lossless-image-compression/01.webp)

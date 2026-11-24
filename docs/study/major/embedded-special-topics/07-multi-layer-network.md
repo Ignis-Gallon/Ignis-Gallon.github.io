@@ -8,6 +8,9 @@ tags: [임베디드시스템특강, Neural Network, Activation Function, Back Pr
 
 # Multi Layer Network
 
+작성일 2023-10-16 · 최종 수정일 2025-04-18
+{ .post-date }
+
 ## &lt;Neural Networks (계층 늘리기)&gt;
 
 > 이전에는 Logistic Regression을 이용해서 단일 Layer를 구성했었지만, 이번에는 Logistic Regression을 이어붙여서 Multi-layer를 만들어보자.

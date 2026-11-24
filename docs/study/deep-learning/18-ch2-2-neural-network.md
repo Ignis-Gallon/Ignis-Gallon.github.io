@@ -8,6 +8,9 @@ tags: [딥러닝, 신경망, Backpropagation, Regularization, Overfitting]
 
 # Deep Learning 강의 > Ch2-2. Neural Network
 
+작성일 2023-06-03
+{ .post-date }
+
 ## Neural Network
 
 ![](../../assets/img/study/deep-learning/18-ch2-2-neural-network/01.webp)

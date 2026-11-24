@@ -8,6 +8,9 @@ tags: [모바일SW, XAML, StackLayout, AbsoluteLayout, Xamarin.Forms]
 
 # 4주차: XAML 기본 구조와 StackLayout 실습
 
+작성일 2024-03-25 · 최종 수정일 2024-04-01
+{ .post-date }
+
 ## &lt;수업(2024-03-25 월)&gt;
 
 ### 에뮬레이터 오류

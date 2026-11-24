@@ -8,6 +8,9 @@ tags: [Spring, MVC, MyBatis, Java]
 
 # Spring MVC 구조(Controller, Service, DAO, Mapper)
 
+작성일 2023-01-31 · 최종 수정일 2024-09-19
+{ .post-date }
+
 **Spring boot - Controller, Service, DAO, Mapper**
 
 Spring boot는 MVC 구조를 따른다. 다음 그림은 MVC 구조를 나타낸다.

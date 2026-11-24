@@ -8,6 +8,9 @@ tags: [마이크로컨트롤러응용, AVR, ADC, UART]
 
 # code
 
+작성일 2022-12-07
+{ .post-date }
+
 ```c
 /*
  * micro13_3.c

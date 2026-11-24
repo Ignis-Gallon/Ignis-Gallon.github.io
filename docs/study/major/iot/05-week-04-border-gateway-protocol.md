@@ -8,6 +8,9 @@ tags: [사물인터넷, 네트워크, BGP, 라우팅]
 
 # 4주차 - Border Gateway Protocol
 
+작성일 2023-09-27 · 최종 수정일 2023-09-28
+{ .post-date }
+
 ## Border Gateway Protocol
 
 > Routing Protocol이 동작하기 위해서는 모든 router들이 네트워크에 존재하는 다른 모든 router들을 알고 있어야만 한다. 하지만, 해외와 같이 굉장히 멀리 있는 router들의 존재까지 알 필요는 없을 것이다. BGP는 이러한 router들의 집합인 domain 간의 통신 프로토콜을 정의하는 방식으로, 현대 인터넷의 문제 중 가장 복잡한 문제 중 하나이다. (BGP-4)

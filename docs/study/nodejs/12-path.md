@@ -8,6 +8,9 @@ tags: [Node.js, path 모듈, 경로]
 
 # path
 
+작성일 2022-11-25
+{ .post-date }
+
 node.js 개발을 할 때는 ‘안전하게’ 경로를 설정하기 위해 path module에 있는 join(), resolve() 메서드를 꼭 사용하는 것이 좋다.
 
 ## path module 사용 방법

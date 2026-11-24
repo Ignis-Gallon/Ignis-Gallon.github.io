@@ -8,6 +8,9 @@ tags: [Node.js, MySQL, BLOB, Canvas]
 
 # Image DB
 
+작성일 2022-11-18 · 최종 수정일 2024-01-12
+{ .post-date }
+
 - `Image를 DB에 어떻게 저장할 것인가?`
 
     1. Image는 file로, path만 DB에 저장 (가장 많이 사용된다.)

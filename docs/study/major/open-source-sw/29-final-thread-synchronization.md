@@ -8,6 +8,9 @@ tags: [오픈소스SW설계, 쓰레드, 동기화]
 
 # Thread Synchronization
 
+작성일 2022-12-04
+{ .post-date }
+
 ![](../../../assets/img/study/major/open-source-sw/29-final-thread-synchronization/01.webp)
 
 - `멀티 쓰레딩`으로 프로그램을 짤 때 가장 큰 장점은, 쓰레드와 쓰레드 간의 `데이터 공유`가 아주 쉽다는 것이다.

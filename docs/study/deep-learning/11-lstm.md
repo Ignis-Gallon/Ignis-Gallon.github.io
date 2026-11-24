@@ -8,6 +8,9 @@ tags: [딥러닝, LSTM, RNN, Gradient Vanishing]
 
 # LSTM
 
+작성일 2023-07-15
+{ .post-date }
+
 [Long Short-Term Memory (LSTM) 이해하기](https://dgkim5360.tistory.com/entry/understanding-long-short-term-memory-lstm-kr)
 
 **RNN & LSTM**

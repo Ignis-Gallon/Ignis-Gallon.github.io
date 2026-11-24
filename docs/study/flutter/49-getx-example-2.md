@@ -8,6 +8,9 @@ tags: [Flutter, 상태 관리, GetX, GridView, http]
 
 # GetX Example 2
 
+작성일 2023-03-12
+{ .post-date }
+
 - GetX를 사용하여 Grid에 외부 api에서 가져온 이미지, 텍스트 등을 출력하는 App
 - GridView, Json, HTTP 통신에 대한 기본 지식 필요.
 

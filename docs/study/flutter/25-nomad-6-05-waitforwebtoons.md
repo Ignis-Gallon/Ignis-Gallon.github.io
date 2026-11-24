@@ -8,6 +8,9 @@ tags: [Flutter, 노마드코더, Future, initState]
 
 # 6.5 waitForWebToons
 
+작성일 2023-03-01 · 최종 수정일 2023-03-04
+{ .post-date }
+
 - Future 데이터를 불러와서 보여주는 방법은 두 가지가 있다.
     1. 기본적인 방법
     2. 발전된 방법

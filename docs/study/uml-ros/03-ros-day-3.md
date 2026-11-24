@@ -8,6 +8,9 @@ tags: [ROS, Publisher, Subscriber, turtlesim]
 
 # ROS 3일차
 
+작성일 2023-06-21
+{ .post-date }
+
 Publisher ↔ Subscriber
 
 같은 이름의 노드는 존재하지 못한다.

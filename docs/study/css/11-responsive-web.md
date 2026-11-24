@@ -8,6 +8,9 @@ tags: [CSS, 반응형 웹, media query, container query]
 
 # 반응형 웹
 
+작성일 2023-07-23
+{ .post-date }
+
 ```css
 @media (max-width : 768px) {
 	.text {

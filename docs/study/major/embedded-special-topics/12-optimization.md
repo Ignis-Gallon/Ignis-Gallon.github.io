@@ -8,6 +8,9 @@ tags: [임베디드시스템특강, Optimization, Mini-batch, Momentum, Adam]
 
 # Optimization
 
+작성일 2023-12-10 · 최종 수정일 2024-11-15
+{ .post-date }
+
 > 우리가 지금까지 해왔던 것은, 어떻게 하면 Training 과정을 더 빠르고 효율적으로 진행할 수 있을지, 그 방법들을 알아보는 과정이었다.  
 >   
 > 그런데, 사실 Develop 과정에서는 Experiment가 가장 오랜 시간이 소요된다. 따라서 우리는 다양한 Optimization을 통해 Experiment 시간을 감소시킬 방법을 알아보고자 한다.

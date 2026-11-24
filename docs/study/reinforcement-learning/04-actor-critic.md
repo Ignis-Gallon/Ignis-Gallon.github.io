@@ -8,6 +8,9 @@ tags: [강화학습, Actor-Critic, A2C, A3C, Advantage, n-step TD, Entropy]
 
 # 강화학습 4: Actor-Critic, A2C, A3C
 
+작성일 2025-03-13 · 최종 수정일 2025-03-24
+{ .post-date }
+
 [REINFORCE](03-reinforce.md)는 unbiased하지만 variance가 컸다. 이 글에서는 그 variance를 줄여 가는 세 단계를 정리한다. Policy Gradient 식에서 $Q$를 꺼내 따로 학습하는 Actor-Critic, $Q$ 대신 Advantage를 쓰는 A2C, 그리고 여러 worker를 비동기로 돌리는 A3C다.
 
 ## Actor-Critic

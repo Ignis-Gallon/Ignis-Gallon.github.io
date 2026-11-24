@@ -8,6 +8,9 @@ tags: [Transformer, Attention, Seq2Seq, Multi-Head Attention, Positional Encodin
 
 # Transformer 강의 정리 1: Seq2Seq의 한계에서 Multi-Head Attention까지
 
+작성일 2023-11-23
+{ .post-date }
+
 2023년 11월, PatchTST 프로젝트를 준비하면서 Transformer를 처음 공부할 때 쓴 노트다. 나동빈 님의 "[딥러닝 기계 번역] Transformer: Attention Is All You Need (꼼꼼한 딥러닝 논문 리뷰와 코드 실습)" 강의를 보며 정리했다. 강의는 Seq2Seq의 한계에서 출발해 attention, Transformer의 구조, Multi-Head Attention의 계산 과정을 차례로 설명한다. 공부하면서 생긴 질문은 글 끝에 모아 답을 달았다.
 
 ## 딥러닝 기반 기계 번역의 발전 과정

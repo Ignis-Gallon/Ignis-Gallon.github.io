@@ -8,6 +8,9 @@ tags: [사물인터넷, 네트워크, Packet Switching, ARP, DHCP]
 
 # 1주차 - Basic Network Components
 
+작성일 2023-09-26 · 최종 수정일 2023-11-01
+{ .post-date }
+
 ## &lt;Internetworking&gt;
 
 ### Packet Switching

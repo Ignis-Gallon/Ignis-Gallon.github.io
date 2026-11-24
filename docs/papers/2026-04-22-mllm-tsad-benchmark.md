@@ -8,6 +8,9 @@ tags: [시계열 이상 탐지, VLM, Multimodal LLM, Benchmark, VisualTimeAnomal
 
 # Can Multimodal LLMs Perform Time Series Anomaly Detection? 리뷰
 
+작성일 2026-04-22 · 최종 수정일 2026-04-24
+{ .post-date }
+
 Multimodal LLM(MLLM)이 time series anomaly detection(TSAD)을 수행할 수 있는지를 묻는 논문이다. 기존 연구는 point-wise anomaly를 range-wise anomaly의 특별한 경우로 보거나 point anomaly를 모아 range-wise 상황을 근사하는 식으로 둘을 구별하지 않았고, 그래서 multi-granular anomaly를 다루는 데 한계가 있고 irregular time series에 대처하기 어려웠다. 이 논문은 point-, range-, variate-wise anomaly와 irregular sampling 조건까지 평가하는 VisualTimeAnomaly benchmark로 MLLM을 평가하고, 그 결과를 바탕으로 scanning, planning, detection, checking을 자동으로 수행하는 TSAD-Agents framework를 제안한다.
 
 그림과 표는 옮기지 않고 글과 수식으로 다시 적었다.

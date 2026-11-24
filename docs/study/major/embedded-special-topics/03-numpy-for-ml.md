@@ -8,6 +8,9 @@ tags: [임베디드시스템특강, NumPy, Tensor, Broadcasting]
 
 # NumPy for ML
 
+작성일 2023-09-28 · 최종 수정일 2023-12-12
+{ .post-date }
+
 ## [NumPy for ML]
 
 ---

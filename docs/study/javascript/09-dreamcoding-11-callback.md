@@ -8,6 +8,9 @@ tags: [JavaScript, 드림코딩, 콜백, 비동기]
 
 # 드림코딩 11: callback
 
+작성일 2022-12-25
+{ .post-date }
+
 자바스크립트는 Synchronous(동기식)하다. 즉, hoisting이 된 이후로, 우리가 작성한 코드의 순서에 따라 코드가 동작된다. 
 
 - hoisting : var, function declaration (변수나 함수의 선언이 자동적으로 파일의 맨 위로 올라가는 것)

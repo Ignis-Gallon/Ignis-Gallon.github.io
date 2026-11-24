@@ -8,6 +8,9 @@ tags: [인공지능, 강화학습, Q-Learning, SARSA, CartPole, OpenAI Gym]
 
 # Q-Learning으로 CartPole 균형 잡기
 
+작성일 2023-12-01
+{ .post-date }
+
 인공지능 수업의 두 번째 과제로 강화학습을 다룬 내용을 기록하고자 한다. 강화학습의 기본 이론을 Q-Learning까지 정리해 발표했고, OpenAI Gym의 CartPole 환경에 Q-Learning을 적용해 막대가 쓰러지지 않게 수레를 움직이는 Agent를 학습시켰다.
 
 구현은 Aleksandar Haber의 공개 튜토리얼 코드([저장소](https://github.com/AleksandarHaber/Q-Learning-Algorithm-in-Python-with-Cart-Pole-OpenAI-Gym--Gymnasium-Environment))를 바탕으로 했다. 코드를 한 줄씩 따라가며 주석을 달고, 각 부분이 이론의 어느 식에 해당하는지를 연결해 정리했다.

@@ -8,6 +8,9 @@ tags: [Flutter, 상태 관리, GetX, Controller]
 
 # GetX Example 1
 
+작성일 2023-03-12
+{ .post-date }
+
 - View Model Controller Pattern 이용, View, Model Controller Directory를 생성한다.
 - GetX는 어떤 형태의 데이터이든 삽입할 수 있기 때문에 Stateful Widget을 사용할 필요가 없다.
 

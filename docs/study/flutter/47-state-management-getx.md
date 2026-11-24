@@ -8,6 +8,9 @@ tags: [Flutter, 상태 관리, GetX, Obx, MVC]
 
 # State Management(GetX)
 
+작성일 2023-03-11 · 최종 수정일 2023-03-12
+{ .post-date }
+
 - GetX
     1. 가벼움
     2. 간단함

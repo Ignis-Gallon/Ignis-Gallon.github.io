@@ -8,6 +8,9 @@ tags: [강화학습, Policy Gradient, REINFORCE, Monte Carlo, Stochastic Policy]
 
 # 강화학습 3: Policy Gradient와 REINFORCE
 
+작성일 2025-03-12 · 최종 수정일 2025-03-13
+{ .post-date }
+
 [DQN](02-dqn.md)까지는 Q값을 잘 구한 뒤 그 값이 가장 큰 action을 고르는 Value-based 방법이었다. 이 글에서는 policy 자체를 신경망으로 두고 직접 학습하는 Policy-based 방법을 정리한다. objective function의 gradient를 표본 평균으로 구할 수 있는 형태로 바꾸는 유도 과정이 중심이고, 그 결과가 REINFORCE 알고리즘이다.
 
 ## DQN과 무엇이 다른가

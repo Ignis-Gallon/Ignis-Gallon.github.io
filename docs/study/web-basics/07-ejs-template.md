@@ -8,6 +8,9 @@ tags: [Node.js, ejs, 템플릿 엔진, Express]
 
 # ejs 템플릿
 
+작성일 2023-02-05 · 최종 수정일 2023-02-06
+{ .post-date }
+
 ejs를 사용하면 node.js → .html 데이터 전달이 가능하다.
 
 [[node.js][3] ejs 사용설명서](https://yahohococo.tistory.com/43)

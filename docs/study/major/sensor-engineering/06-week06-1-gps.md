@@ -8,6 +8,9 @@ tags: [센서공학, GPS, GNSS, RTK, Localization]
 
 # 6주차-1(GPS)
 
+작성일 2023-04-11 · 최종 수정일 2026-04-14
+{ .post-date }
+
 - 자율주행자동차의 핵심적인 기술
 
     - GPS, Lidar, Sonar and Radar

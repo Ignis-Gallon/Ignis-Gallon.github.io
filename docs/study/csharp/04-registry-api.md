@@ -8,6 +8,9 @@ tags: [C#, Windows, 레지스트리, Windows Forms, XmlTextReader]
 
 # 레지스트리 API
 
+작성일 2023-01-17 · 최종 수정일 2023-01-22
+{ .post-date }
+
 ## Registry에 대하여
 
 Registry란?

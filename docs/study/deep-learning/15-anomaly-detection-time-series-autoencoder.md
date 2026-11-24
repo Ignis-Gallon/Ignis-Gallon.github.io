@@ -8,6 +8,9 @@ tags: [이상 탐지, 시계열, Autoencoder, LSTM Autoencoder]
 
 # Deep Learning 강의 > Anomaly Detection for Time Series Data With Autoencoder
 
+작성일 2023-06-01
+{ .post-date }
+
 [[Open DMQA Seminar] Anomaly Detection for Time Series with Autoencoder](https://www.youtube.com/watch?v=Zzt4Ept-zYs)
 
 ---

@@ -8,6 +8,9 @@ tags: [Node.js, CommonJS, ES module, 모듈 시스템]
 
 # commonJS & ES module
 
+작성일 2022-11-18 · 최종 수정일 2022-11-25
+{ .post-date }
+
 [https://blog.logrocket.com/commonjs-vs-es-modules-node-js/](https://blog.logrocket.com/commonjs-vs-es-modules-node-js/)
 
 browser Javascript 생태계에서 자바스크립트 모듈은 `import`, `export` 구문을 사용하며, 이 구문들은 ECMAScript 모듈 (또는 ES modules)을 각각 불러오거나 내보낸다.

@@ -8,6 +8,9 @@ tags: [영상처리, BMP, JPEG, Pseudo Color, Hyperspectral]
 
 # Image Types and Color
 
+작성일 2023-10-03 · 최종 수정일 2023-12-05
+{ .post-date }
+
 ## &lt;2.5.2 A Simple Raster Format&gt;
 
 ### Raster Format

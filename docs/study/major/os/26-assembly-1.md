@@ -8,6 +8,9 @@ tags: [운영체제, Assembly, 8086, 레지스터, 시스템 콜]
 
 # Assembly-1: 시스템 콜, 명령어 사이클, 8086 레지스터
 
+작성일 2023-05-01 · 최종 수정일 2023-06-05
+{ .post-date }
+
 ![](../../../assets/img/study/major/os/26-assembly-1/01.webp)
 
 ![](../../../assets/img/study/major/os/26-assembly-1/02.webp)

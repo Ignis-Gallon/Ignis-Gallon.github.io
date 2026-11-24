@@ -8,6 +8,9 @@ tags: [이상 탐지, LSTM, Autoencoder, 시계열, Teacher Forcing, F-beta Scor
 
 # LSTM Autoencoder로 시계열 이상 탐지하기: EncDec-AD
 
+작성일 2024-11-25
+{ .post-date }
+
 [Autoencoder](03-autoencoder.md)를 시계열 이상 탐지에 쓰는 방법을 정리한 글이다. 시계열 이상 탐지를 autoencoder로 푸는 흐름을 소개한 공개 세미나와, 그 대표적인 모델인 EncDec-AD의 논문 "LSTM-based Encoder-Decoder for Multi-sensor Anomaly Detection"(Malhotra et al., 2016)을 리뷰한 영상을 함께 보고 하나로 묶었다. 영상을 보며 생긴 질문과 찾아본 답도 같이 적었다.
 
 ## 시계열 이상 탐지

@@ -8,6 +8,9 @@ tags: [영상처리, Color, HSV, YIQ, Pseudo Coloring]
 
 # Color Processing
 
+작성일 2023-12-05 · 최종 수정일 2024-11-22
+{ .post-date }
+
 ## &lt;Color Processing&gt;
 
 ### What is Color?

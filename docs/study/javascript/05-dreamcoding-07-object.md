@@ -8,6 +8,9 @@ tags: [JavaScript, 드림코딩, object, 프로퍼티]
 
 # 드림코딩 7: object
 
+작성일 2022-12-24
+{ .post-date }
+
 ## Literal Properties
 
 - primitive type : 가장 기본적인 자료형으로, primitive type 변수에는 하나의 값만 담을 수 있다.

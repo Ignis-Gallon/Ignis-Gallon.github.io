@@ -8,6 +8,9 @@ tags: [Node.js, JWT, Access Token, Refresh Token, Redis]
 
 # 안정적인 토큰의 형태
 
+작성일 2023-03-13
+{ .post-date }
+
 - JWT를 사용한 토큰의 종류는 크게 두 가지가 있다.
 
     1. Access Token (A/T)

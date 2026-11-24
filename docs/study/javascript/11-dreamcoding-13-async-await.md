@@ -8,6 +8,9 @@ tags: [JavaScript, 드림코딩, async/await, Promise]
 
 # 드림코딩 13: async-await
 
+작성일 2022-12-25
+{ .post-date }
+
 promise를 return하면서 promise chaining을 하면 코드가 조금 복잡해질 수도 있기 때문에, async-await을 사용해서 좀 더 간단하게 만들 수 있다.
 
 async와 await은 코드를 동기식으로 작성하는 것처럼, 간단하게 작성할 수 있도록 도와준다. 

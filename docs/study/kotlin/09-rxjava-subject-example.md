@@ -8,6 +8,9 @@ tags: [Kotlin, RxJava, RxKotlin, Subject]
 
 # RxJava 예제 > Subject Example Code
 
+작성일 2022-09-27
+{ .post-date }
+
 RxJava와 RxKotlin의 Subject 네 가지(PublishSubject, BehaviorSubject, ReplaySubject, AsyncSubject)를 실습한 예제 코드이다.
 
 ```kotlin

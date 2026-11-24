@@ -8,6 +8,9 @@ tags: [Node.js, Express, req.params, req.query, body-parser]
 
 # Request Properties(Body-Parser)
 
+작성일 2022-11-25
+{ .post-date }
+
 > 참고  
 >   
 > [https://studyingych.tistory.com/34](https://studyingych.tistory.com/34)  

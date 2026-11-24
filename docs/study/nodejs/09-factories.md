@@ -8,6 +8,9 @@ tags: [Node.js, 디자인 패턴, Factory, Abstract Factory]
 
 # Factories - Generic Interface for Creating
 
+작성일 2022-11-18 · 최종 수정일 2022-11-19
+{ .post-date }
+
 ## Factory pattern
 
 factory pattern originally defined by the Gang of Four as an interface for creating an object which lets subclasses decide which class to instantiate. This pattern is also known as the virtual constructor pattern. At first glance, this may sound a little confusing; but let’s try to understand, using an analogy of a factory that manufactures mobile phones.

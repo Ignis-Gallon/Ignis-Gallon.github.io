@@ -8,6 +8,9 @@ tags: [Flutter, Coding Chef, Focus, Expanded, Image]
 
 # Login_dice
 
+작성일 2023-03-25 · 최종 수정일 2023-03-31
+{ .post-date }
+
 ## Focus
 
 - focus tree

@@ -8,6 +8,9 @@ tags: [C#, ref, out, Delegate, Event]
 
 # ref/out, Delegate/Event
 
+작성일 2022-12-19 · 최종 수정일 2023-01-05
+{ .post-date }
+
 ## Out/Ref
 
 Java와 C# 모두에서 개체를 참조하는 메서드에 “매개 변수는 항상 참조로 전달” 되는 반면, 기본 데이터 형식 매개 변수는 값으로 전달한다.

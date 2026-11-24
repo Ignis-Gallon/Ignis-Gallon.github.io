@@ -8,6 +8,9 @@ tags: [사물인터넷, 네트워크, P2P, Chord]
 
 # 6주차 - P2P & Chord System
 
+작성일 2023-10-28
+{ .post-date }
+
 ## &lt;P2P Solution Types&gt;
 
 > P2P란, Peer To Peer System을 말하며, 서버/클라이언트의 네트워크 아키텍처가 아니라 사용자들끼리 데이터를 공유할 수 있는 네트워크 아키텍처를 말한다.  

@@ -8,6 +8,9 @@ tags: [오픈소스SW설계, 프로세스, fork, exec]
 
 # Process
 
+작성일 2022-12-03 · 최종 수정일 2022-12-15
+{ .post-date }
+
 ## Context Switching
 
 - `프로세스`란, 프로그램들이 실행되고 있는 상태 또는 그 instance이다.

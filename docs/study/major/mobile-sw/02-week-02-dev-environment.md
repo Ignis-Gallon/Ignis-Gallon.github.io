@@ -8,6 +8,9 @@ tags: [모바일SW, Tizen, Visual Studio, 에뮬레이터, 개발 환경]
 
 # 2주차: 개발 환경과 에뮬레이터 설치
 
+작성일 2024-03-11 · 최종 수정일 2024-03-16
+{ .post-date }
+
 ## &lt;수업(2024-03-11 월)&gt;
 
 - 모바일 SW (Tizen App) 개발을 위한 Tool 설치 (*Visual Studio 등*)

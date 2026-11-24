@@ -8,6 +8,9 @@ tags: [Flutter, 노마드코더, ListView, Expanded, Image.network]
 
 # 6.8 Webtoon Card
 
+작성일 2023-03-01 · 최종 수정일 2023-03-04
+{ .post-date }
+
 - ListView를 사용할 때, ListView를 return하는 부분이 너무 길어서 보기 싫다면 extract method로 추출해서 만들어줄 수 있다. 
 - 웹툰의 이미지를 출력하기 위하여 Column을 만들어주는데, 이 때 SizedBox를 만들어주게 되면 ListView에 제한없는 높이 값이 넘어오기 때문에 오류가 발생하게 된다. 이 경우에, ListView에 제한된 높이를 줘야 한다. 그러기 위해서 makeList를 Expanded로 감싼다.
 

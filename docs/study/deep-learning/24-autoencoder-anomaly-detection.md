@@ -8,6 +8,9 @@ tags: [딥러닝, Autoencoder, Latent Space, Loss Function]
 
 # Deep Learning 강의 > Autoencoder & Anomaly Detection
 
+작성일 2023-06-01 · 최종 수정일 2023-06-03
+{ .post-date }
+
 - 고차원 데이터를 저차원으로 압축하게 된다. (Encode)
 - 이후에는 압축한 데이터를 다시 확장해서, 기존의 값과 동일한 값이 나오도록 만든다.
 

@@ -8,6 +8,9 @@ tags: [인공지능, 시계열 예측, Transformer, PatchTST, 시계열 분해, 
 
 # PatchTST 성능 개선 실험
 
+작성일 2023-12-04
+{ .post-date }
+
 인공지능 수업의 프로젝트로 진행한 내용을 기록하고자 한다. 장기 시계열 예측 모델인 PatchTST의 논문과 공식 코드를 분석하고, 여기에 세 가지 방법(이동평균 분해, Non-stationary Attention, FFT Top-k 분해)을 적용해 예측 성능이 어떻게 달라지는지 실험했다.
 
 | 항목 | 내용 |

@@ -8,6 +8,9 @@ tags: [JavaScript, 생활코딩, 콜백, 일급 객체]
 
 # 생활코딩: callback function
 
+작성일 2023-01-26
+{ .post-date }
+
 ## first citizen class
 
 변수의 값이 될 수 있는 것으로, javascript에서는 일반적인 값 뿐만 아니라 function도 일급 객체로서 취급된다. 따라서, 함수를 변수의 값으로 지정할 수 있다.

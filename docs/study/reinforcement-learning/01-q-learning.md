@@ -8,6 +8,9 @@ tags: [강화학습, Bellman 방정식, Monte Carlo, Temporal Difference, SARSA,
 
 # 강화학습 1: Bellman 방정식에서 Q-Learning까지
 
+작성일 2025-03-12 · 최종 수정일 2025-03-13
+{ .post-date }
+
 강화학습 시리즈의 첫 글이다. Value Function의 정의에서 출발해 Bellman 방정식을 유도하고, Optimal Q를 구하는 두 가지 방법인 Monte Carlo와 Temporal Difference를 거쳐 SARSA와 Q-Learning까지 정리한다. 그 과정에서 계속 등장하는 bias와 variance, on-policy와 off-policy의 구분도 함께 다룬다.
 
 ## 배경: MDP와 표기

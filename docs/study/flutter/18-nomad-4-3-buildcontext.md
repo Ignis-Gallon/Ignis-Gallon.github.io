@@ -8,6 +8,9 @@ tags: [Flutter, 노마드코더, BuildContext, Theme, Widget Tree]
 
 # 4.3 BuildContext
 
+작성일 2023-03-01 · 최종 수정일 2023-03-04
+{ .post-date }
+
 - 이전에 만든 앱에서 Text를 Extract Widget으로 추출하자. → MyLargeTitle
 - 플러터는 앱의 모든 스타일을 한 곳에서 지정할 수 있는 기능을 제공한다.
 

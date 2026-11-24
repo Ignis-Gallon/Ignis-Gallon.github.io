@@ -8,6 +8,9 @@ tags: [Flutter, 노마드코더, AppBar, Scaffold]
 
 # 6.1 AppBar
 
+작성일 2023-03-01 · 최종 수정일 2023-03-04
+{ .post-date }
+
 ```dart
 class App extends StatelessWidget {
   const App({super.key});

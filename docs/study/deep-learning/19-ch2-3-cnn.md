@@ -8,6 +8,9 @@ tags: [딥러닝, CNN, Convolution, Pooling, TensorFlow]
 
 # Deep Learning 강의 > Ch2-3. CNN(Convolutional Neural Network)
 
+작성일 2023-06-03 · 최종 수정일 2023-06-04
+{ .post-date }
+
 ## CNN
 
 ![](../../assets/img/study/deep-learning/19-ch2-3-cnn/01.webp)

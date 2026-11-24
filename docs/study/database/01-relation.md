@@ -8,6 +8,9 @@ tags: [DB, 관계형 데이터 모델, relation, key, constraints]
 
 # 2 (relation 개념)
 
+작성일 2023-08-11 · 최종 수정일 2023-08-12
+{ .post-date }
+
 - relational data model
 
 ⇒ 이 개념을 이해하기 위해서는 먼저 ‘set’의 개념을 알아야 한다.

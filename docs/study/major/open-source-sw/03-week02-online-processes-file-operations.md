@@ -8,6 +8,9 @@ tags: [오픈소스SW설계, Linux, 프로세스, 파일 시스템]
 
 # 2주차 온라인 강의: Processes, File Operations
 
+작성일 2022-10-02 · 최종 수정일 2022-10-20
+{ .post-date }
+
 ## `Processes`
 
 - `Process`

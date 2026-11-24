@@ -8,6 +8,9 @@ tags: [Flutter, 노마드코더, Widget, MaterialApp, Scaffold]
 
 # 2.3 Hello World
 
+작성일 2023-02-25 · 최종 수정일 2023-03-04
+{ .post-date }
+
 - runApp
 
 runApp은 Widget type의 argument를 전달받는다. Widget이란 레고 블럭이라고 볼 수 있다. 우리는 Widget을 레고 블럭처럼 합쳐 사용할 수 있다. 무료로 제공되는 공식 Widget도 많으며, 필요할 때 마다 다운받아서 사용하면 된다. Widget의 종류는 매우 많으며, 필요할 때마다 찾아서 사용하면 된다.

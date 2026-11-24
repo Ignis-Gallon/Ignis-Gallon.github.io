@@ -8,6 +8,9 @@ tags: [Flutter, Coding Chef, Provider, ChangeNotifier, mixin]
 
 # Provider
 
+작성일 2023-07-09 · 최종 수정일 2024-09-19
+{ .post-date }
+
 Provider.of : 공급자(Subject)
 
 context : 수로

@@ -8,6 +8,9 @@ tags: [시계열 이상 탐지, LLM, 멀티모달, Zero-shot, De-seasonalization
 
 # Delving into Large Language Models for Effective Time-Series Anomaly Detection 리뷰
 
+작성일 2026-03-23 · 최종 수정일 2026-04-07
+{ .post-date }
+
 LLM을 시계열 이상 탐지(Time-Series Anomaly Detection, TSAD)에 쓰면 왜 기대만큼의 성능이 나오지 않는지를 understanding과 localization이라는 두 능력으로 나누어 진단하고, de-seasonalization과 index-aware prompting이라는 단순한 방법으로 이를 고친 논문이다. 글은 논문을 한 번 훑고 쓴 요약, 읽으면서 생긴 질문을 정리한 부분, 논문의 절 순서를 따라간 정리의 세 부분으로 되어 있다. 그림과 표는 옮기지 않고 글과 수식으로 다시 적었다.
 
 LLM·VLM으로 시계열 이상 탐지를 다룬 다른 글로는 [VLM4TS](2026-01-22-vlm4ts.md)와 [Can Multimodal LLMs Perform Time Series Anomaly Detection?](2026-04-22-mllm-tsad-benchmark.md)이 있다.

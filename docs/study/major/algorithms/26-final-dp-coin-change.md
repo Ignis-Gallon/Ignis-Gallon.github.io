@@ -8,6 +8,9 @@ tags: [알고리즘, Dynamic Programming, 동전 거스름돈]
 
 # DP coinChange
 
+작성일 2022-12-05
+{ .post-date }
+
 - Dynamic Programming을 이용해서 동전 거스름돈 문제를 해결한다. 이전에 Knapsack 문제에서는 고려하는 물건 (i)를 선택하고, 그것에 대해서 무게 w를 1씩 늘려가면서 해를 구했었다.
 - Dynamic Programming은 이전에 찾은 해를 끌어와서 사용할 수 있다는 점에서 각 해가 종속성(Dependency)를 가진다.
 

@@ -8,6 +8,9 @@ tags: [DB, index, B-tree, MySQL]
 
 # 25 (index)
 
+작성일 2023-08-13
+{ .post-date }
+
 ## Index에 따른 성능 차이
 
 ![](../../assets/img/study/database/07-index/01.webp)

@@ -8,6 +8,9 @@ tags: [C#, Thread, 멀티스레드, 폴링]
 
 # Thread 사용 패턴
 
+작성일 2022-12-20 · 최종 수정일 2023-01-25
+{ .post-date }
+
 ## Thread
 
 [https://frozenpond.tistory.com/23](https://frozenpond.tistory.com/23)

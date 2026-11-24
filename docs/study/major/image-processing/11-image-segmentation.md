@@ -8,6 +8,9 @@ tags: [영상처리, Segmentation, Thresholding, Edge Detection]
 
 # Image Segmentation
 
+작성일 2023-12-05 · 최종 수정일 2024-11-15
+{ .post-date }
+
 ## &lt;Image segmentation&gt;
 
 ![](../../../assets/img/study/major/image-processing/11-image-segmentation/01.webp)

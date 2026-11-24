@@ -8,6 +8,9 @@ tags: [알고리즘, 근사 알고리즘, 통 채우기, 작업 스케줄링]
 
 # 9주차: 근사 알고리즘, 통 채우기 문제
 
+작성일 2022-10-27 · 최종 수정일 2024-11-15
+{ .post-date }
+
 - Approximation Algorithms : 최적화된 해에 최대한 근접하게 접근하여 해를 찾는 방식
 
 ![](../../../assets/img/study/major/algorithms/08-week-09-approximation-bin-packing/01.webp)

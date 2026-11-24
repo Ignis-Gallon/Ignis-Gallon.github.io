@@ -8,6 +8,9 @@ tags: [시계열, 시차 연산자, ARMA, 정상성, 자기공분산, 단위근]
 
 # 시차 연산자와 AR, MA의 상호 변환
 
+작성일 2025-06-10
+{ .post-date }
+
 MIT OpenCourseWare의 Time Series Analysis(14.384) 1강 "Stationarity, Lag Operator, ARMA, and Covariance Structure"의 강의 노트를 읽으며 정리한 글이다. 앞의 글들에서 결과만 받아들였던 것들, 즉 random walk가 왜 비정상인지, "특성 방정식의 근이 단위원 밖에 있어야 한다"는 조건이 어디에서 오는지, AR 모델과 MA 모델이 어떻게 서로 바뀌는지를 시차 연산자(lag operator)로 직접 계산해 본다. 유도는 손으로 풀어 본 것을 옮겼다.
 
 ## 정상성

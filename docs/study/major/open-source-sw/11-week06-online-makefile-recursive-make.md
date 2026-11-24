@@ -8,6 +8,9 @@ tags: [오픈소스SW설계, Makefile, make, 컴파일]
 
 # 6주차 온라인 강의: Makefile, Recursive make
 
+작성일 2022-10-08 · 최종 수정일 2022-10-19
+{ .post-date }
+
 ## `Make File 소개`
 
 - Make File이란, 복잡한 구조를 갖는 S/W를 체계적으로 컴파일할 수 있도록 도와주는 개발도구이다.

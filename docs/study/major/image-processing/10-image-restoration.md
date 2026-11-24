@@ -8,6 +8,9 @@ tags: [영상처리, Noise, Median Filter, Image Restoration]
 
 # Image Restoration
 
+작성일 2023-12-05 · 최종 수정일 2024-11-22
+{ .post-date }
+
 ## &lt;Types of Noise&gt;
 
 ### Gaussian Noise

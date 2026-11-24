@@ -8,6 +8,9 @@ tags: [Flutter, Provider, 상태 관리, Widget Tree]
 
 # Learn App Code 1. What is Flutter Provider?
 
+작성일 2023-07-11
+{ .post-date }
+
 [Flutter Provider Simply Explained](https://www.youtube.com/watch?v=K2ampPUTfIQ&list=PLgG0-B2KlM1sr3MRmqaV2tVKJf_7Zk7f3&index=1)
 
 - Provider는 마치 낚시와도 같다.

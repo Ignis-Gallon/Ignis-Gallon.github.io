@@ -8,6 +8,9 @@ tags: [Flutter, Dart, Coding Chef, null safety]
 
 # Null Safety
 
+작성일 2023-03-31
+{ .post-date }
+
 - 현재는 Null Safety를 지원하는 Dependencies를 사용하게 된다.
     1. 모든 변수는 null이 될 수 없으며, non-nullable 변수에는 null 값을 할당할 수 없다.  
         ⇒ 그렇지 않으면 NullReferenceException이 발생할 수 있음.

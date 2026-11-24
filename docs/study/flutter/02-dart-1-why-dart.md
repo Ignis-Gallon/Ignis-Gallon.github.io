@@ -8,6 +8,9 @@ tags: [Dart, Flutter, 컴파일러, null safety]
 
 # Dart 1: Why Dart?
 
+작성일 2023-02-15
+{ .post-date }
+
 - dart는 두 개의 컴파일러가 있음.
 
     - dart Web : 내가 작성한 dart 코드를 JS로 변환해주는 컴파일러

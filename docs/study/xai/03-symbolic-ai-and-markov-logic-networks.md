@@ -8,6 +8,9 @@ tags: [XAI, Symbolic AI, First-order Logic, Prolog, Markov Logic Network, Neuro-
 
 # Symbolic AI와 Markov Logic Network
 
+작성일 2025-01-02
+{ .post-date }
+
 "XAI Tutorial 2023"의 강의 "Symbolic AI methods"를 듣고 정리한 노트다. 딥러닝 모델에 설명을 붙이는 [앞의 두 글](01-xai-overview.md)과 달리, 이 강의는 처음부터 사람이 읽을 수 있는 규칙으로 추론하는 방법들을 다룬다. 흐름은 다음과 같다.
 
 ```mermaid

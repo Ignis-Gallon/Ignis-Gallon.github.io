@@ -8,6 +8,9 @@ tags: [알고리즘, Floyd, Bellman-Ford, SPFA, 최대 유량]
 
 # 12주차: Floyd, Bellman-Ford
 
+작성일 2022-11-17 · 최종 수정일 2024-12-01
+{ .post-date }
+
 ![](../../../assets/img/study/major/algorithms/12-week-12-floyd-bellman-ford/01.webp)
 
 ![](../../../assets/img/study/major/algorithms/12-week-12-floyd-bellman-ford/02.webp)

@@ -8,6 +8,9 @@ tags: [오픈소스SW설계, Linux, Shell Script, Exit Code]
 
 # 5주차: 실습 문제(Exit Code, Shell Script)
 
+작성일 2022-09-29 · 최종 수정일 2022-10-20
+{ .post-date }
+
 - `Ken Thompson & Dennis Ritchie`  
     C의 창시자. Unix를 만드는데 Assembly로 만드는게 너무 힘들어서 C 개발.  
     → Write programs that do one thing and do it well.  

@@ -8,6 +8,9 @@ tags: [센서공학, 광센서, 홀 센서, 포텐쇼미터, 인코더]
 
 # 2주차(광센서/자기센서/위치-변위센서)
 
+작성일 2023-04-20 · 최종 수정일 2023-04-23
+{ .post-date }
+
 ## 광센서
 
 ![](../../../assets/img/study/major/sensor-engineering/02-week02-optical-magnetic-position-sensors/01.webp)

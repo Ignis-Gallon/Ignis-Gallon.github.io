@@ -8,6 +8,9 @@ tags: [ResNet, Residual Learning, Skip Connection, CNN, VGG]
 
 # ResNet: 깊은 네트워크를 학습시키는 residual learning
 
+작성일 2024-11-23
+{ .post-date }
+
 "Deep Residual Learning for Image Recognition"(He et al., CVPR 2016)을 논문 리뷰 강의와 함께 읽고 정리한 글이다. 강의의 흐름대로 CNN과 VGG를 짧게 복습한 뒤 residual block의 아이디어를 보고, 논문 본문을 따라간다. 중간에 skip connection을 조금 다른 각도에서 설명한 강의의 내용도 덧붙였다. 출처는 글 끝에 적었다.
 
 ## 왜 ResNet인가

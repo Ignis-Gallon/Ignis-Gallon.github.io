@@ -8,6 +8,9 @@ tags: [선형대수, 벡터 공간, 선형 독립, 기저, 랭크, MML]
 
 # MML 2.4 ~ 2.6: 벡터 공간, 선형 독립, 기저와 랭크
 
+작성일 2025-06-12
+{ .post-date }
+
 "Mathematics for Machine Learning"(이하 MML) 2장의 2.4 Vector Spaces, 2.5 Linear Independence, 2.6 Basis and Rank를 읽고 정리한 글이다. [앞 글](01-linear-systems-and-matrices.md)에서 "덧셈과 scalar 곱에 대해 닫힌 집합"이라고만 말했던 vector space를 정식으로 정의하고, 그 공간을 최소한의 vector로 표현하는 방법인 basis와, 행렬이 가진 독립적인 방향의 수인 rank까지 다룬다.
 
 ## 2.4 벡터 공간

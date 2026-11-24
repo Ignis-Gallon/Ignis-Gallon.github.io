@@ -8,6 +8,9 @@ tags: [시계열, 확률 과정, Random Walk, White Noise]
 
 # 확률 과정과 Random Walk
 
+작성일 2025-04-04
+{ .post-date }
+
 통계적 시계열 분석은 "관측한 시계열 뒤에는 그것을 만들어 낸 확률적 구조가 있다"는 가정에서 출발한다. 이 글에서는 그 가정을 표현하는 개념인 확률 과정(stochastic process)을 정리하고, 가장 단순한 확률 과정의 예인 random walk를 살펴본다. 이 시리즈의 나머지 글에서 쓰는 용어(실현, white noise, AR(1))를 여기서 먼저 정해 둔다.
 
 ## 확률 과정

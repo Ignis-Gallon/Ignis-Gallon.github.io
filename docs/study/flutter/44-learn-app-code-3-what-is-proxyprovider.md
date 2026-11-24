@@ -8,6 +8,9 @@ tags: [Flutter, Provider, ProxyProvider]
 
 # Learn App Code 3. What is ProxyProvider?
 
+작성일 2023-07-11
+{ .post-date }
+
 - ProxyProviders
 
 프록시 프로바이더는 두 개의 종류로 나뉘어진다.

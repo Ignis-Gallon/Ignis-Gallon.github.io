@@ -8,6 +8,9 @@ tags: [DB, SQL, join, MySQL]
 
 # 8 (join)
 
+작성일 2023-08-12 · 최종 수정일 2023-08-13
+{ .post-date }
+
 ## Implicit Join & Explicit Join
 
 join이란, 두 개 이상의 table들에 있는 데이터를 한 번에 조회하는 것을 말한다.

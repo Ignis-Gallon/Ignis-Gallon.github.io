@@ -8,6 +8,9 @@ tags: [이상 탐지, LSTM Autoencoder, Keras, 시계열]
 
 # LSTM Autoencoder Example
 
+작성일 2023-07-13 · 최종 수정일 2024-09-19
+{ .post-date }
+
 [LSTM Autoencoder for Anomaly Detection](https://towardsdatascience.com/lstm-autoencoder-for-anomaly-detection-e1f4f2ee7ccf)
 
 위 Column은 Python, Keras, TensorFlow를 사용하여 AI deeplearning을 구현, 이를 통해 anomaly detection을 하는 내용을 다루고 있다.

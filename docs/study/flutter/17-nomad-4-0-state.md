@@ -8,6 +8,9 @@ tags: [Flutter, 노마드코더, State, StatefulWidget]
 
 # 4.0 State
 
+작성일 2023-03-01 · 최종 수정일 2023-03-04
+{ .post-date }
+
 - Stateless Widget : build 메서드를 통해서 단지 UI를 출력하는 역할을 하는 Widget이다.
 - Stateful Widget : State가 존재하여 상태에 따라 데이터가 변하게 되는 Widget이다.
 

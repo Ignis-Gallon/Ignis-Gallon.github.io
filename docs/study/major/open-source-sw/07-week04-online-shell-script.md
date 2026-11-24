@@ -8,6 +8,9 @@ tags: [오픈소스SW설계, Linux, Shell Script]
 
 # 4주차 온라인 강의: Shell Script
 
+작성일 2022-10-02 · 최종 수정일 2022-10-19
+{ .post-date }
+
 ## `SHELL SCRIPT`
 
 - `쉘 스크립트`

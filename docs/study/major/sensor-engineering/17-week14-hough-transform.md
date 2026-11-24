@@ -8,6 +8,9 @@ tags: [센서공학, Hough Transform, 차선 검출, 영상 처리, MATLAB]
 
 # 14주차 (Hough Transform)
 
+작성일 2023-06-07 · 최종 수정일 2026-04-14
+{ .post-date }
+
 ## Hough Transform
 
 - Canny Edge Detection : 원본 이미지에서 에지 이미지를 추출하는 방법

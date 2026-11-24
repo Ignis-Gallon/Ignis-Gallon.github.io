@@ -8,6 +8,9 @@ tags: [알고리즘, 가중치 그래프, Greedy, Kruskal, MST]
 
 # 6주차: 가중치 그래프, Greedy, Kruskal
 
+작성일 2022-10-06 · 최종 수정일 2022-10-12
+{ .post-date }
+
 ## # `Weighted Graph`
 
 **`Weighted Graph`**

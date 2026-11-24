@@ -8,6 +8,9 @@ tags: [강화학습, DQN, Experience Replay, Target Network, Q-Learning]
 
 # 강화학습 2: DQN
 
+작성일 2025-03-13
+{ .post-date }
+
 [앞 글](01-q-learning.md)의 Q-Learning은 state와 action의 쌍마다 Q값을 따로 저장하고 갱신했다. 이 글에서는 Q를 신경망으로 근사하는 DQN(Deep Q-Network)을 정리한다. 2013년에 발표된 알고리즘을 한 줄씩 따라가고, 2015년에 추가된 Target Network까지 본다.
 
 ## 왜 DQN인가

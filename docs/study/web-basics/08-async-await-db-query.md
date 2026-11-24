@@ -8,6 +8,9 @@ tags: [Node.js, MySQL, async/await, Promise]
 
 # async/await로 DB 쿼리하기
 
+작성일 2023-02-09 · 최종 수정일 2023-03-03
+{ .post-date }
+
 ## API async/await 분석
 
 기존에 만들었던 SQL query async/await을 좀 더 직관적으로 짜기 위해 방법을 알아보던 도중, 한 블로그에서 이런 내용을 만났다.

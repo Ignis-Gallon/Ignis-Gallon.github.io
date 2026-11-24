@@ -8,6 +8,9 @@ tags: [알고리즘, Merge Sort, Quick Sort, DFS, BFS, Dijkstra, Greedy, Backtra
 
 # 알고리즘 복습: 정렬, 그래프 탐색, 최단 경로, greedy와 backtracking
 
+작성일 2024-12-01
+{ .post-date }
+
 기본 알고리즘을 짧게 복습한 노트다. 정렬 두 가지와 Dijkstra는 C 코드를 한 줄씩 따라가며 동작을 말로 풀어 적었고, 나머지는 정의와 시간 복잡도 위주로 정리했다. 코드는 교재에서 흔히 볼 수 있는 표준적인 구현이다.
 
 ## 정렬

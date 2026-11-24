@@ -8,6 +8,9 @@ tags: [영상처리, Bit Plane, Quantization, Dithering, Halftone]
 
 # Basic of Image Display (Dithering)
 
+작성일 2023-10-10 · 최종 수정일 2023-12-05
+{ .post-date }
+
 > 영상을 복원하기 위해서는 나이퀴스트 샘플링 조건을 만족해야 한다.
 
 ---

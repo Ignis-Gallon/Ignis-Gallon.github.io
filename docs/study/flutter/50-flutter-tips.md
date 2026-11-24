@@ -8,6 +8,9 @@ tags: [Flutter, 레이아웃, AlertDialog, IconButton, 에뮬레이터]
 
 # Flutter 팁
 
+작성일 2023-03-06 · 최종 수정일 2023-03-12
+{ .post-date }
+
 ## spaceBetween(아이콘 간격 띄우기)
 
 - 두 개의 IconButton을 양쪽으로 정렬하기 위하여 사용

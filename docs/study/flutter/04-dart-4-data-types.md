@@ -8,6 +8,9 @@ tags: [Dart, 자료형, List, Map, Set]
 
 # Dart 4: Data types
 
+작성일 2023-02-16
+{ .post-date }
+
 ## Basic Data Types
 
 String

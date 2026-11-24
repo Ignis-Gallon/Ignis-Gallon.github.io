@@ -8,6 +8,9 @@ tags: [알고리즘, 재귀, 트리, Big-O]
 
 # 2주차(Recursion, Tree, Big-O)
 
+작성일 2022-09-29 · 최종 수정일 2022-10-25
+{ .post-date }
+
 ## # `Recursion`
 
 **`Recursion`**

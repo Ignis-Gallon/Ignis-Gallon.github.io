@@ -8,6 +8,9 @@ tags: [객체기반SW설계, C++, string, auto]
 
 # 1주차: auto
 
+작성일 2022-10-11
+{ .post-date }
+
 - string
 
 ```cpp

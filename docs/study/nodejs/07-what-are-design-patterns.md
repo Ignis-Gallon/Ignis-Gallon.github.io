@@ -8,6 +8,9 @@ tags: [Node.js, 디자인 패턴]
 
 # What Are Design Patterns?
 
+작성일 2022-11-18 · 최종 수정일 2022-11-19
+{ .post-date }
+
 Designing S/W presents challenges that need a reliable and reusable solution.
 
 - Discussed design patterns in S/W development were popularized by the gang of four authors in their book “Design patterns”

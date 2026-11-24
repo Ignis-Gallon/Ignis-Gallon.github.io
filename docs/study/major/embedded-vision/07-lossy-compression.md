@@ -8,6 +8,9 @@ tags: [임베디드비젼시스템, 영상 압축, Lossy Compression, MSE, PSNR]
 
 # 8주차 (Chpt. 8 : Lossy Compression)
 
+작성일 2023-05-25 · 최종 수정일 2025-05-24
+{ .post-date }
+
 ## Definitions About Lossy Compression
 
 ![](../../../assets/img/study/major/embedded-vision/07-lossy-compression/01.webp)

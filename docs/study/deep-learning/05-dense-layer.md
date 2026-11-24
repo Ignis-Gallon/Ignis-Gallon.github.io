@@ -8,6 +8,9 @@ tags: [딥러닝, Dense Layer, XOR, Keras]
 
 # Dense Layer
 
+작성일 2023-07-15 · 최종 수정일 2023-07-16
+{ .post-date }
+
 - Dense Layer는 노드로 구성되어 있으며, Dense Layer란, Node들로 구성된 하나의 List이다. 이 안에 우리가 원하는만큼 Node를 넣을 수 있다.
 
 노드는 총 세 개의 연산으로 이루어져 있는데, 가중치와의 행렬 곱, Bias 덧셈, Activation Function이다.

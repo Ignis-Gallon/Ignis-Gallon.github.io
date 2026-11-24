@@ -8,6 +8,9 @@ tags: [AWS, RDS, 스토리지, 요금]
 
 # RDS(스토리지 확인, 온디맨드와 예약형)
 
+작성일 2024-01-07
+{ .post-date }
+
 ## &lt;현재 스토리지 확인&gt;
 
 [[RDS] 스토리지 사용률 확인](https://passwd.tistory.com/entry/RDS-스토리지-사용률-확인)

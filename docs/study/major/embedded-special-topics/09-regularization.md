@@ -8,6 +8,9 @@ tags: [임베디드시스템특강, Regularization, Overfitting, Dropout]
 
 # Regularization
 
+작성일 2023-12-09 · 최종 수정일 2024-11-16
+{ .post-date }
+
 > 이전까지는 Net. Architecture를 다뤘고, 이제는 Training 방법을 다룬다.
 
 > 사실, 인공지능에서는 Training 방법이 매우 중요하다.  

@@ -8,6 +8,9 @@ tags: [영상처리, Image Restoration, Indexed Color, Mach Bands]
 
 # Basic Concepts of Image
 
+작성일 2023-10-03 · 최종 수정일 2024-11-22
+{ .post-date }
+
 ## &lt;1.5 Some Applications&gt;
 
 - 영상처리는 여러 분야에서 사용되고 있다.

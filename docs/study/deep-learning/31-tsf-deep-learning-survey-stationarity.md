@@ -8,6 +8,9 @@ tags: [시계열 예측, 정상성, CNN, RNN, Attention]
 
 # Time Series Forecasting With Deep Learning: A Survey + Stationarity(정상성)
 
+작성일 2024-05-03
+{ .post-date }
+
 ## &lt;1. Introduction&gt;
 
 ### Overview

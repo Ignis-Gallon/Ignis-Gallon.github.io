@@ -8,6 +8,9 @@ tags: [사물인터넷, 네트워크, 암호화, DES, RSA]
 
 # 7주차 - Symmetric Key(DES) & RSA
 
+작성일 2023-10-28
+{ .post-date }
+
 ## &lt;Symmetric Key System&gt;
 
 > Symmetric Key는 sender와 receiver가 대칭적인, 동일한 키를 사용하는 암호화를 말한다.

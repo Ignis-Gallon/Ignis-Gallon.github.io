@@ -8,6 +8,9 @@ tags: [UML, 클래스 다이어그램, 객체지향]
 
 # Class Diagram (유튜브 강의 정리)
 
+작성일 2023-09-21
+{ .post-date }
+
 ## UML이란?
 
 - Unified Modeling Language

@@ -8,6 +8,9 @@ tags: [Flutter, Provider, ChangeNotifier, Consumer]
 
 # provider 1
 
+작성일 2023-07-09
+{ .post-date }
+
 ## Basics of provider package
 
 - ChangeNotifier : ChangeNotifier is a data holder class.

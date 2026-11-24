@@ -8,6 +8,9 @@ tags: [Node.js, Express, HTTP 상태 코드]
 
 # new: web_server
 
+작성일 2022-11-18
+{ .post-date }
+
 HTTP Response status code : webserver가 client에게 보내는 코드이다. Client가 request를 요청하면, Webserver가 response를 보내준다. 이 때 Webserver가 통신의 상태를 표현하기 위해 보내주는 코드가 바로 status code이다. (Server가 Client에게 보내주는 코드)
 
 sendStatus() : HTTP 통신에서 server가 client에게 status를 보내줄 때 사용하는 함수

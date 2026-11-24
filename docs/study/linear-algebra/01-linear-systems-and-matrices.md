@@ -8,6 +8,9 @@ tags: [선형대수, 연립선형방정식, 행렬, 가우스 소거법, MML]
 
 # MML 2.1 ~ 2.3: 연립선형방정식과 행렬
 
+작성일 2025-06-12
+{ .post-date }
+
 "Mathematics for Machine Learning"(이하 MML) 2장 Linear Algebra의 앞부분인 2.1 Systems of Linear Equations, 2.2 Matrices, 2.3 Solving Systems of Linear Equations를 읽고 정리한 글이다. 연립선형방정식이 무엇이고 해가 어떤 모양으로 나오는지, 그리고 그 해를 체계적으로 구하는 방법(특수해와 일반해, Gaussian Elimination)을 예제를 직접 따라 풀며 정리했다.
 
 ## 들어가며: 벡터와 닫힘

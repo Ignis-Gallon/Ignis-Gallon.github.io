@@ -8,6 +8,9 @@ tags: [센서공학, LIDAR, 회전 변환, MATLAB]
 
 # 7주차-1 (LIDAR 실습)
 
+작성일 2023-04-18 · 최종 수정일 2023-04-22
+{ .post-date }
+
 - 라이다 실습
 
 ![](../../../assets/img/study/major/sensor-engineering/08-week07-1-lidar-practice/01.webp)

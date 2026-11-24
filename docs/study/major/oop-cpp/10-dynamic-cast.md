@@ -8,6 +8,9 @@ tags: [객체기반SW설계, C++, dynamic_cast, downcasting]
 
 # Dynamic Cast
 
+작성일 2022-11-20
+{ .post-date }
+
 Dynamic Cast는 C++에서 안전한 downcasting을 사용하기 위해 활용된다. downcasting은 subclass type의 pointer로 superclass의 instance를 가리키는 방법인데, 이렇게 되면 pointer가 subclass type이기 때문에 실제로 메모리가 할당되지 않은 구역을 접근하게 되면서 문제가 발생할 수 있다. 이를 방지하기 위해 Dynamic Cast 기능을 사용하는 것이다.
 
 포인터나 레퍼런스를 기본 클래스 → 파생 클래스로의 다운 캐스팅과, 다중 상속에서 클래스 간의 안전한 타입 캐스팅에 사용된다. 안전하지만 느리다. 이 연산자를 사용하려면 하나 이상의 virtual 함수가 존재해야 한다.

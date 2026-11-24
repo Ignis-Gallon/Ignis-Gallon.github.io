@@ -8,6 +8,9 @@ tags: [알고리즘, Dijkstra, 최단 경로]
 
 # Dijkstra
 
+작성일 2022-12-04
+{ .post-date }
+
 ![](../../../assets/img/study/major/algorithms/17-final-dijkstra/01.webp)
 
 - 최단 경로란? : 그래프에서 한 정점u와 정점 v를 연결하는 경로 중에서 간선들의 가중치의 합이 최소가 되는 경로

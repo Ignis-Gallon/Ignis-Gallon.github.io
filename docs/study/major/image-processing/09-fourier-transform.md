@@ -8,6 +8,9 @@ tags: [영상처리, Fourier Transform, DFT, 주파수 필터링]
 
 # Fourier Transform
 
+작성일 2023-12-05 · 최종 수정일 2024-11-22
+{ .post-date }
+
 ## &lt;Fourier Transform Introduction&gt;
 
 > 다음 이미지를 보고 무엇을 알 수 있을까? 왼쪽 이미지는 Spatial Domain에서 표현한 이미지이고, 이를 Fourier Transform하여 Frequency Domain에서 나타낸 것이 우측의 이미지이다.  

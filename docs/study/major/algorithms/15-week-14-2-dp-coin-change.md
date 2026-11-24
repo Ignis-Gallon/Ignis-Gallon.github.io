@@ -8,6 +8,9 @@ tags: [알고리즘, Dynamic Programming, 동전 거스름돈]
 
 # 14주차 (2): DP 동전 거스름돈
 
+작성일 2022-12-02 · 최종 수정일 2024-12-01
+{ .post-date }
+
 - 동적 계획 알고리즘을 이용한 동전 거스름돈 문제
 
 ![](../../../assets/img/study/major/algorithms/15-week-14-2-dp-coin-change/01.webp)

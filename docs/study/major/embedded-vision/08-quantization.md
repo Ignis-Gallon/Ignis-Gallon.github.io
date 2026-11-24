@@ -8,6 +8,9 @@ tags: [임베디드비젼시스템, 영상 압축, Quantization, Uniform Quantiz
 
 # 9주차 (Chpt. 9 : Quantization)
 
+작성일 2023-05-25 · 최종 수정일 2025-05-24
+{ .post-date }
+
 ## Quantization
 
 Quantization이란, 무한대의 정보가 있다고 할 때, 이것에 대표값을 주는 것이 바로 Quantization이다. 그래서 큰 집합을 작은 집합으로 줄이는 것을 목표로 한다.

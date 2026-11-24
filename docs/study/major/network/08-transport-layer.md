@@ -8,6 +8,8 @@ tags: [네트워크구조및설계, Transport Layer, Multiplexing, UDP]
 
 # Transport Layer
 
+작성일 2023-10-23 · 최종 수정일 2023-12-07
+{ .post-date }
 
 ## &lt;Transport Layer&gt;
 

@@ -8,6 +8,9 @@ tags: [인과 발견, DAG, d-separation, faithfulness, MAG, PAG]
 
 # 인과 그래프와 가정: d-separation에서 PAG까지
 
+작성일 2025-04-26 · 최종 수정일 2025-05-20
+{ .post-date }
+
 [앞의 조사](02-instantaneous-feedback-confounder.md)에서 시계열 인과 발견 문헌은 instantaneous effect, feedback, confounder를 대부분 그래프로 설명한다는 것을 확인했다. 그런데 그래프로 무언가를 말하려면 그 그래프가 어떤 가정 위에 서 있는지를 먼저 알아야 한다. 이 글에서는 인과 그래프가 확률 분포와 어떻게 연결되는지(d-separation, Markov condition, faithfulness), 왜 그래프를 하나로 정하지 못하는지(Markov equivalence), 관측되지 않은 변수가 있을 때 그래프를 어떻게 바꾸는지(ancestral graph, MAG, PAG)를 순서대로 정리하고자 한다.
 
 ## 1. 방향 그래프

@@ -1,0 +1,28 @@
+# 논문 리뷰를 주제별로 묶습니다. 묶음 안에서는 읽은 순서입니다.
+nav:
+  - index.md
+  - RAG-based TSF:
+      - 2026-02-08-ts-rag.md
+      - 2026-03-19-raft.md
+      - 2026-03-20-cross-rag.md
+      - 2026-09-07-rag4cts.md
+  - VLM-based TSAD:
+      - 2026-01-22-vlm4ts.md
+      - 2026-03-23-llm-tsad-delving.md
+      - 2026-04-22-mllm-tsad-benchmark.md
+  - Time Series:
+      - 2024-11-25-patchtst.md
+      - 2024-12-26-tsf-survey.md
+      - 2024-12-29-dtf-net.md
+      - 2025-01-15-informer.md
+      - 2025-01-21-autoformer.md
+      - 2025-02-04-modeling-extreme-events.md
+      - 2025-02-25-bocpd.md
+      - 2026-01-05-timecma.md
+  - XAI:
+      - 2025-01-23-attnlrp.md
+      - 2025-02-02-ptap.md
+      - 2025-03-04-affine-recurrence.md
+      - 2025-04-09-distilling-diversity.md
+  - Deep Learning:
+      - 2025-01-06-attention-is-all-you-need.md

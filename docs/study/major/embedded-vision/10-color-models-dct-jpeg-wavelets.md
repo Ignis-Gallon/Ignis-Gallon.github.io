@@ -8,6 +8,9 @@ tags: [임베디드비젼시스템, 영상 압축, Color Model, DCT, JPEG, Wavel
 
 # 11주차~13주차 (Chpt. 15 : Color Models, DCT, JPEG, Wavelets)
 
+작성일 2023-05-25 · 최종 수정일 2025-05-24
+{ .post-date }
+
 - 1666년 아이작 뉴턴이 Prism을 통해서 색깔을 발견 (Infrared, Ultraviolet)
 
     - Far Infrared, Mid Infrared, Near Infrared과 같이 같은 Infrared도 구분된다.

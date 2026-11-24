@@ -8,6 +8,9 @@ tags: [Flutter, 노마드코더, JSON, named constructor]
 
 # 6.3 fromJson
 
+작성일 2023-03-01 · 최종 수정일 2023-03-04
+{ .post-date }
+
 - 이제 서버로부터 전달받는 Json 형식을 Dart, Flutter에서 사용할 수 있는 형식인 데이터 클래스로 바꾸어 주어야 한다.
 
 jsonDecode(response.body);를 실행하면, Json을 decode할 수 있다. 이렇게 하면 dynamic Type을 반환받게 되는데, dynamic은 모든 타입을 다 전달받을 수 있다.

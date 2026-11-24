@@ -8,6 +8,9 @@ tags: [운영체제, Thread, Mutex, Windows API]
 
 # Window Thread Synchronization
 
+작성일 2023-05-19
+{ .post-date }
+
 ```c
 #include <Windows.h>
 #include <stdio.h>

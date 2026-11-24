@@ -8,6 +8,9 @@ tags: [강화학습, DDPG, Deterministic Policy Gradient, Actor-Critic, Off-poli
 
 # 강화학습 6: DDPG
 
+작성일 2025-03-13 · 최종 수정일 2025-03-22
+{ .post-date }
+
 시리즈의 마지막 글이다. DDPG(Deep Deterministic Policy Gradient)는 Actor-Critic 구조에 DQN의 Replay Buffer와 Target Network를 결합해, 연속적인 action space에서 policy를 학습하는 방법이다. 이 글에서는 deterministic policy에서 gradient가 어떻게 유도되는지, 그리고 그 결과가 왜 off-policy가 되는지를 따라간다.
 
 ## DDPG의 아이디어

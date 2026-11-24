@@ -8,6 +8,9 @@ tags: [Flutter, 노마드코더, Navigator, Hero, ListView]
 
 # 6.11 Recap
 
+작성일 2023-03-02 · 최종 수정일 2023-03-04
+{ .post-date }
+
 - 우리의 홈페이지에 ListView를 만들었고 거기서 Webtoon이라는 widget을 렌더링하고 있다.
 - widget은 커버, 즉, 포스터를 가지고 있고, 아래 타이틀 텍스트를 가지고 있다.
 - ListView의 각각의 원소는 Column을 가지며, 각각의 Column은 이미지를 보여주는 Container, 간격을 만들어 줄 SizedBox, 타이틀을 보여줄 Text를 가진다. ⇒ 간단한 stateless widget

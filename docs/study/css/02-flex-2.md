@@ -8,6 +8,9 @@ tags: [CSS, Flexbox, 정렬, flex-wrap]
 
 # Flex 2
 
+작성일 2023-07-23
+{ .post-date }
+
 [https://www.youtube.com/watch?v=phWxA89Dy94](https://www.youtube.com/watch?v=phWxA89Dy94)
 
 - display: flex;

@@ -8,6 +8,9 @@ tags: [DB, functional dependency, 함수 종속, DB 설계]
 
 # 22 (functional dependency)
 
+작성일 2023-08-12 · 최종 수정일 2023-08-13
+{ .post-date }
+
 ## Functional Dependency
 
 - functional dependency(함수 종속)는 DB를 설계하는 방법의 기본이 된다.

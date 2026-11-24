@@ -8,6 +8,8 @@ tags: [네트워크구조및설계, TCP, rdt, FSM]
 
 # rdt in TCP
 
+작성일 2023-11-07 · 최종 수정일 2023-12-10
+{ .post-date }
 
 ## &lt;What is rdt?&gt;
 

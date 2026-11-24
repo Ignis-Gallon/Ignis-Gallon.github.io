@@ -8,6 +8,9 @@ tags: [알고리즘, 허프만 코딩, 압축, Greedy]
 
 # 14주차 (1): 허프만 압축
 
+작성일 2022-12-02 · 최종 수정일 2024-11-15
+{ .post-date }
+
 - 허프만 압축
 
 ![](../../../assets/img/study/major/algorithms/14-week-14-1-huffman/01.webp)

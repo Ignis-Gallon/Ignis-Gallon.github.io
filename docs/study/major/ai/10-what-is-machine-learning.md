@@ -8,6 +8,9 @@ tags: [인공지능, 머신러닝, 지도학습, 비지도학습, 강화학습]
 
 # 머신러닝이란?
 
+작성일 2023-12-09
+{ .post-date }
+
 ## &lt;머신러닝이란?&gt;
 
 ![](../../../assets/img/study/major/ai/10-what-is-machine-learning/01.webp)

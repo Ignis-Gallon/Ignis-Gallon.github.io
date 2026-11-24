@@ -8,6 +8,9 @@ tags: [객체기반SW설계, C++, STL, set, map]
 
 # Set Map
 
+작성일 2022-11-30 · 최종 수정일 2022-12-06
+{ .post-date }
+
 - Map은 define으로 #define Pair pair&lt;string, int&gt; 와 같이 선언해주고, Pair로 데이터를 전달받으면 algorithm header에 들어있는 함수 사용 가능할 것임…
 
 map의 정렬 방법? ⇒ pair로 vector 선언, vector에 map의 원소들 넣어주고 sort.

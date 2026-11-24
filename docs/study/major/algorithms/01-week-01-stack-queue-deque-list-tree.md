@@ -8,6 +8,9 @@ tags: [알고리즘, 스택, 큐, 연결 리스트, 이진 탐색 트리]
 
 # 1주차(Stack Queue Deque, List, Tree)
 
+작성일 2022-09-29 · 최종 수정일 2022-10-16
+{ .post-date }
+
 ## # `Stack(스택)`
 
 **`Stack(스택)`**

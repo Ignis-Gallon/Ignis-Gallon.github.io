@@ -8,6 +8,9 @@ tags: [모바일SW, XAML, StackLayout, LayoutOptions]
 
 # 7주차: Nested Layout, Fill과 Expand 옵션
 
+작성일 2024-04-16 · 최종 수정일 2024-04-21
+{ .post-date }
+
 ## &lt;수업(2024-04-16, 화)&gt;
 
 ### Nested Layout

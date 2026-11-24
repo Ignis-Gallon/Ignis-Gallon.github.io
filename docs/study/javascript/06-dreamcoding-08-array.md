@@ -8,6 +8,9 @@ tags: [JavaScript, 드림코딩, 배열]
 
 # 드림코딩 8: array
 
+작성일 2022-12-24
+{ .post-date }
+
 ```javascript
 // array declaration
 const arr1 = new Array();

@@ -8,6 +8,9 @@ tags: [DB, SQL, MySQL, 자료형, foreign key]
 
 # 3 (sql 주요 개념)
 
+작성일 2023-08-11 · 최종 수정일 2023-08-12
+{ .post-date }
+
 ## SQL 주요 용어
 
 - relation ⇒ table

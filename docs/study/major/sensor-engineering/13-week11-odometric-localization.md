@@ -8,6 +8,9 @@ tags: [센서공학, SLAM, Odometry, Dead Reckoning, Localization]
 
 # 11주차(Odometric Localization)
 
+작성일 2023-05-16 · 최종 수정일 2026-04-14
+{ .post-date }
+
 ## SLAM
 
 SLAM은 이상적으로 기대하는 방법인데, SLAM을 하기 위해서는 전제 조건이 따라야 하는 것들도 있고, 차의 센서도 많이 맞춰져야 하기 때문에 쉽지 않다. 그래서 실제 자율주행을 할 때 많이 사용하는 것이 바로 Map Matching이다.

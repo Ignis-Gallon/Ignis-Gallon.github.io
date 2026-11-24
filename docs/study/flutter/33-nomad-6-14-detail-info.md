@@ -8,6 +8,9 @@ tags: [Flutter, 노마드코더, API, FutureBuilder]
 
 # 6.14 Detail Info
 
+작성일 2023-03-03 · 최종 수정일 2023-03-04
+{ .post-date }
+
 - 코드가 제대로 동작하지 않았었다. API URL을 잘못 적어서, 이상한 API 요청이 들어와버렸다…
 
 (”\$baseURL/\$id/episodes” 라고 적어야 되는데, “\$baseURL/\$id/episode”라고 적어서, \$id까지의 요청으로 API 요청을 보내버렸다. 그래서 이상한 값이 들어와서 Data class와 타입이 맞지 않아 오류가 발생했었다.)

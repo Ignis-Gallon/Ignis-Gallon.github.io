@@ -8,6 +8,9 @@ tags: [임베디드비젼시스템, 데이터 압축, Huffman Coding, Shannon-Fa
 
 # 5주차 (Chpt. 3 : Huffman-Coding)
 
+작성일 2023-05-25 · 최종 수정일 2025-05-24
+{ .post-date }
+
 ## Shannon-Fano Coding
 
 Shannon’s theory를 이용한 첫 번째 theory이다.

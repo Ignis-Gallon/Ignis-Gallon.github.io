@@ -8,6 +8,9 @@ tags: [JavaScript, AJAX, CORS]
 
 # AJAX
 
+작성일 2023-07-23
+{ .post-date }
+
 AJAX(Asynchronous Javascript And XML) : 서버와 비동기적으로 데이터를 주고받는 자바스크립트 기술을 의미한다.
 
 AJAX는 새로고침없이 서버에게 GET요청을 할 수 있는 기술이다.

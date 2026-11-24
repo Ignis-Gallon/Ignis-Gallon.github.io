@@ -8,6 +8,9 @@ tags: [Flutter, 노마드코더, 설치, Android Studio]
 
 # 2.0 Installation
 
+작성일 2023-02-25 · 최종 수정일 2023-03-04
+{ .post-date }
+
 - Windows PowerShell에서 flutter doctor를 통해 현재 문제 상황 확인 가능.
 
 ## 1. Windows 버젼 확인 불가

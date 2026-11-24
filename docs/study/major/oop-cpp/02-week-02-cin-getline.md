@@ -8,6 +8,9 @@ tags: [객체기반SW설계, C++, cin, getline]
 
 # 2주차: cin과 getline
 
+작성일 2022-10-11
+{ .post-date }
+
 - cin과 getline
 
     cin은 공백을 \\n(Enter, Carriage return)으로 인식한다.  

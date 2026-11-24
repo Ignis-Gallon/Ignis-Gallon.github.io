@@ -8,6 +8,9 @@ tags: [데이터베이스, ER Diagram, Entity, Attribute, Weak Entity]
 
 # ER Diagram
 
+작성일 2023-10-13 · 최종 수정일 2024-10-14
+{ .post-date }
+
 ## [ERD를 이용한 데이터베이스 모델링]
 
 - 데이터베이스를 설계할 때 가장 먼저 할 일은?

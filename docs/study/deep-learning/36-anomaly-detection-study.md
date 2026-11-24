@@ -8,6 +8,9 @@ tags: [이상 탐지, 시계열 예측, LSTM, 참고 자료]
 
 # Anomaly Detection 관련 공부 및 조사
 
+작성일 2024-05-01 · 최종 수정일 2024-05-06
+{ .post-date }
+
 ## &lt;참고 자료&gt;
 
 ### 1. Time Series Forecasting

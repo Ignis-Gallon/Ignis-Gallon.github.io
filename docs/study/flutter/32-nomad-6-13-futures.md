@@ -8,6 +8,9 @@ tags: [Flutter, 노마드코더, Future, StatefulWidget, late]
 
 # 6.13 Futures
 
+작성일 2023-03-03 · 최종 수정일 2023-03-04
+{ .post-date }
+
 - 앞서 만든 Data class와 Api service를 Detail Screen에서 이용한다.
 
 - 이전에는 HomeScreen에 Future를 가져오는 Service를 호출했었다. 그리고 FutureBuilder를 이용해서 Future로부터 값을 받아오는 걸 기다렸었다. DetailScreen에 이 방식을 그대로 사용할 수는 없는데, 왜냐면 getLatestEpisode와 getToonById에는 인자로 id를 전달하기 때문이다. 그대로 구현하기에는 약간의 문제가 있다.

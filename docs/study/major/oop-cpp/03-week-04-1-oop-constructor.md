@@ -8,6 +8,9 @@ tags: [객체기반SW설계, C++, OOP, 생성자, Getter/Setter]
 
 # 4주차-1: OOP 특징, 생성자, Getter/Setter
 
+작성일 2022-09-26 · 최종 수정일 2022-10-11
+{ .post-date }
+
 ## # `OOP의 특징`
 
 - `Encapsulation(캡슐화)` **-&gt; 생산성 증대.**   데이터 처리가 간단해진다.

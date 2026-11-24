@@ -8,6 +8,9 @@ tags: [임베디드비젼시스템, 영상 압축, Differential Coding, DPCM]
 
 # 10주차 (Chpt. 10 : Differential Coding)
 
+작성일 2023-05-25 · 최종 수정일 2025-05-24
+{ .post-date }
+
 ## Differential Coding
 
 만약 코드가 변화한다고 할 때, 샘플을 어떻게 정해야 할까? 예를 들어, Original Signal이 1부터 -1까지 변화하는 Cosine 값이라고 해보자. 이를 코딩한다고 하면, +1 ~ -1의 모든 값의 변화를 코딩해야 할 것이다.

@@ -8,6 +8,9 @@ tags: [CSS, 드림코딩, 반응형 웹, media query]
 
 # 드림코딩 CSS 4: responsive web design
 
+작성일 2023-07-23
+{ .post-date }
+
 - Content is like water
 
 이전에는 유동적인 Layout을 구현하기 위하여 float과 percentage value들을 이용했었다. 최근에는 Layout을 만들 때 Flex grid, Flex box, %, vw, vh를 많이 이용한다.

@@ -8,6 +8,8 @@ tags: [네트워크구조및설계, Network Layer, IP, DHCP, NAT]
 
 # Network Layer
 
+작성일 2023-12-04 · 최종 수정일 2023-12-11
+{ .post-date }
 
 ## &lt;Network Layer&gt;
 

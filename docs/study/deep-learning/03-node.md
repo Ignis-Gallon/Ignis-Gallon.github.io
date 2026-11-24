@@ -8,6 +8,9 @@ tags: [딥러닝, Node, Forward Propagation, TensorFlow]
 
 # Node
 
+작성일 2023-07-15 · 최종 수정일 2023-07-16
+{ .post-date }
+
 ![](../../assets/img/study/deep-learning/03-node/01.webp)
 
 노드를 깊게 들여다보면 위와 같다. 노드는 Input x가 들어오면 가중치 W와 곱해주고, Bias를 더해준 다음에, Activation Function에 넣어 Output으로 사용한다. 여기서는 Sigmoid를 쓴다.

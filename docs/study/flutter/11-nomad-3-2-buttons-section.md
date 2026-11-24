@@ -8,6 +8,9 @@ tags: [Flutter, 노마드코더, 레이아웃, Container, Padding]
 
 # 3.2 Buttons Section
 
+작성일 2023-02-28 · 최종 수정일 2023-03-04
+{ .post-date }
+
 - 재사용가능한 Widget을 만들어본다.
 - CrossAxisAlignment는 해당 Column 혹은 Row에서 수평 정렬을 어떻게 맞출 것인지를 담당한다.
 - MainAxisAlignment는 해당 Column 혹은 Row에서 수직 정렬을 어떻게 맞출 것인지를 담당한다.

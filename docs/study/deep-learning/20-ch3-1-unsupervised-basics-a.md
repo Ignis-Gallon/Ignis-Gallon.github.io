@@ -8,6 +8,9 @@ tags: [딥러닝, 비지도학습, 확률, 베이즈 정리, KL Divergence]
 
 # Deep Learning 강의 > Ch3-1. 비지도학습 기초 A
 
+작성일 2023-06-04 · 최종 수정일 2023-07-12
+{ .post-date }
+
 [딥러닝 Ch3.1 비지도학습기초A](https://www.youtube.com/watch?v=V9HcvXliJmw&list=PLQASD18hjBgyLqK3PgXZSp5FHmME7elWS&index=5)
 
 지도 학습에서는 확률적인 얘기가 많이 나오지 않는다. 하지만 비지도학습에서는 확률적인 개념이 들어가기 때문에, 확률에 대해 다시 한 번 확인해본다.

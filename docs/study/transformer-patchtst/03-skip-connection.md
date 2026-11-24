@@ -8,6 +8,9 @@ tags: [Skip Connection, Residual Learning, ResNet, Weight Initialization]
 
 # Skip Connection: 왜 x + F(x)가 학습하기 쉬운가
 
+작성일 2023-11-23
+{ .post-date }
+
 2023년 11월, PatchTST 프로젝트를 준비하면서 Transformer를 처음 공부할 때 쓴 노트다. [Transformer 강의](02-transformer-lecture-notes-1.md)를 듣다가 encoder에 residual connection이 쓰인다는 설명에서 "그래서 parameter는 무슨 역할을 하는가"라는 질문이 생겨, "[Legend 13] ResNet의 Skip-connection 제대로 이해하기!" 강의를 따로 보고 정리했다.
 
 ## Skip connection

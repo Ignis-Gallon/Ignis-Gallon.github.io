@@ -8,6 +8,9 @@ tags: [Spring, 의존성 주입, IoC, Bean]
 
 # 의존성 주입(DI), IoC 컨테이너, @Autowired, @Resource
 
+작성일 2023-02-01
+{ .post-date }
+
 ## DI(Dependency Injection)
 
 어떤 객체가 사용하는 의존 객체를 직접 만들어 사용하는게 아니라, 주입 받아서 사용하는 방법이다. (new 연산자를 이용해서 객체를 생성하는 것이라고 생각하면 된다.)

@@ -8,6 +8,9 @@ tags: [모바일SW, Xamarin.Forms, 비동기, 애니메이션, C#]
 
 # 12주차: View 요소 추가, 비동기, Easing
 
+작성일 2024-05-30 · 최종 수정일 2024-05-31
+{ .post-date }
+
 ## &lt;Tizen 강의&gt;
 
 ### StackLayout에 View 요소 추가하기

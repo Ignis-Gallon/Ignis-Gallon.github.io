@@ -8,6 +8,8 @@ tags: [네트워크구조및설계, DNS, CDN, DASH]
 
 # DNS & CDN
 
+작성일 2023-10-16 · 최종 수정일 2023-12-07
+{ .post-date }
 
 ## &lt;DNS(Domain Name Service)&gt;
 

@@ -8,6 +8,8 @@ tags: [네트워크구조및설계, Email, SMTP, POP3, IMAP]
 
 # Electronic Mail
 
+작성일 2023-10-16 · 최종 수정일 2023-12-07
+{ .post-date }
 
 ## &lt;E Mail의 구성요소&gt;
 

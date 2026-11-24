@@ -8,6 +8,9 @@ tags: [시계열 예측, 정상성, RevIN, Non-stationary Transformer, TimesNet,
 
 # 시계열의 비정상성과 주기성 다루기: 분해, Non-stationary Transformer, TimesNet
 
+작성일 2024-11-28 · 최종 수정일 2024-11-29
+{ .post-date }
+
 학부 수업 프로젝트에서 PatchTST의 입력에 세 가지 처리(이동평균 분해, non-stationary 정보의 반영, Top-K FFT 분해)를 적용해 본 적이 있다. 실험의 구성과 결과는 [PatchTST 성능 개선 실험](../../projects/ai-course/03-patchtst.md)에 정리했다. 이 글은 그때 쓴 방법들을 다시 들여다보며, 각 방법의 바탕이 된 개념과 논문(Non-stationary Transformers, TimesNet)을 리뷰 영상과 함께 공부해 정리한 것이다. 왜 그 방법이 효과가 있었는지에 대한 내 생각과, 공부하며 생긴 질문도 함께 적었다.
 
 ## 1. 이동평균 분해

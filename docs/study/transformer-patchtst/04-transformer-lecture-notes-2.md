@@ -8,6 +8,9 @@ tags: [Transformer, Self-Attention, Multi-Head Attention, Positional Encoding, L
 
 # Transformer 강의 정리 2: 병렬 처리로 본 Self-Attention, Encoder, Decoder
 
+작성일 2023-11-23
+{ .post-date }
+
 2023년 11월, PatchTST 프로젝트를 준비하면서 Transformer를 처음 공부할 때 쓴 노트다. [첫 번째 강의 정리](02-transformer-lecture-notes-1.md)에 이어, 같은 내용을 다른 설명으로 한 번 더 보려고 허민석 님의 "트랜스포머 (어텐션 이즈 올 유 니드)" 강의를 보고 정리했다. 이 강의는 "I study at school"을 "난 학교에서 공부해"로 번역하는 예제 하나로 전체 과정을 따라가고, self-attention의 계산을 숫자로 보여 준다.
 
 ## Transformer는 왜 빠른가

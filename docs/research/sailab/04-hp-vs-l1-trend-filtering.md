@@ -8,6 +8,9 @@ tags: [시계열, 추세 필터링, HP filter, L1 trend filtering, DTF-net, 합�
 
 # HP filter와 L1 trend filtering 비교 실험
 
+작성일 2025-02-19 · 최종 수정일 2025-03-02
+{ .post-date }
+
 인턴으로 있던 연구실의 선행 연구인 DTF-net([논문 리뷰](../../papers/2024-12-29-dtf-net.md))은 강화학습으로 추세를 뽑아내는 trend filtering 방법이다. 이 논문을 읽으면서 가장 먼저 막힌 질문은 "L1 trend filtering이 이미 급격한 변화를 잘 잡는다고 하는데, 왜 새로운 방법이 필요했는가"였다. 이 질문에 답하려면 L1 trend filtering이 무엇을 하고 무엇을 못 하는지부터 알아야 했다.
 
 이 글은 그 과정을 기록한 것이다. 먼저 Hodrick-Prescott(HP) filter와 L1 trend filtering의 목적 함수를 비교하고, 합성 데이터로 두 필터를 직접 돌려 본다. 이어서 L1 trend filtering의 한계를 네 가지로 정리해 각각을 실험으로 확인하고, 마지막으로 같은 방식의 합성 데이터에서 L1 trend filtering과 DTF-net을 비교한다.

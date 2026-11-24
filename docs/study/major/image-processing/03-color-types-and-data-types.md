@@ -8,6 +8,9 @@ tags: [영상처리, MATLAB, RGB, Indexed Color, 자료형]
 
 # Color Types and Data Types of Image
 
+작성일 2023-10-03 · 최종 수정일 2023-12-05
+{ .post-date }
+
 ## &lt;2.1 Image and Matlab&gt;
 
 - imread : 이미지를 읽어온다.

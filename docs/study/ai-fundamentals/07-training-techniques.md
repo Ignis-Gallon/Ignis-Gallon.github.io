@@ -8,6 +8,9 @@ tags: [Regularization, Batch Normalization, Optimizer, Adam, Weight Initializati
 
 # 학습 기법 복습: regularization, optimizer, weight initialization
 
+작성일 2024-12-01
+{ .post-date }
+
 신경망을 학습시킬 때 거의 항상 따라오는 세 가지 주제를 한 번에 복습한 노트다. 과적합을 막는 regularization, 파라미터를 갱신하는 optimizer, 학습의 출발점을 정하는 weight initialization을 차례로 본다. 이미 배운 내용을 다시 꺼내 정리한 것이어서, 유도보다는 "왜 그렇게 하는가"를 내 말로 적는 데 무게를 두었다. Optimizer의 갱신 식은 노트에 강의 슬라이드의 코드로 남아 있던 것을 수식으로 옮겼다.
 
 ## 1. Regularization

@@ -8,6 +8,9 @@ tags: [영상처리, Histogram, Point Processing, Histogram Equalization]
 
 # Point Processing
 
+작성일 2023-10-17 · 최종 수정일 2024-11-15
+{ .post-date }
+
 ## &lt;Histogram&gt;
 
 > **Histogram Equalization**  

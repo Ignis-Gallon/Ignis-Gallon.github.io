@@ -8,6 +8,9 @@ tags: [이상 탐지, Autoencoder, 차원 축소, Manifold, LSTM Autoencoder]
 
 # About Anomaly Detection using AE
 
+작성일 2023-07-13 · 최종 수정일 2025-04-03
+{ .post-date }
+
 [Autoencoder based Anomaly Detection - Ki's blog](https://kh-kim.github.io/blog/2019/12/15/Autoencoder-based-anomaly-detection.html)
 
 오토인코더는 입력을 그대로 출력(복원)해내도록 하는 목적 함수를 갖는다. 따라서 보통 MSE 손실 함수를 사용하며, 중간에 bottle-neck(병목)이 있어, 고차원 공간 상의 입력 데이터를 저차원의 공간으로 매핑(mapping)하여 잠재적인 변수로 표현(latent representation)하였다가, 다시 입력과 같은 고차원의 공간으로 복원해내야 한다.

@@ -8,6 +8,9 @@ tags: [임베디드비젼시스템, 데이터 압축, Arithmetic Coding]
 
 # 6주차 (Chpt. 4 : Arithmetic Coding)
 
+작성일 2023-05-25 · 최종 수정일 2025-05-24
+{ .post-date }
+
 ## Arithmetic Coding
 
 Lossless Data Compression(무손실 압축)의 일종으로, Variable-length entropy coding(엔트로피 부호화 알고리즘)이다. 즉, 빈도수가 높은 것에는 짧은 비트를, 빈도수가 높은 것에는 높은 비트를 부여하는 방식과 일맥상통한다.

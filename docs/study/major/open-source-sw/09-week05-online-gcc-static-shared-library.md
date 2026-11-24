@@ -8,6 +8,9 @@ tags: [오픈소스SW설계, gcc, 컴파일, 라이브러리]
 
 # 5주차 온라인 강의: gcc, Static Library, Shared Library
 
+작성일 2022-09-29 · 최종 수정일 2022-10-19
+{ .post-date }
+
 ## `gcc compiler introduction`
 
 - gcc란, 프로그램을 컴파일 하는데 사용하는 도구이다. gcc를 사용할 때 어떤 컴파일 과정을 거쳐서 실행파일로 생성되는지 살펴보고, 주요한 옵션들에 대해서 살펴본다.

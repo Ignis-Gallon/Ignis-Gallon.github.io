@@ -8,6 +8,9 @@ tags: [Flutter, Navigator, Route, 화면 전환]
 
 # Navigator
 
+작성일 2023-07-09 · 최종 수정일 2024-09-19
+{ .post-date }
+
 - Route : 스마트폰에서 보여지는 단순한 하나의 페이지를 의미함.
 
     - App Page를 구현하기 위하여 Scaffold Widget을 return하는 Widget 하나하나가 바로 Route라고 볼 수 있다.

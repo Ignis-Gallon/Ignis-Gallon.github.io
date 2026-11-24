@@ -8,6 +8,9 @@ tags: [딥러닝, RNN, 시퀀스, Keras]
 
 # RNN(Recurrent Neural Network)
 
+작성일 2023-07-15
+{ .post-date }
+
 - RNN은 입력값의 순서를 고려하여 결론을 도출하는 딥러닝 모델이다.
 
 ex)

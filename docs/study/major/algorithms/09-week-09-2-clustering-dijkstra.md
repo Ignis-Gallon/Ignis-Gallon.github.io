@@ -8,6 +8,9 @@ tags: [알고리즘, 근사 알고리즘, Clustering, Dijkstra]
 
 # 9주차-2: Clustering, Dijkstra
 
+작성일 2022-11-02 · 최종 수정일 2024-11-15
+{ .post-date }
+
 **Clustering**
 
 ![](../../../assets/img/study/major/algorithms/09-week-09-2-clustering-dijkstra/01.webp)

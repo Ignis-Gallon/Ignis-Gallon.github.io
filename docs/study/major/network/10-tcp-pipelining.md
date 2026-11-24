@@ -8,6 +8,8 @@ tags: [네트워크구조및설계, TCP, Pipelining, Go-Back-N, Selective Repeat
 
 # TCP Pipelining
 
+작성일 2023-11-13 · 최종 수정일 2023-12-08
+{ .post-date }
 
 ## &lt;Increasing Performance of rdt&gt;
 

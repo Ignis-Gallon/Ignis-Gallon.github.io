@@ -8,6 +8,9 @@ tags: [ROS, 자율주행, OpenCV, 초음파 센서]
 
 # 자이트론 교육
 
+작성일 2023-07-26
+{ .post-date }
+
 - VNC Viewer 연결
 
     - 조이스틱 apk 설치(Galaxy) → 조작 확인

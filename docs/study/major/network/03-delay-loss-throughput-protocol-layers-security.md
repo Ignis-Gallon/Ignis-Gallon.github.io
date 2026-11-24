@@ -8,6 +8,8 @@ tags: [네트워크구조및설계, Delay, Throughput, Protocol Layer, 네트워
 
 # Delay, Loss, Throughput & Protocol Layers & Security
 
+작성일 2023-10-13 · 최종 수정일 2023-12-12
+{ .post-date }
 
 ## &lt;Loss and Delay&gt;
 

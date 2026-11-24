@@ -8,6 +8,9 @@ tags: [임베디드비젼시스템, 데이터 압축, LZ77, LZ78, LZW]
 
 # 6주차 (Chpt. 5 : Dictionary Techniques)
 
+작성일 2023-05-25 · 최종 수정일 2025-05-24
+{ .post-date }
+
 ## Dictionary-based Compression Methods
 
 이전에 만들었던 것을 사전으로 만들어 저장할 수 있다면, 압축하는데 큰 도움이 될 것이다. 만약에 통계 모델을 사용하지 않거나 variable-size codes를 사용하지 않으면 압축이 어렵다.

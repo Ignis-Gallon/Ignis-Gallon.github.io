@@ -8,6 +8,8 @@ tags: [네트워크구조및설계, 전송 매체, Circuit Switching, Packet Swi
 
 # Media Example & Network Core
 
+작성일 2023-09-23 · 최종 수정일 2023-12-07
+{ .post-date }
 
 ## &lt;Media Example&gt;
 

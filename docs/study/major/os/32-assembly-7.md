@@ -8,6 +8,9 @@ tags: [운영체제, Assembly, Offset, 디버깅]
 
 # Assembly-7: Offset 접근과 숫자 출력
 
+작성일 2023-05-18 · 최종 수정일 2023-06-05
+{ .post-date }
+
 ```nasm
 MAIN SEGMENT
 	ASSUME CS:MAIN, DS:MAIN ; 데이터도 main에 쓰겠다

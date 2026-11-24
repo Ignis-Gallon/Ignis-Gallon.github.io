@@ -8,6 +8,9 @@ tags: [Flutter, React Native, 크로스 플랫폼]
 
 # Flutter vs React Native
 
+작성일 2023-02-13 · 최종 수정일 2024-09-19
+{ .post-date }
+
 [https://www.youtube.com/watch?v=Z9cCjrbTW50](https://www.youtube.com/watch?v=Z9cCjrbTW50)
 
 두 프레임워크는 모두 훌륭하며, 독립적인 장점과 단점을 가지고 있다.

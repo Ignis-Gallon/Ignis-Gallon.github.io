@@ -33,3 +33,10 @@
   margin-top: 0;
   color: var(--md-default-fg-color--light);
 }
+
+/* 글 제목 아래의 날짜 줄 (tools/add_dates.py 가 머리말의 date 를 보고 넣는다) */
+.md-typeset .post-date {
+  margin: -0.6rem 0 1.4rem;
+  font-size: 0.72rem;
+  color: var(--md-default-fg-color--light);
+}

@@ -8,6 +8,9 @@ tags: [임베디드시스템특강, Deep Neural Network, Forward Pass, Backward 
 
 # Multi Hidden Layer Network
 
+작성일 2023-10-17 · 최종 수정일 2023-11-15
+{ .post-date }
+
 ## &lt;Multi Hidden Layer Network&gt;
 
 - Neural Network란, 계층을 반복적으로 여러 개 쌓는 네트워크이다.

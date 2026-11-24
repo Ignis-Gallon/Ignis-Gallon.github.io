@@ -8,6 +8,9 @@ tags: [임베디드비젼시스템, 데이터 압축, Modeling, Coding, Demosaic
 
 # 3주차(Chpt. 1 : Modeling & Coding)
 
+작성일 2023-05-24 · 최종 수정일 2025-05-24
+{ .post-date }
+
 - 현실의 Physical World에서는 공간이나 Band Width가 충분하지 않다.
 
 - Digital 공간에서는 Band Width나 Capacity가 매우 빠르게 증가한다.

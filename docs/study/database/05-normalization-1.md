@@ -8,6 +8,9 @@ tags: [DB, 정규화, 1NF, 2NF]
 
 # 23 (정규화-1)
 
+작성일 2023-08-12 · 최종 수정일 2023-08-13
+{ .post-date }
+
 ## DB 정규화(normalization)
 
 데이터 중복과 insertion, update, deletion anomaly를 최소화하기 위해 일련의 normal forms(NF)에 따라 relational DB를 구성하는 과정

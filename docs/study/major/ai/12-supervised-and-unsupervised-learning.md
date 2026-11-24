@@ -8,6 +8,9 @@ tags: [인공지능, 머신러닝, k-NN, 결정 트리, SVM]
 
 # 머신러닝 : 지도학습/비지도학습
 
+작성일 2023-12-09 · 최종 수정일 2023-12-11
+{ .post-date }
+
 ## &lt;분류&gt;
 
 ![](../../../assets/img/study/major/ai/12-supervised-and-unsupervised-learning/01.webp)

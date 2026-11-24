@@ -8,6 +8,9 @@ tags: [영상처리, Convolution, Filtering, Gaussian Filter, Unsharp Masking]
 
 # Neighborhood Processing
 
+작성일 2023-11-21 · 최종 수정일 2024-11-22
+{ .post-date }
+
 ## &lt;2D Convolution&gt;
 
 ### Convolution

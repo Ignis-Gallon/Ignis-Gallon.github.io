@@ -8,6 +8,9 @@ tags: [시계열, 변화점 탐지, change point detection, BOCPD, KS test]
 
 # Change point detection 개요
 
+작성일 2025-02-18 · 최종 수정일 2025-03-19
+{ .post-date }
+
 DTF-net은 trend filtering 논문이지만, 추세가 급격히 변하는 지점을 찾는다는 점에서 change point detection(CPD)으로도 읽을 수 있다. 실제로 논문은 CPD 알고리즘들과 성능을 비교하고, 부록에서 관련 방법들을 정리한다. CPD에 대한 배경 지식이 전혀 없어 그 부분이 이해되지 않았기 때문에, change point가 무엇이고 어떤 방법들이 있는지를 정리했다.
 
 이 글은 개별 알고리즘을 깊이 다루지 않는다. 대부분 DTF-net 논문의 관련 연구와 부록에 나온 설명을 따라가며 정리한 지도에 가깝다. 대표적인 방법인 BOCPD는 [논문 리뷰](../../papers/2025-02-25-bocpd.md)에서 따로 다뤘다.

@@ -8,6 +8,9 @@ tags: [Kotlin, Android, DataBinding]
 
 # dataBinding
 
+작성일 2022-09-25 · 최종 수정일 2022-09-27
+{ .post-date }
+
 ## DataBinding
 
 - **역할**: DataBinding은 XML 레이아웃 파일에서 뷰와 데이터 소스를 직접 연결할 수 있도록 한다. 이를 통해 UI 요소와 데이터의 양방향 바인딩이 가능해진다.

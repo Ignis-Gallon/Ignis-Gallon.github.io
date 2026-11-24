@@ -8,6 +8,9 @@ tags: [센서공학, 자율주행, V2X, LIDAR, 전기차]
 
 # 5주차(자율주행자동차의 기본-2)
 
+작성일 2023-04-04 · 최종 수정일 2023-04-22
+{ .post-date }
+
 - AGI(Artificial General Intelligence) : 해당 부분으로 연구와 트렌드가 매우 활발하게 이루어지고 있다. 2023서울모빌리티쇼
 
     - Generalist는 필요하지 않다. (Transformer 기반)

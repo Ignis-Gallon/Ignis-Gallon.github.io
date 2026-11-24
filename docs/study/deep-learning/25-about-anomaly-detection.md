@@ -8,6 +8,9 @@ tags: [이상 탐지, Anomaly Detection, Autoencoder, 비지도학습]
 
 # About Anomaly Detection
 
+작성일 2023-07-13
+{ .post-date }
+
 [Anomaly Detection 개요： [1] 이상치 탐지 분야에 대한 소개 및 주요 문제와 핵심 용어, 산업 현장 적용 사례 정리](https://hoya012.github.io/blog/anomaly-detection-overview-1/)
 
 Anomaly Detection은 학습 데이터 셋에 비정상적인 Sample이 포함되는지, 각 Sample의 label이 존재하는지, 비정상적인 Sample의 성격이 정상 Sample과 어떻게 다른지, 정상 Sample의 Class가 단일 Class인지 Multi-Class인지 등에 따라 다른 용어를 사용하게 된다.

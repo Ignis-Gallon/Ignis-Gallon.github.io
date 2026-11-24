@@ -8,6 +8,9 @@ tags: [시계열, 시계열 예측, extreme value, Extreme Value Theory, MSE, KD
 
 # Modeling Extreme Events in Time Series Prediction: MSE는 왜 극단값을 놓치는가
 
+작성일 2025-02-04 · 최종 수정일 2025-03-26
+{ .post-date }
+
 "Modeling Extreme Events in Time Series Prediction"(Ding et al., KDD 2019)은 시계열 예측 모델이 극단적인 사건(extreme event)을 잘 맞추지 못하는 이유를 손실 함수에서 찾고, 이를 보완하는 손실 함수와 메모리 구조를 제안한 논문이다.
 
 이 논문을 읽은 이유는 [DTF-net](2024-12-29-dtf-net.md) 때문이다. DTF-net은 "제곱합(sum-of-squares)을 최소화하는 방법은 꼬리가 가벼운 Gaussian 분포로 근사하므로 극단값을 지운다"는 주장을 trend filtering에 가져오는데, 그 근거가 이 논문이다. 그래서 방법보다 이론 부분, 즉 "MSE를 최소화하면 왜 극단값에서 underfitting이 생기는가"에 집중해서 읽었다.

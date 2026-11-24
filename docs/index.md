@@ -22,12 +22,3 @@ hide:
 
 </div>
 </div>
-
-## 기록
-
-| 항목 | 내용 |
-|---|---|
-| [연구](research/index.md) | 연구 활동 기록 |
-| [논문](papers/index.md) | 논문 정리 |
-| [프로젝트](projects/index.md) | 직접 만들고 해결한 프로젝트의 기록 |
-| [스터디](study/index.md) | 전공 수업 노트와 주제별 공부 노트 |

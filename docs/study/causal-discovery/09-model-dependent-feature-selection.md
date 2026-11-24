@@ -8,6 +8,9 @@ tags: [변수 선택, 변수 중요도, SHAP, XGBoost, Optimal Trees]
 
 # 모델 의존적 변수 선택: 트리의 변수 중요도와 SHAP
 
+작성일 2025-05-20 · 최종 수정일 2025-05-22
+{ .post-date }
+
 변수 선택에는 [Markov blanket](05-markov-blanket-feature-selection.md)처럼 변수 사이의 독립성 구조를 이용하는 방법 외에, 학습된 모델에게 "어떤 변수를 중요하게 썼는가"를 묻는 방법이 있다. 이 글에서는 후자, 곧 모델 의존적(model-dependent) 변수 선택을 정리하고자 한다. 트리 계열 모델의 변수 중요도와 SHAP을 중심으로, 두 방식을 비교한 논문 두 편을 읽은 내용이다.
 
 ## 1. 분류

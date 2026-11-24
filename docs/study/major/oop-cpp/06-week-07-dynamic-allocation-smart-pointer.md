@@ -8,6 +8,9 @@ tags: [객체기반SW설계, C++, 동적 할당, Smart Pointer, 복사 생성자
 
 # 7주차: nullptr, 동적 할당, Smart Pointer, 복사 생성자
 
+작성일 2022-10-17 · 최종 수정일 2022-10-19
+{ .post-date }
+
 ## # `nullptr`
 
 C언어에서는 pointer 초기화는 항상 0으로 했었다.(Null)  

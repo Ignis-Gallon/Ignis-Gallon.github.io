@@ -8,6 +8,9 @@ tags: [C#, 콘솔 애플리케이션, Windows Forms, 이벤트 핸들러]
 
 # C# 스터디 2022.11.26
 
+작성일 2022-11-26
+{ .post-date }
+
 - Windows Forms Application : 윈도우에서 흔히 보는 어플리케이션들, UI가 잘 돼있다.
 - Console Application : Command(Console) 창을 열어서 실행하는 프로그램을 작성하는 것. 특별한 UI가 없다. 대부분의 어플리케이션들이 다 Console Application으로 되어있다. 뒤에서 돌아가는 프로그램들, 실제로 큰 프로젝트들을 보면 유저들과 통신하기 위해서는 Windows Forms Application을 쓰지만, 실제로 내부에서 중요한 작업을 수행하는 것은 Console Application으로 되어있다.
 

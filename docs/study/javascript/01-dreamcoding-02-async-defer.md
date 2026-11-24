@@ -8,6 +8,9 @@ tags: [JavaScript, 드림코딩, async, defer]
 
 # 드림코딩 2: async defer
 
+작성일 2022-12-22
+{ .post-date }
+
 development tool은 유용하게 이용할 수 있다.
 
 console에서는, javascript API를 이용할 수도 있다.

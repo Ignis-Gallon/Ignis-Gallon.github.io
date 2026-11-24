@@ -8,6 +8,9 @@ tags: [운영체제, Assembly, 분기, 반복, 서브루틴]
 
 # Assembly-4: 비교와 분기, 반복
 
+작성일 2023-05-17 · 최종 수정일 2023-06-05
+{ .post-date }
+
 ## 비교와 분기, 반복
 
 ![](../../../assets/img/study/major/os/29-assembly-4/01.webp)

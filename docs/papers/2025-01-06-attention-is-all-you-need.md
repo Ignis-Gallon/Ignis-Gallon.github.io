@@ -8,6 +8,9 @@ tags: [Transformer, Attention, Seq2Seq, Self-Attention, Positional Encoding]
 
 # Attention Is All You Need 리뷰
 
+작성일 2025-01-06
+{ .post-date }
+
 시계열 예측용 Transformer들([Informer](2025-01-15-informer.md), [Autoformer](2025-01-21-autoformer.md))을 읽기에 앞서, 그 출발점인 Transformer 원 논문을 다시 읽고 정리한 글이다.
 
 논문은 두 번 읽었다. 첫 번째에는 Abstract, Introduction, Conclusion만 읽으며 논문이 풀려는 문제를 파악했고, 두 번째에 본문 전체를 읽었다. 그보다 앞선 2024년 11월에 기계 번역의 흐름(Seq2Seq, attention, Transformer)을 다룬 강의 영상 몇 편을 보며 정리해 둔 노트가 있어서, 논문만으로는 짧게 지나가는 부분은 그 노트의 설명과 예시로 보충했다. 강의의 출처는 글 끝에 적었다.

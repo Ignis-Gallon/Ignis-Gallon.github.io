@@ -8,6 +8,9 @@ tags: [통계, 기술 통계, 정규분포, 중심극한정리, 가설검정]
 
 # 통계학 기본
 
+작성일 2024-02-11
+{ .post-date }
+
 ## 가설 설정
 
 ![](../../assets/img/study/statistics/01-statistics-basics/01.webp)

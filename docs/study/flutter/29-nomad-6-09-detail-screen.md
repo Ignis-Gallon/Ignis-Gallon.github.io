@@ -8,6 +8,9 @@ tags: [Flutter, 노마드코더, GestureDetector, Navigator, 화면 전환]
 
 # 6.9 Detail Screen
 
+작성일 2023-03-01 · 최종 수정일 2023-03-04
+{ .post-date }
+
 - GestureDetector : 대부분의 동작을 감지해주는 역할을 한다.
 
 onTap : 유저가 버튼을 클릭할 때 발생하는 이벤트 (onTapDown, onTapUp)

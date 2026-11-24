@@ -8,6 +8,9 @@ tags: [딥러닝, Overfitting, Dropout, Early Stopping]
 
 # Dropout, Early stopping
 
+작성일 2023-07-15
+{ .post-date }
+
 - Overfitting은 보통 Bias와 Variance의 관계로 나타낼 수 있다.
 
 ![](../../assets/img/study/deep-learning/07-dropout-early-stopping/01.webp)

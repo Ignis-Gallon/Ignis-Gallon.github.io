@@ -8,6 +8,9 @@ tags: [시계열, 시계열 분해, 이동평균, Additive, Multiplicative]
 
 # 시계열 분해: 추세, 계절, 나머지
 
+작성일 2023-11-24
+{ .post-date }
+
 [PatchTST 공식 코드](05-patchtst-code-analysis.md)에 있는 분해(decomposition) 옵션을 이해하려고, 시계열 분해를 다룬 강의를 보고 짧게 정리한 노트이다. 이 옵션을 켜고 진행한 실험은 [PatchTST 성능 개선 실험](../../projects/ai-course/03-patchtst.md)에 있다.
 
 ## 신호와 잡음을 나누기

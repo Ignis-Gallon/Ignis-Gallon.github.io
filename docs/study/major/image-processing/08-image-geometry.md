@@ -8,6 +8,9 @@ tags: [영상처리, Interpolation, Bilinear, Bicubic, Rotation]
 
 # Image Geometry
 
+작성일 2023-12-02 · 최종 수정일 2023-12-06
+{ .post-date }
+
 ## &lt;6. Image Geometry&gt;
 
 > Origianl 영상이 너무 작으면 영상을 키우고 싶을 수 있을 것이다. Nearest Neighbor 방식이 가장 간단한 방식이지만, 최근에는 다양한 알고리즘을 활용한 Super-resolution 방법들이 제안되고 있다.

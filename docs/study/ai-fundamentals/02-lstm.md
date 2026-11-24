@@ -8,6 +8,9 @@ tags: [LSTM, RNN, Vanishing Gradient, BPTT, 시계열]
 
 # LSTM: cell state와 gate로 긴 시퀀스를 학습하기
 
+작성일 2024-11-24
+{ .post-date }
+
 "Long Short-Term Memory"(Hochreiter & Schmidhuber, Neural Computation 1997)를 리뷰한 연구실 세미나 영상을 보고 정리한 글이다. 발표는 실제 시계열 데이터에 여러 모델을 써 보면 LSTM의 성능이 좋은 경우가 여전히 많다는 점에서 출발해, 원 논문으로 돌아가 LSTM의 근본을 이해해 보자는 취지였다. LSTM은 Highway Network, ResNet처럼 매우 깊은 모델을 학습시키는 방법들의 바탕이 되는 통찰을 제공했다는 점도 함께 다룬다.
 
 ## 시계열 데이터와 이를 다루는 방법

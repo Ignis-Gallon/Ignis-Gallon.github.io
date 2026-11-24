@@ -8,6 +8,9 @@ tags: [Flutter, 노마드코더, shared_preferences, 저장소]
 
 # 6.17 Favorites
 
+작성일 2023-03-03 · 최종 수정일 2023-03-12
+{ .post-date }
+
 - Shared_preferences를 이용하면 핸드폰 저장소에 데이터를 담을 수 있다.
 
 shared_preferences는 다음과 같이 설치할 수 있다.

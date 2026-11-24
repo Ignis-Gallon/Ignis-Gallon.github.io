@@ -8,6 +8,9 @@ tags: [CSS, 드림코딩, 반응형 웹, semantic tag]
 
 # 드림코딩 CSS 5: Responsive Web Example
 
+작성일 2023-07-23
+{ .post-date }
+
 [웹사이트 따라만들기, 반응형 헤더편 | 프론트엔드 개발자 입문편: HTML, CSS, Javascript](https://www.youtube.com/watch?v=X91jsJyZofw&list=PLv2d7VI9OotQ1F92Jp9Ce7ovHEsuRQB3Y&index=14)
 
 - 힌트 : 레이아웃 구조를 먼저 파악하기

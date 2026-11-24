@@ -8,6 +8,9 @@ tags: [CSS, 드림코딩, Grid]
 
 # 드림코딩 CSS 7: grid
 
+작성일 2023-07-24
+{ .post-date }
+
 - Container : grid
 
     - display: grid

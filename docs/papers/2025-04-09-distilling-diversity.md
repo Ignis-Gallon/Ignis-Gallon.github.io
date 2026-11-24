@@ -8,6 +8,9 @@ tags: [XAI, diffusion, distillation, LoRA, mode collapse]
 
 # Distilling Diversity and Control in Diffusion Models
 
+작성일 2025-04-09
+{ .post-date }
+
 적은 step으로 이미지를 생성하도록 distillation한 diffusion 모델은 빠르지만, 같은 프롬프트에 비슷한 이미지만 내놓는다. 이 논문은 그 이유를 모델 내부에서 찾고, 첫 step만 원래 모델에 맡기는 간단한 방법으로 다양성을 되찾는다. 읽으면서 concept representation, mode collapse, LoRA, Concept Sliders 같은 용어를 절마다 따로 찾아 정리했다. 그 내용을 먼저 적고 논문의 순서를 따라간다.
 
 이 글은 arXiv의 초기 판(v1, 2025년 3월)을 읽고 정리한 것이다. 이후의 개정판(v4, 2025년 11월)에서는 DT-Visualization이라는 이름 대신 $\hat{\mathbf{x}}_0$ visualization이라고 부르고, 초록에서 다양성이 base 모델을 넘어선다는 표현이 다양성을 회복한다는 표현으로 바뀌는 등 일부 명칭과 주장이 달라졌다.

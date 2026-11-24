@@ -8,6 +8,9 @@ tags: [인공지능, 머신러닝, 지도학습, 회귀, MSE]
 
 # 머신러닝 : 지도학습(회귀모델)
 
+작성일 2023-12-09
+{ .post-date }
+
 ## &lt;지도학습 : 회귀모델&gt;
 
 ![](../../../assets/img/study/major/ai/11-supervised-learning-regression/01.webp)

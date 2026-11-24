@@ -8,6 +8,8 @@ tags: [네트워크구조및설계, Application Layer, Client-Server, P2P, Socke
 
 # Application Layer & Processes Communicating
 
+작성일 2023-10-10 · 최종 수정일 2023-12-07
+{ .post-date }
 
 ## &lt;Chapter 2: outline&gt;
 

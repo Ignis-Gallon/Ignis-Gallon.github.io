@@ -8,6 +8,9 @@ tags: [시계열 예측, Transformer, Autoformer, Auto-Correlation, 시계열 �
 
 # Autoformer: 분해 구조와 Auto-Correlation을 코드로 따라가기
 
+작성일 2025-01-21 · 최종 수정일 2025-01-22
+{ .post-date }
+
 [Informer](2025-01-15-informer.md) 다음으로 읽은 Autoformer(Autoformer: Decomposition Transformers with Auto-Correlation for Long-Term Series Forecasting, NeurIPS 2021)를 정리한 글이다. Informer를 비롯한 sparse attention 계열이 "시점 단위로 일부만 골라 본다"는 방식이었다면, Autoformer는 self-attention을 아예 다른 연산으로 바꾼다. 시계열의 주기성에 기반한 Auto-Correlation이다.
 
 이틀에 걸쳐 세 단계로 읽었다.

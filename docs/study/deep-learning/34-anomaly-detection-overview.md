@@ -8,6 +8,9 @@ tags: [이상 탐지, Anomaly Detection, Novelty Detection, Outlier]
 
 # Anomaly Detection - Overview
 
+작성일 2024-03-18
+{ .post-date }
+
 [03-1: Anomaly Detection - Overview](https://www.youtube.com/watch?v=ECgI1YVQpY8)
 
 ## &lt;Anomaly Detection&gt;

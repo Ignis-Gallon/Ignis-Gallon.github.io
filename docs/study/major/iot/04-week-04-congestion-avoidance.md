@@ -8,6 +8,9 @@ tags: [사물인터넷, 네트워크, Congestion Avoidance, RED]
 
 # 4주차 - Congestion Avoidance
 
+작성일 2023-09-26 · 최종 수정일 2023-09-27
+{ .post-date }
+
 ## Congestion Avoidance
 
 > Congestion이 발생하기 전에 예방하는 방법

@@ -8,6 +8,9 @@ tags: [CSS, Flexbox, flex-direction, flex-wrap]
 
 # Flex 3
 
+작성일 2023-07-23
+{ .post-date }
+
 - flex-direction
 
 display: flex; 로 설정하면, 기본값이 row이고, column으로 바꿀 수 있다.

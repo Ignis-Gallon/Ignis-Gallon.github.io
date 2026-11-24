@@ -8,6 +8,9 @@ tags: [사물인터넷, 네트워크, BGP, Dispute Digraph]
 
 # 5주차 - Dispute Digraph
 
+작성일 2023-10-28
+{ .post-date }
+
 ## &lt;Dispute Digraph&gt;
 
 > SPP(Stable Path Problem)이 주어졌을 때, 해당 SPP가 Solvable 한지 아닌지를 판단할 수 있는 방법이다. 주어진 SPP를 바탕으로 Dispute Digraph를 그리고, Cycle이 존재하는지 아닌지를 판단하면 된다.

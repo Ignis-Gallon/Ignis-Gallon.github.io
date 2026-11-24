@@ -8,6 +8,9 @@ tags: [XAI, attribution, Network Dissection, GAN, generative boundary]
 
 # XAI의 최근 흐름: attribution의 한계와 모델 내부 들여다보기
 
+작성일 2025-01-02
+{ .post-date }
+
 "XAI Tutorial 2023"의 강의 "Recent Trends in Explainable Artificial Intelligence"를 듣고 정리한 노트다. [앞 글](01-xai-overview.md)이 설명 방법의 종류를 훑었다면, 이 강의는 두 가지를 다룬다. 입력의 기여도를 구하는 attribution 방법들이 왜 서로 다른 결과를 내는가, 그리고 입력이 아니라 모델 내부의 unit을 직접 들여다보고 고칠 수 있는가다. 뒷부분은 생성 모델(GAN)의 내부를 분석한 연구들을 따라간다.
 
 슬라이드 그림은 싣지 않고 글로 옮겼다. 강의 링크는 글 끝에 있다.

@@ -8,6 +8,9 @@ tags: [PatchTST, 시계열 예측, PyTorch, 코드 분석, RevIN, Patching]
 
 # PatchTST 공식 코드 분석: 실행 진입점에서 모델 구조까지
 
+작성일 2023-11-24 · 최종 수정일 2023-11-25
+{ .post-date }
+
 [PatchTST 성능 개선 프로젝트](../../projects/ai-course/03-patchtst.md)를 시작하면서 PatchTST의 공식 구현을 실행 진입점부터 따라가며 읽은 기록이다. PyTorch로 짠 연구 코드를 처음부터 끝까지 읽어 본 것이 처음이라, 모델 구조뿐 아니라 인자를 받는 방법이나 데이터를 불러오는 방법 같은 기본적인 부분도 함께 정리했다. 읽은 코드는 공식 저장소의 `PatchTST_supervised` 폴더이다.
 
 모델 안에서 데이터가 실제로 흘러가는 과정은 [PatchTST의 forward 과정 따라가기](09-patchtst-forward-pass.md)에, 논문 내용은 [PatchTST 논문 요약](10-patchtst-paper-summary.md)에 따로 정리했다.

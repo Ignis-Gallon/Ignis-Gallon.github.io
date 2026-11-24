@@ -8,6 +8,9 @@ tags: [Dart, 클래스, 생성자, 상속, mixin]
 
 # Dart 6: Class
 
+작성일 2023-02-18 · 최종 수정일 2023-02-19
+{ .post-date }
+
 Flutter에서는 모든 것이 Class이므로, Class가 매우 중요하다. function 내에서 variable을 사용할 때는 var를 사용하면 된다. 타입을 명시할 필요가 없다. 하지만, Class 내에서 property를 정의할 때는 타입을 정확히 명시해주어야 한다. 
 
 ## class의 선언 및 객체 생성

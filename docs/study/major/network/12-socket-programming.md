@@ -8,6 +8,8 @@ tags: [네트워크구조및설계, Socket, C, select, Blocking I/O]
 
 # Socket Programming
 
+작성일 2023-11-27 · 최종 수정일 2023-12-11
+{ .post-date }
 
 ## &lt;Socket Programming&gt;
 

@@ -8,6 +8,9 @@ tags: [Flutter, 노마드코더, ListView, ListView.builder]
 
 # 6.7 ListView
 
+작성일 2023-03-01 · 최종 수정일 2023-03-04
+{ .post-date }
+
 - 많은 양의 데이터를 한 번에 보여주고 싶을 때 Column이나 Row는 적절하지 않다. 이럴 때는 ListView를 사용하는 것이 좋다.
 - 단, ListView는 모든 데이터를 한 번에 로드하므로, 최적화되어 있지 않다. 이 때 사용할 수 있는 것이 바로 ListView.builder이다. ListView.builder는 좀 더 최적화된 ListView이다.
 - ListView.builder

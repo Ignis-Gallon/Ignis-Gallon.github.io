@@ -8,6 +8,9 @@ tags: [JavaScript, 이벤트 루프, 비동기]
 
 # 자바스크립트 동작원리
 
+작성일 2023-07-23
+{ .post-date }
+
 [개발자 90%가 모르는 자바스크립트 동작원리 (Stack, Queue, event loop)](https://www.youtube.com/watch?v=v67LloZ1ieI)
 
 웹 브라우저 내부에는 Stack이 하나 존재하고, Heap에 존재하는 변수들을 가져와서 사용하게 된다. 자바스크립트는 single threaded language이다.

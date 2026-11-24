@@ -8,6 +8,9 @@ tags: [객체기반SW설계, C++, friend, 연산자 오버로딩, 상속]
 
 # 10주차(1): friend, 연산자 중복, 상속
 
+작성일 2022-11-07 · 최종 수정일 2022-11-20
+{ .post-date }
+
 - friend function, friend class
 
 ```cpp

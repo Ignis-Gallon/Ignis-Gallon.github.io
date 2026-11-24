@@ -8,6 +8,9 @@ tags: [운영체제, CPU 스케줄링, Python, Matplotlib]
 
 # 과제1
 
+작성일 2023-04-11 · 최종 수정일 2023-04-20
+{ .post-date }
+
 - Round Robin의 Time Quantum은 전체 수행시간의 평균을 / 2 한 것으로 설정한다.
 - 만들어야 할 리스트
 

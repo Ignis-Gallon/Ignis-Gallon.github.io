@@ -8,6 +8,9 @@ tags: [Node.js, Express, MySQL, Chart.js, fetch]
 
 # new: chart_graph
 
+작성일 2022-11-18
+{ .post-date }
+
 ```javascript
 const express = require('express')
 const mysql = require('mysql')

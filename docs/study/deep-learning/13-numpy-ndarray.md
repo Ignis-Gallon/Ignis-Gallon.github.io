@@ -8,6 +8,9 @@ tags: [NumPy, ndarray, Python]
 
 # NumPy > ndarray
 
+작성일 2023-07-16
+{ .post-date }
+
 [[ Python 3 ] Numpy 란 무엇인가? (ndarray 클래스)](https://supermemi.tistory.com/14)
 
 - ndarray 클래스는 NumPy의 핵심 클래스이다. 이는 다차원 행렬 자료 구조를 지원한다.

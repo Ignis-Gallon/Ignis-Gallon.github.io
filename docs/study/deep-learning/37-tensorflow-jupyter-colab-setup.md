@@ -8,6 +8,9 @@ tags: [TensorFlow, Anaconda, Jupyter Notebook, Colab]
 
 # 실습을 위한 Tensorflow와 Jupyter Notebook, Colab 설치
 
+작성일 2023-07-13
+{ .post-date }
+
 ## TensorFlow 설치
 
 - 먼저 Python 3.5 버젼 이상을 설치해야 함.

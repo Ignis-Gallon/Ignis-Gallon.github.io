@@ -8,6 +8,9 @@ tags: [오픈소스SW설계, Git, GitHub]
 
 # 10주차: Git 실습
 
+작성일 2022-11-03
+{ .post-date }
+
 `home/class/lab4-git`
 
 - 최근, 버전 관리하는 툴 중에서 99.9%는 Git을 사용한다. 웹에다가 posting을 할 때는 Github를 사용한다.

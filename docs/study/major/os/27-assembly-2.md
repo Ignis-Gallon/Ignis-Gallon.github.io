@@ -8,6 +8,9 @@ tags: [운영체제, Assembly, 8086, Segment, 기계어]
 
 # Assembly-2: Segment와 Offset, 명령어 형식
 
+작성일 2023-05-15 · 최종 수정일 2023-06-05
+{ .post-date }
+
 8086 프로세서는 기본적으로 16bit 이지만, (2^16 = 64kB가 나온다. 이게 메모리의 크기) 메인 메모리를 1MB까지 addressing 하도록 설계가 되어 있다. 1MB는 2^20이고, 4bit가 더 많다. 16bit로는 20bit를 addressing 할 수 없기 때문에 추가로 도입한 것이 segment와 offset이라는 개념이었다.
 
 16bit짜리 두 개를 가지고 20bit를 만들어낸다. 그것을 addressing하면 1MB가 된다. 그걸 하기 위해서 어떠한 방법을 사용했냐면, 하나는 segment, 하나는 offset을 이용, 한 자리를 비튼다. (segment addresses를 &lt;&lt; bit shift를 하는 것) 가상으로 다섯 자리라고 생각하면 된다. 이와 같이 계산하면 20bit를 처리할 수 있는 addressing이 계산된다. 그래서 8086 프로세서는 이와 같이 계산한다.

@@ -8,6 +8,9 @@ tags: [Dart, 함수, named parameter, typedef]
 
 # Dart 5: Functions
 
+작성일 2023-02-17
+{ .post-date }
+
 ## Arrow Function
 
 ```dart

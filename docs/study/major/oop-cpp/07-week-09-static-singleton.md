@@ -8,6 +8,9 @@ tags: [객체기반SW설계, C++, static, Singleton, 연산자 오버로딩]
 
 # 9주차: static 변수와 함수, Singleton
 
+작성일 2022-10-31 · 최종 수정일 2022-11-27
+{ .post-date }
+
 - 정적 변수 : static variable
 
 ```cpp

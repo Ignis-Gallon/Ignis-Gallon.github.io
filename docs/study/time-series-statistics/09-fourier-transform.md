@@ -8,6 +8,9 @@ tags: [시계열, 푸리에 변환, FFT, 주파수]
 
 # 푸리에 변환 메모
 
+작성일 2025-06-20
+{ .post-date }
+
 시계열을 주파수 영역에서 다루는 방법을 볼 때마다 푸리에 변환(Fourier transform)이 나왔다. [시계열 분해](06-time-series-decomposition.md)에서 추세와 계절성을 저주파와 그보다 높은 주파수 성분으로 설명할 때도, [Granger 인과](07-granger-causality.md)의 교차 스펙트럼이나 [공분산 함수](08-lag-operator-and-arma.md)를 읽을 때도 그랬다. 이 글은 푸리에 변환이 무엇을 하는 것이고, 실수 시계열에 FFT를 적용해 나온 값을 어떻게 읽는지를 짧게 정리한 메모다.
 
 ## 신호를 사인파로 나눈다

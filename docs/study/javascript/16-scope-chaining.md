@@ -8,6 +8,9 @@ tags: [JavaScript, 스코프, 클로저]
 
 # Scope Chaining
 
+작성일 2023-07-23
+{ .post-date }
+
 - Scope Chaining은 JS의 핵심 개념중 하나로, 이를 이해하면 Closure, 실행 Context 등을 아주 쉽게 이해할 수 있다.
 
 ```javascript

@@ -8,6 +8,9 @@ tags: [Kotlin, Android, Jetpack, ViewModel, LiveData]
 
 # JetPack > viewModel & LiveData
 
+작성일 2022-09-24
+{ .post-date }
+
 ## `viewModel`
 
 - `viewModel`이란, 기존의 생명주기와는 관계 없이 생명주기를 유지해주는 또 다른 생명주기이다.

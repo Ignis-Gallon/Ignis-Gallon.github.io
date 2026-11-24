@@ -8,6 +8,9 @@ tags: [Flutter, Coding Chef, 생명 주기, Future]
 
 # Weather App
 
+작성일 2023-03-31 · 최종 수정일 2023-07-09
+{ .post-date }
+
 - 주요 학습 내용
     1. Widget lifecycle
     2. API

@@ -8,6 +8,9 @@ tags: [JavaScript, Ajax, Axios, Fetch]
 
 # Ajax, Axios, Fetch
 
+작성일 2023-03-12
+{ .post-date }
+
 ## Ajax(Asynchronous JavaScript And XML)
 
 자바스크립트를 사용해서 클라이언트와 서버가 비동기 통신을 통해 데이터를 주고받는 기술이다. Ajax를 통해 서버와 비동기적으로 통신함으로 인해 우리는 전체 웹페이지를 다시 불러오는 동기방식과는 다르게 점진적으로 해당 부분의 사용자 인터페이스를 갱신할 수 있다. 간단하게 말해서, Ajax는 JS에서 비동기 HTTP 통신이 가능하도록 해준다. → 비동기 HTTP 통신을 통해 response와 request를 비동기 식으로 다룰 수 있게 된다.

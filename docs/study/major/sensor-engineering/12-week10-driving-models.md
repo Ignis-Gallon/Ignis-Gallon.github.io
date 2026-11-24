@@ -8,6 +8,9 @@ tags: [센서공학, 조향 장치, Ackerman Geometry, SLAM, Localization]
 
 # 10주차(Driving Models)
 
+작성일 2023-05-09 · 최종 수정일 2023-06-08
+{ .post-date }
+
 - EPS의 타입, C, R
 
     ![](../../../assets/img/study/major/sensor-engineering/12-week10-driving-models/01.webp)

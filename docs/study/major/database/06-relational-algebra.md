@@ -8,6 +8,9 @@ tags: [데이터베이스, 관계 대수, Join, 집합 연산]
 
 # 관계 대수 (Relational Algebra)
 
+작성일 2023-10-13 · 최종 수정일 2024-10-14
+{ .post-date }
+
 ## &lt;관계형 데이터베이스에서의 질의(Query)&gt;
 
 1. **Design Schema** (ERD → Table)

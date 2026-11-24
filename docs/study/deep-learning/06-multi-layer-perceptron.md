@@ -8,6 +8,9 @@ tags: [딥러닝, MLP, Softmax, MNIST]
 
 # Multi-Layer Perceptron
 
+작성일 2023-07-15
+{ .post-date }
+
 - Dense Layer의 가장 큰 특징은 Input을 받아, 원하는 차원의 데이터로 변환을 해준다는 것이다. 이 특성을 활용해 MNIST 데이터를 0~9의 숫자 중 하나로 구분하는 실습을 할 것이다.
 
  이번 실습에서는 MNIST가 5\*5 데이터라고 가정을 해보도록 한다.

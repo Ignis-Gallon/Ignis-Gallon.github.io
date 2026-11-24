@@ -8,6 +8,9 @@ tags: [마이크로컨트롤러응용, AVR, 인터럽트, PCINT, 스위치]
 
 # Interrupt
 
+작성일 2022-12-07 · 최종 수정일 2023-12-08
+{ .post-date }
+
 - `DDRn`
 
 DDR은 port의 direction을 결정하는 역할을 하는 Register이다. DDR은 모든 포트에 대해 존재하므로, 사용할 포트의 알파벳 기호를 확인하여 direction을 설정하면 된다.

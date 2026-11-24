@@ -8,6 +8,9 @@ tags: [딥러닝, Batch Size, Epoch, Keras]
 
 # batch size & epochs
 
+작성일 2023-07-14
+{ .post-date }
+
 - batch size : 몇 개의 샘플로 가중치를 갱신할 것인지
 - epochs : 전체 데이터 셋을 몇 번 반복 학습할 것인지
 

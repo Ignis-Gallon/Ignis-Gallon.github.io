@@ -8,6 +8,9 @@ tags: [임베디드시스템특강, CNN, Convolution, Pooling, Keras]
 
 # Convolutional Network
 
+작성일 2023-12-12 · 최종 수정일 2025-06-09
+{ .post-date }
+
 ## &lt;Basic Concepts for CNN&gt;
 
 > 우리는 이전까지 3차원 RGB 데이터를 1차원 vector로 flatten하여 처리하였는데, 이것은 몇 가지 문제점을 가지고 있었다.

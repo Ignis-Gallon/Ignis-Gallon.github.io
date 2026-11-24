@@ -8,6 +8,9 @@ tags: [시계열, ARIMA, RNN, LSTM, Prophet]
 
 # 시계열 분석
 
+작성일 2024-05-03 · 최종 수정일 2024-05-04
+{ .post-date }
+
 - **소스코드 및 강의자료**
 
 [GitHub - kloud80/urban-data-mining: 한양대학교 도시공학과 머신러닝](https://github.com/kloud80/urban-data-mining)

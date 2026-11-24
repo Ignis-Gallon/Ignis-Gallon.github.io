@@ -8,6 +8,9 @@ tags: [Node.js, 디자인 패턴, Singleton, 모듈 캐시]
 
 # Singletons
 
+작성일 2022-11-18 · 최종 수정일 2022-11-19
+{ .post-date }
+
 - Singletons : Objects that can only have a single instance, with a single point of access. a single source of truth, with a single point of access. Singletons are useful for maintaining a central state, where operate on a common resource. 
 - The Node.js module system, incidentally(by the way), provides a basic framework for creating a rudimentary(가장 기초적인, basic) singleton.
 - Modules are cached when they’re accessed using the require() statement.

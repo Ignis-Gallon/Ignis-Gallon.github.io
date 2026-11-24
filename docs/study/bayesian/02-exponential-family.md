@@ -8,6 +8,9 @@ tags: [베이즈 추론, 지수족, 충분통계량, MLE, 켤레 사전분포]
 
 # 지수족: 여러 분포를 하나의 꼴로 쓰기
 
+작성일 2025-03-04 · 최종 수정일 2025-03-07
+{ .post-date }
+
 Gaussian, Bernoulli, Poisson, Beta처럼 따로 배운 분포들은 사실 하나의 식으로 묶인다. 이 묶음을 지수족(exponential family)이라고 한다. 지수족에 속하는 분포는 MLE가 깔끔한 조건 하나로 정리되고, conjugate prior도 언제나 같은 방식으로 만들 수 있어서 베이즈 추론에서 계산하기 편하다. [1편](01-conjugate-prior.md)에서 본 Bernoulli와 Beta의 관계가 그 한 예다.
 
 이 글은 두 자료를 보고 정리한 노트를 합친 것이다. 하나는 Mutual Information 채널의 YouTube 강의 "The Exponential Family" 1, 2편이고, 다른 하나는 Gregory Gundersen의 블로그 글 "The Exponential Family"다. 강의는 $h$, $t$를 직접 골라 분포를 만들어 가는 방향으로, 블로그는 익숙한 분포의 식을 변형해 지수족 꼴로 바꾸는 방향으로 설명한다. 이 글에서는 두 방향을 함께 쓴다. 공부하면서 적은 질문과 그에 대해 찾은 답도 해당하는 자리에 함께 적었다.

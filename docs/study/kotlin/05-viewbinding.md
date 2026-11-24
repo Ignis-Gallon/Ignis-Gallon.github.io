@@ -8,6 +8,9 @@ tags: [Kotlin, Android, ViewBinding]
 
 # viewBinding
 
+작성일 2022-09-25 · 최종 수정일 2022-09-27
+{ .post-date }
+
 ## ViewBinding
 
 - **역할**: ViewBinding은 XML 레이아웃 파일에 대한 유형 안전한 바인딩 클래스를 자동으로 생성한다. 이를 통해 `findViewById`를 사용하지 않고도 레이아웃 내의 뷰에 직접 접근할 수 있다.

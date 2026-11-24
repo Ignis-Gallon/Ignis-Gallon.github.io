@@ -8,6 +8,9 @@ tags: [센서공학, 차선 검출, Canny Edge Detection, 영상 처리, MATLAB]
 
 # 13주차(Lane Line Detection)
 
+작성일 2023-05-30 · 최종 수정일 2026-04-14
+{ .post-date }
+
 - 컴퓨터 비젼으로 할 수 있는 것이 굉장히 많다. 대표적으로 할 수 있는 것이 Lane Line Detection이고, 이를 이용하면 차가 차로를 벗어나지 않고 잘 달릴 수 있게 된다. ⇒ 매우 중요한 부분임.
 
     - Deep Learning, Reinforcement Learning 등을 통해 다양한 방식으로 이미 구현이 되어 있는 것들이 많다.

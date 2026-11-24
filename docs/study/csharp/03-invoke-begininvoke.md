@@ -8,6 +8,9 @@ tags: [C#, Delegate, BeginInvoke, 비동기, 스레드풀]
 
 # Invoke와 BeginInvoke
 
+작성일 2022-12-20 · 최종 수정일 2023-01-25
+{ .post-date }
+
 ## BeginInvoke
 
 멀티스레드 프로그래밍을 하는 데 있어서 중요한 부분이 UI를 접근하는 문제이다. 간단하게는 텍스트를 변경하는 것에서부터 Form.Show(), WebBrowser.Navigate() 같은 부분도 UI를 접근하는 문제라고 할 수 있다. 이런 부분을 메인 스레드가 아닌 부분에서 사용하게 되면 문제가 될 수 있기 때문에(왜냐면, UI 작업은 굉장히 overhead가 커서 성능이 가장 좋은 main thread에서 진행하지 않으면 오랜 작업시간이 소요될 수 있다.) 디버깅 모드에서는 바로바로 예외가 발생한다. 이러한 문제를 해결하기 위해 Control(Form에 있는 partial class)은 Invoke와 BeginInvoke 메서드, 그리고 InvokeRequired 속성을 가진다. 이 메서드들은 이 Control들이 생성된 스레드에게 해당 코드를 전달해주는 역할을 하게 된다.

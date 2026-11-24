@@ -8,6 +8,8 @@ tags: [네트워크구조및설계, Link Layer, CSMA/CD, MAC Address, ARP]
 
 # Link Layer
 
+작성일 2023-12-07 · 최종 수정일 2023-12-11
+{ .post-date }
 
 ## &lt;Link Layer&gt;
 

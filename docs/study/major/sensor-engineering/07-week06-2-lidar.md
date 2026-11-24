@@ -8,6 +8,9 @@ tags: [센서공학, LIDAR, TOF, Point Cloud]
 
 # 6주차-2(LIDAR)
 
+작성일 2023-04-12 · 최종 수정일 2026-04-14
+{ .post-date }
+
 - Virtual Lidar(Light Detection and Ranging)
 
 ⇒ 카메라를 이용해서 라이다의 역할을 대체. Camera + AI

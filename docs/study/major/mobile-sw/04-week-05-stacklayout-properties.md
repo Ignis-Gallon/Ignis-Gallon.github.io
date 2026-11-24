@@ -8,6 +8,9 @@ tags: [모바일SW, XAML, StackLayout, .NET, C#]
 
 # 5주차: StackLayout 주요 속성, .NET 플랫폼
 
+작성일 2024-04-01 · 최종 수정일 2024-04-05
+{ .post-date }
+
 ## &lt;수업(2024-04-01 월)&gt;
 
 ### StackLayout의 기본 사용과 주요 속성

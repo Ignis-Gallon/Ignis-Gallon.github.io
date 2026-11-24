@@ -8,6 +8,9 @@ tags: [시계열 예측, LSTM, GRU, 1D CNN, Batch Normalization]
 
 # LSTM Time Series Forecasting
 
+작성일 2024-05-03 · 최종 수정일 2024-05-04
+{ .post-date }
+
 ## &lt;데이터&gt;
 
 2009년 1월 1일부터 2017년 1월 1일까지 10분 간격으로 측정한 기후 데이터이다. 데이터의 양이 너무 많으므로, 매 시 정각의 데이터만 가져와서 사용한다.

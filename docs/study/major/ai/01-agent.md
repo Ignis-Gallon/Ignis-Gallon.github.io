@@ -8,6 +8,9 @@ tags: [인공지능, Agent, 합리성, PEAS]
 
 # Agent
 
+작성일 2023-10-15 · 최종 수정일 2023-12-09
+{ .post-date }
+
 ## Agent
 
 - 에이전트(Agent)

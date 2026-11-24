@@ -8,6 +8,9 @@ tags: [시계열, 추세 필터링, 강화학습, PPO, Gym, Stable-Baselines3, �
 
 # DTF-net 코드 분석: Gym 환경으로 읽는 Trend Point Detection
 
+작성일 2025-01-31 · 최종 수정일 2025-02-11
+{ .post-date }
+
 DTF-net은 인턴으로 있던 연구실의 선행 연구로, 강화학습 agent가 시계열에서 추세에 남겨야 할 점(Dynamic Trend Point, DTP)을 고르게 하는 방법이다. 논문의 내용과 읽으면서 생긴 질문은 [논문 리뷰](../../papers/2024-12-29-dtf-net.md)에 정리했다. 이 글은 그 질문 가운데 코드로만 확인할 수 있는 것들을 풀기 위해 공개 코드를 읽은 기록이다.
 
 코드를 읽기 전에 확인하려던 것은 다음과 같다.

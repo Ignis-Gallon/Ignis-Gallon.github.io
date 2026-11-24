@@ -8,6 +8,9 @@ tags: [Kotlin, 디자인 패턴, Observer Pattern]
 
 # Observer Pattern from Scratch
 
+작성일 2022-09-27
+{ .post-date }
+
 Kotlin에서 옵저버 패턴을 구현하려면 `Observer`와 `Observable` 인터페이스를 정의하고, 옵저버들이 옵저버블의 상태 변화를 감지하도록 할 수 있다. 아래는 간단한 예시이다.
 
 ## 1. 옵저버와 옵저버블 인터페이스 정의

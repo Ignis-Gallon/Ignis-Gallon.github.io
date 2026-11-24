@@ -8,6 +8,9 @@ tags: [Flutter, 노마드코더, 위젯 재사용, SingleChildScrollView]
 
 # 3.8 Reusable Cards
 
+작성일 2023-02-28 · 최종 수정일 2023-03-04
+{ .post-date }
+
 - CurrencyCard Class를 만들고, 기존 main.dart에서 Card를 생성한 Container 코드를 가져와 복사해서 붙여넣는다. 이 때, 필요한 것은 크게 name, code, amount, icon 정도이므로 이 변수들을 final 변수로 생성한 후, code action으로 생성자를 자동으로 만들어줄 수 있다.
 - 삼항 연산자를 이용하여 간단하게 색상을 선택 가능
 

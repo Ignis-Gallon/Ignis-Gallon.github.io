@@ -8,6 +8,9 @@ tags: [시계열, 변화점 탐지, structural break, regime change, Chow test, 
 
 # Structural break, regime change, change point, abrupt change
 
+작성일 2025-03-18 · 최종 수정일 2025-03-23
+{ .post-date }
+
 시계열에서 "무언가 바뀌는 지점"을 가리키는 말은 여러 개다. DTF-net 논문만 해도 structural break point, change point, abrupt change를 함께 쓴다. [3편](03-change-point-detection-overview.md)까지 공부하면서도 이 말들이 같은 것을 가리키는지, 다르다면 어떻게 다른지가 계속 헷갈렸다. 이 글은 네 용어의 정의를 하나씩 정리하고, structural break를 검정하는 고전적인 방법들을 정리한 뒤, 마지막으로 trend filtering이 말하는 abrupt change와 change point detection이 말하는 abrupt change가 어떻게 다른지를 정리한 노트다.
 
 ## 네 용어의 정의

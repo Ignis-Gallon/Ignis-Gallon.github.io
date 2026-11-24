@@ -8,6 +8,9 @@ tags: [영상처리, Sampling, Aliasing, Nyquist]
 
 # What is Image Processing?
 
+작성일 2023-10-03 · 최종 수정일 2024-11-22
+{ .post-date }
+
 ## &lt;1.1 Images and Pictures&gt;
 
 - 컴퓨터가 영상을 처리하는 것은 비전, 사람이 처리하는 것은 영상처리

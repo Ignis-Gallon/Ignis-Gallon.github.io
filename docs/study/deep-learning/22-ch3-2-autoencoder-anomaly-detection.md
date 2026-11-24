@@ -8,6 +8,9 @@ tags: [딥러닝, Autoencoder, 이상 탐지, Confusion Matrix]
 
 # Deep Learning 강의 > Ch.3-2 Autoencoder & Anomaly Detection
 
+작성일 2023-07-13
+{ .post-date }
+
 ![](../../assets/img/study/deep-learning/22-ch3-2-autoencoder-anomaly-detection/01.webp)
 
 - Autoencoder는 Input과 Output이 동일한 Deep Learning Model이다.

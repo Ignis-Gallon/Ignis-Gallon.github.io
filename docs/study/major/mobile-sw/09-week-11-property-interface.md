@@ -8,6 +8,9 @@ tags: [모바일SW, C#, Property, Interface]
 
 # 11주차: Property, Interface
 
+작성일 2024-05-30
+{ .post-date }
+
 ## &lt;C# 강의&gt;
 
 ### Property

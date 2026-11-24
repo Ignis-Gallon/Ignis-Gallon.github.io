@@ -8,6 +8,9 @@ tags: [시계열, 시계열 분해, 추세, 계절성, STL]
 
 # 시계열 분해: Classical Decomposition과 STL
 
+작성일 2025-04-06 · 최종 수정일 2025-04-15
+{ .post-date }
+
 시계열 분해(time-series decomposition)는 시계열을 추세, 계절성, 나머지로 나누어 보는 방법이다. [정상성](02-stationarity-and-unit-root-test.md)을 확보하려고 추세와 계절성을 제거할 때도, 시계열이 어떤 성분으로 이루어져 있는지 이해하려 할 때도 쓴다. 이 글에서는 세 성분의 의미, classical seasonal decomposition의 계산 절차, STL이 그것과 어떻게 다른지를 정리한다. 2024년 12월에 처음 적어 둔 성분의 정의와 2025년 4월에 다시 정리한 노트를 합쳤다.
 
 ## 분해의 목적

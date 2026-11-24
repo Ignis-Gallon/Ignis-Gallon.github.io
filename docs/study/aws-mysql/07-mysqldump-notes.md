@@ -8,6 +8,9 @@ tags: [MySQL, mysqldump, WSL]
 
 # mysqldump 사용 시 주의사항
 
+작성일 2023-12-18 · 최종 수정일 2023-12-31
+{ .post-date }
+
 > 🌟 MySQL 및 mysqldump 사용 시 주의사항 🌟  
 >   
 > 1) MySQL에서 table_rows, table_capacity 등은 옵티마이징 과정에서의 추측값으로, 정확하지 않을 수 있음. 정확히 알아내려면 직접 Query를 작성해서 확인해야 함.  

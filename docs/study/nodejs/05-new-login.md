@@ -8,6 +8,9 @@ tags: [Node.js, Express, MySQL, 로그인]
 
 # new: login
 
+작성일 2022-11-18
+{ .post-date }
+
 ```javascript
 // server 코드에 필요한 초기 변수들을 설정한다.
 const { exec } = require('child_process') // pool.releaseConnection(conn) 수행에 필요함.

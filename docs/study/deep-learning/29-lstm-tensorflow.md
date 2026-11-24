@@ -8,6 +8,9 @@ tags: [LSTM, RNN, TensorFlow, Keras]
 
 # LSTM TensorFlow
 
+작성일 2023-07-14
+{ .post-date }
+
 [Tensorflow&Keras - LSTM 개념 및 사용법 정리](https://simpling.tistory.com/19)
 
 LSTM은 Long Short Term Memory의 줄임말로, 주로 시계열 처리나 자연어 처리에 사용된다. LSTM에서 중요한 것은 데이터의 ‘순환’ 개념이다. 흔히 아래와 같은 그림으로 LSTM을 나타낸다.

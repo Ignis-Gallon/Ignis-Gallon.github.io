@@ -8,6 +8,9 @@ tags: [CSS, display, block, inline, inline-block]
 
 # display block, inline, inline-block
 
+작성일 2023-07-23
+{ .post-date }
+
 - block : 라인 하나의 전체를 다 차지한다.
 
     - inline 요소는 컨텐츠 너비만큼을 차지하며, 라인 하나에 여러 요소가 배치될 수 있다.

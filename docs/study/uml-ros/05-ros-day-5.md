@@ -8,6 +8,9 @@ tags: [ROS, LIDAR, OpenCV, 차선 인식]
 
 # ROS 5일차
 
+작성일 2023-06-23 · 최종 수정일 2024-09-19
+{ .post-date }
+
 - ranges matrix에는 각각 거리값이 들어가 있음.
 
     - deg : -90 ~ +90

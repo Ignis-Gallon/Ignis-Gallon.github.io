@@ -8,6 +8,9 @@ tags: [알고리즘, 최대 유량, Ford-Fulkerson, Edmonds-Karp]
 
 # Maximum Flow Problem
 
+작성일 2022-12-04 · 최종 수정일 2022-12-05
+{ .post-date }
+
 - 최대 유량 문제 (Maximum Flow Problem) : 특정한 지점에서 다른 지점으로, 얼마나 많은 유량(flow)을 동시에 보낼 수 있는지 계산하는 문제, 네트워크 플로우라고도 한다.
 
 ## 기본 용어

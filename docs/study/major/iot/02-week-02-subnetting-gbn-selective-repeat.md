@@ -8,6 +8,9 @@ tags: [사물인터넷, 네트워크, Subnetting, TCP, Go-Back-N]
 
 # 2주차 - Subnetting, GBN & Selective Repeat
 
+작성일 2023-09-26 · 최종 수정일 2025-04-11
+{ .post-date }
+
 ## &lt;Subnetting&gt;
 
 > IPv4 주소는 4개의 바이너리 8자리 수로 이루어져 총 32비트로 구성되어 있다. IPv4 주소를 제대로 이해하기 위해서는 서브넷의 개념을 알아야 한다.

@@ -8,6 +8,9 @@ tags: [통계, 박스 플롯, 사분위수, 이상치]
 
 # 박스 플롯
 
+작성일 2024-02-13
+{ .post-date }
+
 [상자그림 복습 (개념 이해하기) | 양적 자료 요약 | Khan Academy](https://ko.khanacademy.org/math/statistics-probability/summarizing-quantitative-data/box-whisker-plots/a/box-plot-review)
 
 - 중위값: 가운데 두 수의 평균이며, 홀수 개일 경우, 중앙의 값이다.

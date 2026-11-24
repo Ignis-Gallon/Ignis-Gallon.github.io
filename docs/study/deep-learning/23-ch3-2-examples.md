@@ -8,6 +8,9 @@ tags: [딥러닝, Autoencoder, 이상 탐지, Colab]
 
 # Deep Learning 강의 > Ch.3-2 Autoencoder & Anomaly Detection Examples
 
+작성일 2023-07-13
+{ .post-date }
+
 [Smart Design Lab | KAIST](http://www.smartdesignlab.org/dl_aischool_2021.html)
 
 ⇒ 데이터 압축을 해제하지 않고 colab에 올린다음 해제한다. 시간이 절약됨.

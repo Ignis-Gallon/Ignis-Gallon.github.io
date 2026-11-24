@@ -8,6 +8,9 @@ tags: [딥러닝, Autoencoder, Latent Vector, MNIST]
 
 # Autoencoder
 
+작성일 2023-07-15 · 최종 수정일 2023-07-16
+{ .post-date }
+
 앞에서 다룬 Node와 Dense Layer를 정리하면 다음과 같다.
 
 - Node : Input이 들어오면 그 Input값에 가중치를 곱하고 편향값을 더한 뒤, Activation Function을 거쳐 Output을 출력하는 구조

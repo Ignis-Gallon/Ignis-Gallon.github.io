@@ -8,6 +8,9 @@ tags: [오픈소스SW설계, Linux, 환경 변수, chmod, sed]
 
 # 3주차 온라인 강의: 사용자 환경, 파일 소유권, 텍스트 처리
 
+작성일 2022-10-02 · 최종 수정일 2022-10-20
+{ .post-date }
+
 ## `User environments`
 
 - Linux is a `multi-user operating system`

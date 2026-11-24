@@ -8,6 +8,9 @@ tags: [데이터베이스, 함수적 종속성, 정규화, BCNF]
 
 # 함수적 종속성과 정규화
 
+작성일 2023-12-06 · 최종 수정일 2024-12-04
+{ .post-date }
+
 ## &lt;함수적 종속성&gt;
 
 ![](../../../assets/img/study/major/database/12-functional-dependency-normalization/01.webp)

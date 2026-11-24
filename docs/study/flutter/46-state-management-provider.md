@@ -8,6 +8,9 @@ tags: [Flutter, 상태 관리, Provider, ChangeNotifier, setState]
 
 # State Management(Provider)
 
+작성일 2023-03-11
+{ .post-date }
+
 [플러터(Flutter) 조금 매운맛 Provider 입문 1: Provider와 State management](https://www.youtube.com/watch?v=-3iD7f3e_SU&list=PLQt_pzi-LLfoOpp3b-pnnLXgYpiFEftLB&index=33)
 
 - State란? 어떤 형태이든 앱의 화면 즉, UI에 변화가 생기도록 영향을 미치는 데이터를 말한다. 데이터의 종류는 크게 두 개가 있다.

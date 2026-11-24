@@ -8,6 +8,9 @@ tags: [데이터베이스, Open API, REST API, Geocoding]
 
 # Open API
 
+작성일 2023-10-13 · 최종 수정일 2023-10-19
+{ .post-date }
+
 ## &lt;Naver Geocoding 실습&gt;
 
 > RESTful API를 사용한 실습을 진행한다.

@@ -8,6 +8,9 @@ tags: [베이즈 추론, 켤레 사전분포, MLE, MAP, 베타 분포]
 
 # 켤레 사전분포: 동전 던지기로 보는 MLE, MAP, conjugacy
 
+작성일 2025-03-06
+{ .post-date }
+
 Gregory Gundersen의 블로그 글 "Conjugacy in Bayesian Inference"를 읽고 정리한 글이다. 동전 던지기라는 가장 단순한 예제 하나로 MLE가 왜 과적합하는지, prior를 넣으면 무엇이 달라지는지, 그리고 prior를 고를 때 왜 켤레(conjugate) 관계를 따지는지를 순서대로 따라간다. 수식은 블로그의 전개를 따르되 직접 다시 계산해 보며 적었다.
 
 ## Conjugacy란

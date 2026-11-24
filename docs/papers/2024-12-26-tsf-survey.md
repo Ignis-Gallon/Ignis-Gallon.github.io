@@ -8,6 +8,9 @@ tags: [시계열 예측, 서베이, Transformer, GNN, Foundation Model, 평가 �
 
 # A Survey of Deep Learning and Foundation Models for Time Series Forecasting 리뷰
 
+작성일 2024-12-26 · 최종 수정일 2024-12-30
+{ .post-date }
+
 시계열 예측(Time Series Forecasting, TSF) 분야를 처음 공부하면서 전체 지형을 파악하려고 읽은 서베이 논문이다. 통계 모델에서 딥러닝, Transformer, GNN, foundation model, 지식 활용, 평가 방법까지를 한 편에서 다룬다. 논문 전체가 COVID-19 같은 팬데믹 예측을 예시로 삼아 서술된다는 점이 특징이다.
 
 두 번에 나누어 읽었다. 처음에는 1 ~ 3장을 문단 단위로 따라가며 모르는 개념을 찾아 정리했고, 며칠 뒤 3장 뒷부분부터 8장까지를 요점 위주로 읽었다. 나에게 실제로 필요한 내용은 3장부터였기 때문에, 의학 도메인에 치우친 부분은 가볍게 넘겼다. 아래는 논문의 순서를 따르되 내가 정리한 방식으로 다시 쓴 것이고, 읽으며 든 생각과 질문을 함께 적었다.

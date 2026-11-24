@@ -8,6 +8,9 @@ tags: [베이즈 추론, 선형 회귀, 최소제곱, 정규화, MAP, 주변화,
 
 # 최소제곱에서 베이즈 회귀까지
 
+작성일 2025-02-26 · 최종 수정일 2025-03-07
+{ .post-date }
+
 회귀 문제 하나를 놓고 최소제곱에서 출발해 정규화, 확률적 회귀, MLE, MAP를 거쳐 완전한 베이즈 예측까지 한 단계씩 올라가는 글이다. 서울대학교 산업공학과 DSBA 연구실의 YouTube 세미나 영상을 보며 정리했다. 이 영상은 M. E. Tipping의 튜토리얼 논문 "Bayesian Inference: An Introduction to Principles and Practice in Machine Learning"을 리뷰한 것이다. 여기에 PRML 3.3절 Bayesian Linear Regression을 읽으며 적어 둔 노트를 합쳤다. PRML을 먼저 읽을 때 막혔던 질문 가운데 일부는 이 강의를 정리하면서 풀렸다.
 
 각 단계에서 "앞 단계로는 왜 부족한가"가 다음 단계의 동기가 된다. 정리하면서 스스로 던진 질문이 많았고, 대부분은 뒤 단계를 공부하면서 답을 찾았다. 질문과 답을 흐름 속에 그대로 남겼다.

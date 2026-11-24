@@ -8,6 +8,9 @@ tags: [사물인터넷, 네트워크, TCP, Congestion Control]
 
 # 3주차 - Congestion Control
 
+작성일 2023-09-26 · 최종 수정일 2023-10-17
+{ .post-date }
+
 ## Congestion Control
 
 ---

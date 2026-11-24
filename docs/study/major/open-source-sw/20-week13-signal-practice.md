@@ -8,6 +8,9 @@ tags: [오픈소스SW설계, 시그널, sigaction]
 
 # 13주차: 시그널의 종류와 실습
 
+작성일 2022-11-24
+{ .post-date }
+
 - signal이란 무엇인가?  
     → man 7 signal 을 해서 section 7을 보면, signal에 대한 overview. 전반적인 설명이 나온다. 사실 signal은 숫자로 선언되어 있는데, signal.h에 이름으로 define되어 있다.
 

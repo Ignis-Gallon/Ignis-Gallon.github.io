@@ -8,6 +8,9 @@ tags: [Node.js, Chart.js, 서버 사이드 렌더링, 클라이언트 사이드 
 
 # Chart를 이용한 Graph
 
+작성일 2022-11-18
+{ .post-date }
+
 - `Client` ↔ `Server` ↔ `DB Server`
 
 - `그래프를 표현하는 두 가지 방법`

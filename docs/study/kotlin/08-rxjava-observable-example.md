@@ -8,6 +8,9 @@ tags: [Kotlin, RxJava, RxKotlin, Observable]
 
 # RxJava 예제 > Observable Example Code
 
+작성일 2022-09-27
+{ .post-date }
+
 RxJava와 RxKotlin의 Observable을 만들고 구독하는 방법(just, fromIterable, empty, never, range, create, defer, Single, dispose)을 실습한 예제 코드이다.
 
 ```kotlin

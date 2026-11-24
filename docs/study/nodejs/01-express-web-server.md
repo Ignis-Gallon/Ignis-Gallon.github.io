@@ -8,6 +8,9 @@ tags: [Node.js, Express, npm, MySQL]
 
 # Express 웹서버 만들기
 
+작성일 2022-11-18
+{ .post-date }
+
 - `npm init -y` : 현재 디렉터리를 새로운 프로젝트로 지정해준다.
 
     - npm : Node Package Manager 
