@@ -1,0 +1,19 @@
+# 과목을 수강한 학기 순서로 놓습니다.
+use_index_title: true
+nav:
+  - index.md
+  - algorithms
+  - microcontroller
+  - open-source-sw
+  - oop-cpp
+  - sensor-engineering
+  - embedded-architecture
+  - os
+  - embedded-vision
+  - iot
+  - network
+  - image-processing
+  - database
+  - ai
+  - embedded-special-topics
+  - mobile-sw
