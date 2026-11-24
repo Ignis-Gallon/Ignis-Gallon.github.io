@@ -4,12 +4,15 @@
 [project]
 site_name = "Ignis-Gallon Archive"
 site_url = "https://ignis-gallon.github.io/"
-site_description = "학부 시절의 전공, 스터디, 프로젝트, 연구 기록"
+site_description = "연구, 논문, 프로젝트, 스터디 기록"
 repo_url = "https://github.com/Ignis-Gallon/Ignis-Gallon.github.io"
 repo_name = "Ignis-Gallon.github.io"
 
 # 메뉴는 여기서 나열하지 않습니다. docs/ 폴더 구조에서 자동으로 만들어지고,
 # 탭 순서는 docs/.nav.yml, 메뉴 이름은 각 폴더 index.md의 title에서 옵니다.
+
+# 홈 화면 소개 영역의 모양
+extra_css = ["stylesheets/extra.css"]
 
 # 수식 (MathJax). 본문에서 $...$ 와 $$...$$ 로 씁니다.
 extra_javascript = [
@@ -20,14 +23,14 @@ extra_javascript = [
 [project.theme]
 language = "ko"
 features = [
-  # 전공/스터디/프로젝트/연구를 상단 탭으로, 스크롤해도 고정
+  # 연구/논문/프로젝트/스터디를 상단 탭으로, 스크롤해도 고정
   "navigation.tabs",
   "navigation.tabs.sticky",
   # 탭 안의 1단계 폴더(학기, 묶음)를 사이드바의 그룹 제목으로 표시
   "navigation.sections",
   # 폴더의 index.md를 그 폴더의 개요 페이지로 연결
   "navigation.indexes",
-  # 본문 위에 "전공 > 3학년 1학기 > 운영체제" 경로 표시
+  # 본문 위에 "스터디 > 전공 > 3학년 1학기 > 운영체제" 경로 표시
   "navigation.path",
   "navigation.footer",
   "navigation.top",

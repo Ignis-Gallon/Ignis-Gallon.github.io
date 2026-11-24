@@ -3,7 +3,7 @@
 use_index_title: true
 nav:
   - index.md
-  - major
-  - study
-  - projects
   - research
+  - papers
+  - projects
+  - study

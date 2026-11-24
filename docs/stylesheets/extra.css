@@ -1,0 +1,35 @@
+/* 홈 화면의 소개 영역: 왼쪽에 사진, 오른쪽에 이름과 소개 글 */
+.profile {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 1.5rem 2.5rem;
+  margin-bottom: 2.5rem;
+}
+
+.profile > p:first-child {
+  flex: 0 0 auto;
+  margin: 0;
+}
+
+.profile__photo {
+  display: block;
+  width: 9rem;
+  height: 9rem;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.profile__text {
+  flex: 1 1 18rem;
+  min-width: 0;
+}
+
+.profile__text h1 {
+  margin: 0 0 0.25rem;
+}
+
+.profile__tagline {
+  margin-top: 0;
+  color: var(--md-default-fg-color--light);
+}

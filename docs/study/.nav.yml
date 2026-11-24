@@ -1,0 +1,6 @@
+# 스터디 탭 안의 순서입니다. 전공을 맨 위에 두고, 나머지 주제는 폴더 이름 순으로 이어집니다.
+nav:
+  - index.md
+  - major
+  - glob: "*"
+    ignore_no_matches: true
