@@ -1,0 +1,97 @@
+# 사이트 설정. 문서: https://zensical.org/docs/
+# 버전은 requirements.txt에 고정되어 있습니다 (zensical 0.1.3).
+
+[project]
+site_name = "Ignis-Gallon Archive"
+site_url = "https://ignis-gallon.github.io/"
+site_description = "학부 시절의 전공, 스터디, 프로젝트, 연구 기록"
+repo_url = "https://github.com/Ignis-Gallon/Ignis-Gallon.github.io"
+repo_name = "Ignis-Gallon.github.io"
+
+# 메뉴는 여기서 나열하지 않습니다. docs/ 폴더 구조에서 자동으로 만들어지고,
+# 탭 순서는 docs/.nav.yml, 메뉴 이름은 각 폴더 index.md의 title에서 옵니다.
+
+# 수식 (MathJax). 본문에서 $...$ 와 $$...$$ 로 씁니다.
+extra_javascript = [
+  "javascripts/mathjax.js",
+  "https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js",
+]
+
+[project.theme]
+language = "ko"
+features = [
+  # 전공/스터디/프로젝트/연구를 상단 탭으로, 스크롤해도 고정
+  "navigation.tabs",
+  "navigation.tabs.sticky",
+  # 탭 안의 1단계 폴더(학기, 묶음)를 사이드바의 그룹 제목으로 표시
+  "navigation.sections",
+  # 폴더의 index.md를 그 폴더의 개요 페이지로 연결
+  "navigation.indexes",
+  # 본문 위에 "전공 > 3학년 1학기 > 운영체제" 경로 표시
+  "navigation.path",
+  "navigation.footer",
+  "navigation.top",
+  "navigation.instant",
+  "navigation.instant.prefetch",
+  "navigation.tracking",
+  "toc.follow",
+  "search.highlight",
+  "content.code.copy",
+  "content.code.annotate",
+  "content.footnote.tooltips",
+  "content.tooltips",
+]
+
+[project.theme.font]
+text = "Noto Sans KR"
+code = "JetBrains Mono"
+
+[[project.theme.palette]]
+media = "(prefers-color-scheme)"
+toggle.icon = "lucide/sun-moon"
+toggle.name = "라이트 모드로 전환"
+
+[[project.theme.palette]]
+media = "(prefers-color-scheme: light)"
+scheme = "default"
+toggle.icon = "lucide/sun"
+toggle.name = "다크 모드로 전환"
+
+[[project.theme.palette]]
+media = "(prefers-color-scheme: dark)"
+scheme = "slate"
+toggle.icon = "lucide/moon"
+toggle.name = "시스템 설정 따르기"
+
+# 폴더별 .nav.yml 을 읽어 메뉴를 구성합니다 (docs/.nav.yml 참고).
+[project.plugins.awesome-nav]
+
+[project.markdown_extensions]
+abbr = {}
+admonition = {}
+attr_list = {}
+def_list = {}
+footnotes = {}
+md_in_html = {}
+toc.permalink = true
+pymdownx.arithmatex.generic = true
+pymdownx.betterem = {}
+pymdownx.caret = {}
+pymdownx.details = {}
+pymdownx.emoji.emoji_generator = "zensical.extensions.emoji.to_svg"
+pymdownx.emoji.emoji_index = "zensical.extensions.emoji.twemoji"
+pymdownx.highlight.anchor_linenums = true
+pymdownx.highlight.line_spans = "__span"
+pymdownx.highlight.pygments_lang_class = true
+pymdownx.inlinehilite = {}
+pymdownx.keys = {}
+pymdownx.magiclink = {}
+pymdownx.mark = {}
+pymdownx.smartsymbols = {}
+pymdownx.superfences.custom_fences = [
+  { name = "mermaid", class = "mermaid", format = "pymdownx.superfences.fence_code_format" },
+]
+pymdownx.tabbed.alternate_style = true
+pymdownx.tabbed.combine_header_slug = true
+pymdownx.tasklist.custom_checkbox = true
+pymdownx.tilde = {}

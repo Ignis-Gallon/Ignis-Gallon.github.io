@@ -1,0 +1,9 @@
+# 상단 탭의 순서입니다. 탭을 추가하려면 폴더를 만들고 여기에 한 줄 추가합니다.
+# 각 탭과 그 아래 폴더의 메뉴 이름은 해당 폴더 index.md 머리말의 title 에서 가져옵니다.
+use_index_title: true
+nav:
+  - index.md
+  - major
+  - study
+  - projects
+  - research
