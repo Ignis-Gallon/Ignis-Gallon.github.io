@@ -90,7 +90,11 @@ Transformer의 ICL을 분석한 연구는 있었지만 수치 수열에 대한 �
 
 ### QK circuit과 OV circuit
 
-Attention head 하나는 두 가지 일을 한다.
+Attention head 하나는 두 가지 일을 한다. "어디를 볼 것인가"와 "거기서 무엇을 가져올 것인가"다. Attention의 구조를 직접 그려 놓고 두 일이 각각 어느 부분에서 일어나는지 표시해 보았다.
+
+![Scaled dot-product attention과 multi-head attention 구조에 QK와 OV의 역할을 표시한 그림](../assets/img/papers/2025-03-04-affine-recurrence/sketch-qk-ov-attention.webp)
+
+왼쪽이 head 하나 안의 계산(scaled dot-product attention)이고, 오른쪽이 여러 head를 묶은 multi-head attention이다. 왼쪽에서 ①로 표시한 아래쪽 MatMul이 query와 key를 곱해 어디에 집중할지를 정하는 곳이고, ②로 표시한 위쪽 MatMul이 그 weight로 value를 가중합해 무엇을 보낼지를 정하는 곳이다. ①에서 softmax까지가 QK circuit, $V$에서 ②를 거쳐 오른쪽 위의 Linear까지가 OV circuit에 해당한다.
 
 | | 하는 일 | 관련 행렬 |
 |---|---|---|
@@ -103,7 +107,13 @@ OV circuit이 답하는 질문은 "한 위치에서 다른 위치로 어떤 정�
 
 ### Attention pattern
 
-- **0번 layer**: 바로 직전 벡터에 집중한다. 처음 한두 위치에서는 자기 자신을 보지만 그 뒤로는 바로 앞 위치를 본다. 과거 값을 복사하는 패턴이다.
+Attention pattern은 "각 위치(query)가 앞의 어느 위치(key)를 보는가"를 표로 그린 것이다. 0번 layer의 head 세 개를 보면 다음과 같다.
+
+![0번 layer의 head 0, 1, 2의 attention pattern](../assets/img/papers/2025-03-04-affine-recurrence/layer0-attention-pattern.webp)
+
+세로축이 query, 가로축이 key이고 칸이 진할수록 attention weight가 크다. 진한 칸이 대각선 바로 아래를 따라 내려간다. Query 0과 1은 자기 자신(key 0, 1)을 보지만, query 2는 key 1을, query 3은 key 2를 보는 식으로 그 뒤로는 한 칸 앞을 본다. 출처: 논문
+
+- **0번 layer**: 위 그림처럼 바로 직전 벡터에 집중한다. 처음 한두 위치에서는 자기 자신을 보지만 그 뒤로는 바로 앞 위치를 본다. 과거 값을 복사하는 패턴이다. Head 1과 2는 거의 한 칸에만 집중하고, head 0은 주변 칸으로 조금 번져 있다.
 - **1번 layer**: attention의 대부분이 두 번째 벡터, 즉 수열의 초기값 쪽으로 향한다.
 - **2번 layer**: 값이 양수와 음수를 오가는 수열(계수가 음수인 경우로 이해했다)에서 checkerboard 모양의 attention pattern이 나타난다. 이전 벡터들과 특정한 방식으로 상호작용하면서 예측을 다듬는다.
 
@@ -124,13 +134,17 @@ OV circuit이 답하는 질문은 "한 위치에서 다른 위치로 어떤 정�
 
 결과는 layer별로 뚜렷하게 갈린다.
 
+![Layer와 head별 direct logit attribution](../assets/img/papers/2025-03-04-affine-recurrence/fig7-direct-logit-attribution.webp)
+
+세로가 layer(0, 1, 2), 가로가 head(0 ~ 7)다. 파란색은 예측을 정답 쪽으로 미는 기여, 빨간색은 반대쪽으로 미는 기여이고, 색이 진할수록 크다. 윗줄은 거의 모두 파랗고, 가운뎃줄은 거의 흰색이고, 아랫줄은 빨갛다. 출처: 논문 Figure 7
+
 | Layer | 기여 |
 |---|---|
 | 0번 | 양의 방향. 정답 쪽으로 정보를 보낸다 |
 | 1번 | 거의 없음 |
 | 2번 | 음의 방향. 이전 예측을 보정한다 |
 
-Transformer가 먼저 단순한 예측을 만들고 마지막에 그것을 수정하는 구조라는 것이 여기서 드러난다. 마지막 layer는 너무 강하게 예측된 부분을 조정한다.
+Transformer가 먼저 단순한 예측을 만들고 마지막에 그것을 수정하는 구조라는 것이 여기서 드러난다. 마지막 layer는 너무 강하게 예측된 부분을 조정한다. 그림에서 2번 layer의 head 0이 가장 진한 빨간색으로, 깎는 쪽의 기여가 가장 크다.
 
 ### Layer별 역할
 
@@ -183,7 +197,11 @@ Circuit의 노드는 모델의 구성 요소다. Attention head일 수도, 뉴�
 
 ### 제안
 
-- **PEAP(Position-aware Edge Attribution Patching)**: gradient 기반 방법인 edge attribution patching을 확장해, 토큰 위치별로 edge의 중요도를 따로 평가한다. 위치를 가로지르는 edge의 중요도도 평가할 수 있다. 그 결과 더 작고 정확한 circuit을 얻는다. 논문의 그림에서 non-positional circuit은 한 layer의 모든 위치가 관여하는 것으로 그려지고, positional circuit은 위치별로 edge가 따로 그려진다.
+- **PEAP(Position-aware Edge Attribution Patching)**: gradient 기반 방법인 edge attribution patching을 확장해, 토큰 위치별로 edge의 중요도를 따로 평가한다. 위치를 가로지르는 edge의 중요도도 평가할 수 있다. 그 결과 더 작고 정확한 circuit을 얻는다.
+
+    ![Positional circuit과 non-positional circuit의 비교](../assets/img/papers/2025-03-04-affine-recurrence/peap-fig1-positional-circuit.webp)
+
+    아래쪽 두 그림에서 네모 하나가 "어느 layer의 어느 위치"다. 오른쪽 non-positional circuit은 어떤 layer가 circuit에 들어가면 그 layer의 세 위치가 모두 칠해지고 edge도 모든 위치 사이에 그려진다. 왼쪽 positional circuit은 실제로 쓰이는 위치의 네모와 edge만 칠해져 훨씬 작다. 위쪽 그래프는 같은 edge 수에서 positional circuit(보라색)의 faithfulness가 더 높다는 것을 보여 준다. 출처: "Position-aware Automatic Circuit Discovery" Figure 1
 - **Dataset schema**: 위치 정보를 circuit에 넣는 것은 입력들의 길이와 구조가 같으면 간단하지만 그렇지 않으면 어렵다. 같은 역할의 단어가 예시마다 다른 위치에 오고 길이도 다르기 때문이다. Schema는 토큰 구간(span)에 의미 label을 붙인다. "The war lasted from 1453 to 14__"의 `war`와 다른 예시의 `Black Plague`는 둘 다 주어지만 span의 길이가 다르다. 여기에 같은 label을 붙이면 길이가 달라도 같은 자리로 보고 edge의 중요도를 모을 수 있다.
 
 Edge가 중요한지를 판단하는 기준은 세 가지로 정리해 두었다.

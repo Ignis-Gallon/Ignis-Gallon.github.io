@@ -32,9 +32,9 @@ tags: [시계열, AR, 정상성, ADF, Box-Cox, STL, AIC, BIC]
 
 ![AirPassengers 원본](../../assets/img/research/sailab/06-ar-order-selection/airpassengers.webp){ width="520" }
 
-*AirPassengers 원본 시계열.*
+*AirPassengers 원본 시계열. 해마다 같은 모양의 봉우리가 반복되면서 전체가 오른쪽 위로 올라가고, 봉우리의 높이도 해마다 커진다.*
 
-강한 상승 추세, 12개월 주기의 계절성, 그리고 뒤로 갈수록 커지는 분산이 모두 보인다. ADF 검정 결과도 정상 시계열이 아님을 가리킨다.
+이 그림 한 장에 정상 시계열이 아닌 이유 세 가지가 모두 들어 있다. 전체가 올라가는 강한 상승 추세, 해마다 반복되는 12개월 주기의 계절성, 그리고 뒤로 갈수록 봉우리와 골의 차이가 벌어지는 커지는 분산이다. ADF 검정 결과도 정상 시계열이 아님을 가리킨다.
 
 | | ADF 통계량 | p-value |
 |---|---|---|
@@ -61,6 +61,8 @@ Box-Cox 변환은 로그 변환처럼 분산을 안정시키는 변환이다. �
 
 *위에서부터 원본, 차분, 로그 + 차분, Box-Cox + 차분, Box-Cox + classical 분해 + 차분, Box-Cox + STL 분해 + 차분, multiplicative 분해 + 차분.*
 
+위에서 아래로 내려가며 원본에서 무엇이 사라지는지를 보면 된다. 둘째 줄(차분)에서는 오른쪽 위로 올라가던 추세가 사라져 0 주위를 오가지만, 오른쪽으로 갈수록 진폭이 커진다. 셋째와 넷째 줄(로그나 Box-Cox 뒤 차분)에서는 진폭이 처음부터 끝까지 고르다. 다만 같은 모양이 주기적으로 반복되는 것은 그대로다. 다섯째와 여섯째 줄(계절성 분해를 더한 것)에서는 그 반복되는 모양까지 흐려져 불규칙한 떨림에 가까워진다. 추세, 분산, 계절성을 하나씩 걷어 내는 과정이다.
+
 ## 변환 뒤의 ADF 검정
 
 먼저 차분 계열 세 가지의 결과다.
@@ -86,6 +88,10 @@ AirPassengers는 계절성이 강하다. 그렇다면 계절성을 먼저 제거
 - **순서**: 계절성 분해는 차분보다 먼저 적용한다. 차분을 먼저 하면 원래의 계절 구조가 훼손될 수 있으므로, 계절성을 먼저 제거하고 차분으로 추세를 제거하는 순서가 통상적으로 더 효과적이라고 한다.
 - **모형**: AirPassengers의 계절성은 값이 커질수록 함께 커지는 multiplicative 형태다. 다만 Box-Cox 변환을 먼저 적용하면 additive 분해로도 충분하다고 한다. Box-Cox 변환이 구간별 분산 차이를 줄여 주기 때문일 것이다.
 - **주기**: ACF를 그려 보면 lag 12를 기준으로 강한 자기상관이 나타난다. 월별 데이터의 연간 주기라는 도메인 지식과도 맞으므로 주기를 12로 두었다.
+
+![주기를 정할 때 그린 ACF](../../assets/img/research/sailab/06-ar-order-selection/acf-period-12.webp){ width="420" }
+
+*주기를 정하려고 그린 ACF. 막대가 lag가 커질수록 천천히 낮아지는 가운데 lag 12, 24, 36 부근에서 다시 솟는다. 12개월 전, 24개월 전의 값과 특히 닮았다는 뜻이다.*
 
 전체 결과는 다음과 같다. 판정은 유의수준 5% 기준이다.
 
@@ -130,9 +136,15 @@ $$
 
 ## 결과 1: Box-Cox + 차분
 
+아래 세 절은 같은 순서로 진행된다. ACF와 PACF를 눈으로 보고, 차수별 AIC와 BIC를 계산하고, 몇 가지 차수로 실제 예측을 해 본다. 그림을 읽는 법도 같다.
+
+- **ACF, PACF**: 가로축이 lag, 세로 막대가 그 lag에서의 상관이다. 하늘색 띠 밖으로 나온 막대만 의미 있는 상관으로 본다.
+- **AIC, BIC**: 가로축이 AR의 차수다. 선이 가장 낮은 곳이 두 기준이 고르는 차수다.
+- **예측**: 파란 실선이 원본, 초록 점선이 예측 구간의 실제값, 주황 점선이 예측값이다. 주황 점선이 초록 점선에 얼마나 붙어 있는지를 본다.
+
 ![Box-Cox + 차분의 ACF와 PACF](../../assets/img/research/sailab/06-ar-order-selection/boxcox-diff-acf-pacf.webp)
 
-*Box-Cox 변환 뒤 차분한 시계열의 ACF(왼쪽)와 PACF(오른쪽).*
+*Box-Cox 변환 뒤 차분한 시계열의 ACF(왼쪽)와 PACF(오른쪽). 왼쪽에서는 lag 12와 24의 막대가 띠 밖으로 높이 솟아 있고, 오른쪽에서는 lag 12 뒤로 막대가 띠 안으로 들어온다.*
 
 - ACF에서는 lag 12마다 강한 자기상관이 반복해서 나타난다. 계절성이 그대로 남아 있다.
 - PACF에서는 lag 12에서 강하게 튄 뒤 끊긴다. 이 그림만 보면 lag 12가 가장 적절한 차수로 보였다.
@@ -141,9 +153,9 @@ $$
 
 ![Box-Cox + 차분의 AIC와 BIC](../../assets/img/research/sailab/06-ar-order-selection/boxcox-diff-aic-bic.webp){ width="640" }
 
-*차수 1부터 20까지의 AIC와 BIC.*
+*차수 1부터 20까지의 AIC와 BIC. 두 선 모두 차수 7을 지나며 급하게 떨어져 12와 13 부근에서 바닥을 찍고, 그 뒤로는 천천히 올라간다.*
 
-예상과 달리 AIC와 BIC 모두 lag 12가 아니라 lag 13에서 가장 낮았다. 어느 쪽이 맞는지 예측으로 비교했다.
+예상과 달리 AIC와 BIC 모두 lag 12가 아니라 lag 13에서 가장 낮았다. 그림에서 바닥이 12가 아니라 한 칸 오른쪽에 있다. 어느 쪽이 맞는지 예측으로 비교했다.
 
 | 차수 | RMSE | MAPE |
 |---|---|---|
@@ -151,6 +163,10 @@ $$
 | Lag 12 | 30.58 | 6.17% |
 | Lag 13 | 23.35 | 4.65% |
 | Lag 14 | 26.57 | 5.39% |
+
+![Box-Cox + 차분, lag 10의 예측](../../assets/img/research/sailab/06-ar-order-selection/boxcox-diff-forecast-lag10.webp){ width="640" }
+
+*Lag 10. RMSE 44.23, MAPE 8.62%. 주황 점선이 오르내리는 시점은 맞추지만 높이가 어긋난다. 봉우리는 실제보다 낮고 골은 실제보다 얕으며, 끝부분에서는 실제값보다 한참 위에 머문다.*
 
 ![Box-Cox + 차분, lag 12의 예측](../../assets/img/research/sailab/06-ar-order-selection/boxcox-diff-forecast-lag12.webp){ width="640" }
 
@@ -160,20 +176,24 @@ $$
 
 *Lag 13. RMSE 23.35, MAPE 4.65%.*
 
-AIC와 BIC가 고른 lag 13이 예측에서도 가장 좋았다. PACF를 눈으로 보고 고른 lag 12보다 RMSE가 7 이상 작다. 그래프 판독만으로 차수를 정하지 말고 여러 기준을 함께 비교해야 한다고 느꼈다.
+![Box-Cox + 차분, lag 14의 예측](../../assets/img/research/sailab/06-ar-order-selection/boxcox-diff-forecast-lag14.webp){ width="640" }
+
+*Lag 14. RMSE 26.57, MAPE 5.39%.*
+
+네 그림을 차례로 보면 차수가 10에서 12, 13으로 늘어날수록 주황 점선이 초록 점선에 붙는다. 차수 10은 1년 전의 값을 보지 못하고, 12부터는 본다. 차수를 14로 더 늘리면 오차가 다시 커진다. AIC와 BIC가 고른 lag 13이 예측에서도 가장 좋았다. PACF를 눈으로 보고 고른 lag 12보다 RMSE가 7 이상 작다. 그래프 판독만으로 차수를 정하지 말고 여러 기준을 함께 비교해야 한다고 느꼈다.
 
 ## 결과 2: Box-Cox + Classical 분해 + 차분
 
 ![Classical 분해 뒤의 ACF와 PACF](../../assets/img/research/sailab/06-ar-order-selection/classical-acf-pacf.webp)
 
-*Box-Cox 변환, classical 분해로 계절성 제거, 차분을 거친 시계열의 ACF와 PACF.*
+*Box-Cox 변환, classical 분해로 계절성 제거, 차분을 거친 시계열의 ACF와 PACF. 앞의 그림에서 높이 솟아 있던 lag 12와 24의 막대가 띠 근처로 내려왔다.*
 
 - 앞의 경우처럼 눈에 띄는 절단점이 없다. 계절 성분을 제거해서 계절성 때문에 생기던 자기상관이 사라졌기 때문으로 보인다.
 - 그래도 값이 주기적으로 오르내리는 것으로 보아 계절성이 약간은 남아 있는 것 같다.
 
 ![Classical 분해 뒤의 AIC와 BIC](../../assets/img/research/sailab/06-ar-order-selection/classical-aic-bic.webp){ width="640" }
 
-*차수 1부터 20까지의 AIC와 BIC.*
+*차수 1부터 20까지의 AIC와 BIC. 앞의 그림과 모양이 전혀 다르다. 두 선 모두 차수 1에서 가장 낮고, 차수가 늘수록 대체로 올라간다.*
 
 AIC와 BIC 모두 lag 1에서 가장 낮다. 비정상적인 패턴을 모두 걷어 냈으니 시점 사이의 의존성이 거의 남지 않아, 바로 앞의 값 하나만으로도 설명이 되는 것이 아닐까 생각했다. Lag 1과, 앞의 실험에서 성능이 좋았던 lag 12, 13을 비교했다.
 
@@ -187,6 +207,10 @@ AIC와 BIC 모두 lag 1에서 가장 낮다. 비정상적인 패턴을 모두 �
 
 *Lag 1. RMSE 28.36, MAPE 6.17%.*
 
+![Classical 분해, lag 12의 예측](../../assets/img/research/sailab/06-ar-order-selection/classical-forecast-lag12.webp)
+
+*Lag 12. RMSE 28.72, MAPE 6.03%.*
+
 ![Classical 분해, lag 13의 예측](../../assets/img/research/sailab/06-ar-order-selection/classical-forecast-lag13.webp)
 
 *Lag 13. RMSE 23.18, MAPE 4.73%.*
@@ -197,7 +221,7 @@ AIC와 BIC 모두 lag 1에서 가장 낮다. 비정상적인 패턴을 모두 �
 
 ![STL 분해 뒤의 ACF와 PACF](../../assets/img/research/sailab/06-ar-order-selection/stl-acf-pacf.webp)
 
-*Box-Cox 변환, STL 분해로 계절성 제거, 차분을 거친 시계열의 ACF와 PACF.*
+*Box-Cox 변환, STL 분해로 계절성 제거, 차분을 거친 시계열의 ACF와 PACF. 대부분의 막대가 띠 안에 있고, lag 1과 12 부근의 몇 개만 띠 밖으로 나온다.*
 
 - 계절성을 제거한 뒤에는 상관 구조가 상당히 무너진다.
 - Lag 12의 배수 근처에서 값이 튀는 경향은 남아 있지만, 전체적으로 자기상관이 약해졌다. 어느 정도 정상화가 된 것으로 보았다.
@@ -216,13 +240,17 @@ AIC와 BIC 모두 lag 1에서 가장 낮다. 비정상적인 패턴을 모두 �
 
 ![STL 분해, lag 1의 예측](../../assets/img/research/sailab/06-ar-order-selection/stl-forecast-lag1.webp)
 
-*Lag 1. RMSE 8.01, MAPE 1.63%.*
+*Lag 1. RMSE 8.01, MAPE 1.63%. 주황 점선이 초록 점선과 거의 겹쳐 구분되지 않는다.*
+
+![STL 분해, lag 12의 예측](../../assets/img/research/sailab/06-ar-order-selection/stl-forecast-lag12.webp)
+
+*Lag 12. RMSE 12.47, MAPE 2.44%.*
 
 ![STL 분해, lag 13의 예측](../../assets/img/research/sailab/06-ar-order-selection/stl-forecast-lag13.webp)
 
-*Lag 13. RMSE 15.56, MAPE 3.10%.*
+*Lag 13. RMSE 15.56, MAPE 3.10%. 봉우리에서 주황 점선이 실제값보다 조금 위로 올라간다.*
 
-AIC와 BIC가 고른 lag 1이 예측에서도 가장 좋았고, 차수를 늘릴수록 오차가 커졌다.
+AIC와 BIC가 고른 lag 1이 예측에서도 가장 좋았고, 차수를 늘릴수록 오차가 커졌다. 세 그림 모두 앞의 두 전처리보다 주황 점선이 실제값에 훨씬 가깝다. 다만 이 차이를 그대로 믿을 수 없는 이유가 있고, [한계와 할 일](#limitations)에 적었다.
 
 ## AIC와 BIC의 선택과 실제 예측 성능
 

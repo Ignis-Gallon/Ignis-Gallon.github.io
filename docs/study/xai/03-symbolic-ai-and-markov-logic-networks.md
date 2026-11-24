@@ -22,11 +22,17 @@ flowchart LR
   E --> F["Neuro-Symbolic AI"]
 ```
 
-가장 오래 붙잡고 있던 부분은 Markov Logic Network가 확률을 어떻게 부여하는가였다. 그 부분은 스스로 세 단계로 다시 정리했고, 강의를 들으며 생긴 질문 두 개와 찾은 답도 함께 적었다.
+가장 오래 붙잡고 있던 부분은 Markov Logic Network가 확률을 어떻게 부여하는가였다. 그 부분은 스스로 세 단계로 다시 정리했고, 강의를 들으며 생긴 질문 두 개와 찾은 답도 함께 적었다. 그림은 강의 슬라이드에서 가져왔다.
 
 ## 1. Symbolic AI
 
-집에 강도가 들어 경보가 울리는 상황을 생각하자. 여기서 symbol은 개념, 사람, 사건, 행동 무엇이든 될 수 있다.
+Symbolic AI는 상황을 이름 붙인 기호(symbol)로 나타내고, 기호 사이의 규칙으로 추론하는 방법이다. 집에 강도가 들어 경보가 울리는 상황을 생각하자.
+
+![강도와 경보 상황을 symbol로 나타내기](../../assets/img/study/xai/03-symbolic-ai-and-markov-logic-networks/symbols.webp)
+
+*왼쪽의 상황에서 오른쪽의 symbol 다섯 개를 뽑아낸다. 출처: 강의 슬라이드*
+
+여기서 symbol은 개념, 사람, 사건, 행동 무엇이든 될 수 있다.
 
 - `burglary`: 강도
 - `alarm`: 경보
@@ -36,11 +42,27 @@ flowchart LR
 
 Symbolic AI는 이런 symbol 사이의 규칙으로 추론한다.
 
+![Symbol에서 rule로](../../assets/img/study/xai/03-symbolic-ai-and-markov-logic-networks/symbols-to-rules.webp)
+
+*왼쪽의 symbol들을 화살표(←)로 이어 오른쪽의 rule 세 개를 만든다. 화살표의 오른쪽이 조건, 왼쪽이 결론이다. 출처: 강의 슬라이드*
+
 ```text
 alarm   ← burglary
 alarm   ← earthquake
 call(X) ← alarm and hear_alarm(X)
 ```
+
+강도가 들면 경보가 울리고, 지진이 나도 경보가 울린다. 경보가 울렸고 X가 그것을 들었으면 X가 신고 전화를 한다. 이 규칙들은 나무 모양으로 그릴 수 있다.
+
+![Rule을 AND/OR tree로 그린 것](../../assets/img/study/xai/03-symbolic-ai-and-markov-logic-networks/and-or-tree.webp)
+
+*오른쪽이 같은 rule을 그린 AND/OR tree다. 위에서 아래로 "이 결론이 성립하려면 무엇이 필요한가"를 따라 읽는다. 출처: 강의 슬라이드*
+
+맨 위의 `call(X)`가 성립하려면 `alarm`과 `hear_alarm(X)`가 둘 다 필요하고(AND), `alarm`은 `burglary`나 `earthquake` 가운데 하나만 있어도 된다(OR). 결론이 어떤 조건들에서 나왔는지를 이렇게 거슬러 올라가며 읽을 수 있다는 점이 symbolic AI의 장점이다. 신경망 같은 sub-symbolic AI와 비교하면 다음과 같다.
+
+![Symbolic AI와 sub-symbolic AI](../../assets/img/study/xai/03-symbolic-ai-and-markov-logic-networks/symbolic-vs-subsymbolic.webp)
+
+*왼쪽은 tree나 logic으로 쓴 모델, 오른쪽은 신경망이다. 한쪽은 설명 가능하지만 확장성이 낮고, 다른 쪽은 확장성이 좋지만 설명하기 어렵다. 출처: 강의 슬라이드*
 
 | | 장점 | 단점 |
 |---|---|---|
@@ -49,13 +71,25 @@ call(X) ← alarm and hear_alarm(X)
 
 ## 2. Decision Tree
 
-가장 익숙한 symbolic 모델은 decision tree다. 내부 노드는 샘플을 어느 분기로 보낼지 정하는 조건이고, leaf 노드는 분기를 거쳐 도착한 샘플이 어떤 class로 분류되는지를 나타낸다.
+가장 익숙한 symbolic 모델은 decision tree다. 질문을 차례로 던져 샘플을 갈라 나가는 모델이다.
+
+![붓꽃 데이터로 만든 decision tree](../../assets/img/study/xai/03-symbolic-ai-and-markov-logic-networks/decision-tree.webp)
+
+*scikit-learn으로 붓꽃 데이터를 분류한 예다. 파란 점선이 내부 노드의 조건, 빨간 점선이 leaf 노드의 결정이다. 출처: 강의 슬라이드*
+
+내부 노드는 샘플을 어느 분기로 보낼지 정하는 조건이고, leaf 노드는 분기를 거쳐 도착한 샘플이 어떤 class로 분류되는지를 나타낸다. 위 그림의 맨 위 노드는 "꽃잎 길이가 2.45cm 이하인가"를 묻는다. 그렇다면 왼쪽 leaf로 가서 setosa로 분류되고, 아니라면 오른쪽에서 "꽃잎 너비가 1.75cm 이하인가"를 다시 묻는다. 노드에 적힌 `gini`는 그 노드에 서로 다른 class가 얼마나 섞여 있는지를 나타내는 불순도(impurity)로, 어떤 조건으로 나눌지를 고르는 기준이 된다. 조건을 위에서부터 읽으면 분류의 이유가 그대로 드러난다.
 
 Tree 계열 모델은 지금도 성능이 좋다. Kaggle 대회에서는 XGBoost를 앙상블한 모델이 여전히 상위권에 있고, 대출 여부를 정하는 신용 위험 평가에서도 XGBoost가 좋은 성능을 보인다. 다만 XGBoost는 decision tree 하나와 달리 사람이 이해하기 어렵다. 여러 tree의 앙상블이고 tree마다 가중치까지 고려해야 하기 때문이다.
 
 ## 3. First-order Logic
 
-Logic 기반 모델에서 가장 많이 쓰이는 것이 first-order logic(FOL)이다. Logic을 쓰면 많은 정보를 압축해서 표현할 수 있다. 사람 1,000명 사이의 관계를 하나하나 적으면 1,000 × 1,000 크기의 표가 필요하지만, FOL로는 `parent(X, Y)`, X와 Y는 사람의 집합에 속한다는 식 하나로 쓸 수 있다.
+Logic 기반 모델에서 가장 많이 쓰이는 것이 first-order logic(FOL)이다. Logic을 쓰면 많은 정보를 압축해서 표현할 수 있다.
+
+![관계를 하나하나 적는 것과 논리식 하나로 쓰는 것](../../assets/img/study/xai/03-symbolic-ai-and-markov-logic-networks/fol-compact-representation.webp)
+
+*왼쪽처럼 "누가 누구의 부모다"를 하나씩 적는 대신, 변수 X와 Y를 써서 오른쪽의 `parent(X,Y)` 하나로 쓴다. 출처: 강의 슬라이드*
+
+사람 1,000명 사이의 관계를 하나하나 적으면 1,000 × 1,000 크기의 표가 필요하지만, FOL로는 `parent(X, Y)`, X와 Y는 사람의 집합에 속한다는 식 하나로 쓸 수 있다. 이 절의 용어는 뒤에서 계속 쓰이므로 표로 정리해 둔다.
 
 | 용어 | 뜻 | 예 |
 |---|---|---|
@@ -77,6 +111,10 @@ Logic 기반 모델에서 가장 많이 쓰이는 것이 first-order logic(FOL)�
 
 Prolog는 논리 추론을 위한 프로그래밍 언어다. 이미 알고 있는 사실(fact, evidence)과 규칙을 적어 두고 질의를 던진다.
 
+![Prolog 프로그램과 질의, 출력](../../assets/img/study/xai/03-symbolic-ai-and-markov-logic-networks/prolog-program.webp)
+
+*위의 1~5행이 fact, 7~10행이 규칙이다. 아래 왼쪽에 질의를 넣으면 오른쪽에 답이 나온다. 출처: 강의 슬라이드*
+
 ```prolog
 mother_child(trude, sally).
 father_child(tom, sally).
@@ -90,16 +128,24 @@ parent_child(X, Y) :- mother_child(X, Y).
 
 `:-`는 논리적 함의와 비슷한 뜻이다. 첫 번째 규칙은 "Z가 X의 부모이고 Z가 Y의 부모이면 X와 Y는 형제다"로 읽는다. 여기에 `sibling(sally, erica)`를 질의하면 `true`가 나온다. 프로그램에 적힌 fact에서 그 결론을 끌어낼 수 있기 때문이다.
 
-추론은 sub-query를 만들어 가는 방식으로 진행된다.
+추론은 질의를 더 작은 질의(sub-query)로 쪼개어 내려가는 방식으로 진행된다. 아래 그림이 `sibling(sally, erica)`를 푸는 과정이다.
 
-1. `sibling(sally, erica)`를 만족하려면 `parent_child(Z, sally) ∧ parent_child(Z, erica)`를 만족해야 한다. `Z`는 변수다.
-2. `Z`에 들어갈 수 있는 모든 사람을 대입한 sub-query를 만든다.
-3. Sub-query 하나를 골라 그것의 sub-query를 다시 만든다. 이렇게 깊이 우선 탐색(DFS)으로 내려간다.
+![sibling(sally, erica)를 푸는 sub-query tree](../../assets/img/study/xai/03-symbolic-ai-and-markov-logic-networks/prolog-subquery-tree.webp)
+
+*맨 위가 질의이고, 아래로 내려갈수록 더 작은 질의다. 왼쪽 가지가 fact에 닿아 True로 끝난다. 출처: 강의 슬라이드*
+
+1. `sibling(sally, erica)`를 만족하려면 `parent_child(Z, sally) ∧ parent_child(Z, erica)`를 만족해야 한다. `Z`는 변수다. 그림의 둘째 줄이다.
+2. `Z`에 들어갈 수 있는 모든 사람을 대입한 sub-query를 만든다. 그림의 셋째 줄에서 `Z`가 `tom`인 갈래, `mike`인 갈래 등으로 나뉜다.
+3. Sub-query 하나를 골라 그것의 sub-query를 다시 만든다. 이렇게 깊이 우선 탐색(DFS)으로 내려간다. 그림에서는 `tom` 갈래를 골라, `parent_child(tom, sally)`를 `father_child(tom, sally)`로, `parent_child(tom, erica)`를 `father_child(tom, erica)`로 바꾸어 간다. 둘 다 프로그램에 적힌 fact다.
 4. 참을 찾으면 `true`를 반환하고, 거짓이면 아직 방문하지 않은 다른 갈래로 넘어간다.
 
 ## 5. ProbLog
 
 Prolog에서는 fact가 주어지면 그것으로 끝이다. ProbLog에서는 fact가 확률을 갖는다.
+
+![ProbLog 프로그램과 질의, 출력](../../assets/img/study/xai/03-symbolic-ai-and-markov-logic-networks/problog-program.webp)
+
+*동전 던지기 예다. 프로그램의 각 행 옆에 그 뜻이 적혀 있고, 아래에 질의와 출력 0.51, 그 값이 나오는 계산이 있다. 출처: 강의 슬라이드*
 
 ```prolog
 heads(Coin): 1/2; tails(Coin): 1/2 :- toss(Coin), \+biased(Coin).
@@ -138,6 +184,12 @@ M_1 &= \{(rule_1, w_1), (rule_2, w_2)\}
 $$
 
 $rule_1$은 담배를 피우면 암에 걸린다는 규칙이고, $rule_2$는 X와 Y가 친구라면 둘 다 담배를 피우거나 둘 다 피우지 않는다는 규칙이다($\Leftrightarrow$는 논리적 동치). $M_1$이 MLN 하나다.
+
+![MLN이 푸는 문제: 관계형 데이터, 가중치가 붙은 rule, 질문](../../assets/img/study/xai/03-symbolic-ai-and-markov-logic-networks/mln-ground-network.webp)
+
+*왼쪽이 주어진 관계형 데이터, 오른쪽 위가 가중치가 붙은 rule, 오른쪽 아래가 알고 싶은 것이다. 출처: 강의 슬라이드*
+
+위 그림이 MLN이 푸는 문제를 한 장으로 보여 준다. 왼쪽에서 bob, tom, alice는 서로 친구(friend)이고 bob과 alice에게는 담배를 피운다(smoke)는 표시가 붙어 있다. 이 데이터와 오른쪽 위의 rule 두 개를 가지고 "bob은 암에 걸렸는가, alice는 암에 걸렸는가"에 확률로 답하려는 것이다.
 
 가중치의 의미는 다음과 같다.
 
@@ -195,6 +247,12 @@ Query는 주어진 evidence와 rule을 바탕으로 특정 predicate가 참일 �
 
 MLN은 코드로는 predicate와 rule을 정의한 프로그램이 된다. Evidence와 query를 주면 확률을 돌려준다.
 
+![MLN 프로그램, evidence, query와 출력](../../assets/img/study/xai/03-symbolic-ai-and-markov-logic-networks/mln-program-output.webp)
+
+*왼쪽부터 (a) 프로그램, (b) evidence, (c) query이고, 화살표 오른쪽이 출력이다. 출처: 강의 슬라이드(Tuffy 논문의 그림)*
+
+그림의 세 부분을 차례로 옮기면 다음과 같다.
+
 ```text
 // Predicate definitions
 *Friends(person, person)
@@ -247,7 +305,19 @@ Cancer(x)
 
 ### 학습
 
-가중치는 gradient descent로 학습한다. World $\omega$의 log 확률을 가중치 $w_k$로 미분하면 다음과 같다.
+가중치는 gradient descent로 학습한다. World $\omega$의 log 확률을 가중치 $w_k$로 미분한다. 슬라이드의 유도를 옮기면, 먼저 log를 취해 정규화 항을 떼어 내고
+
+$$
+\log P(\omega) = \sum_i w_i\, n_i(\omega) - \log Z
+$$
+
+$Z$를 $w_k$로 미분한다. $Z$는 모든 world의 지수 항의 합이므로, 미분하면 world마다 $n_k(\omega')$가 앞으로 나온다.
+
+$$
+\frac{1}{Z}\frac{\partial Z}{\partial w_k} = \sum_{\omega'} n_k(\omega')\,\frac{\exp\big(\sum_i w_i\, n_i(\omega')\big)}{Z} = \mathbb{E}_{\omega'}\big[n_k(\omega')\big]
+$$
+
+분수 부분이 world $\omega'$의 확률이므로 이 합은 $n_k$의 기댓값이다. 결과는 다음과 같다.
 
 $$
 \frac{\partial}{\partial w_k}\log P(\omega) = n_k(\omega) - \mathbb{E}_{\omega'}\big[n_k(\omega')\big]
@@ -284,17 +354,38 @@ $$
 - $\langle \text{friend}(z, y), w_2 \rangle$: Z의 친구 수
 - $\langle \text{friend}(z, y) * \text{kind}(y), w_3 \rangle$: 슬라이드의 표에서는 Z의 친구 가운데 친절한 사람의 수에 대응한다
 
+![RLR 예시: 사람마다 한 행인 표](../../assets/img/study/xai/03-symbolic-ai-and-markov-logic-networks/rlr-example.webp)
+
+*아래쪽 표에서 한 행이 사람 한 명이다. 앞의 세 열이 위의 세 항에 대응하는 값이고 마지막 열이 맞혀야 할 답이다. 출처: 강의 슬라이드(RLR 논문의 예제)*
+
+위 그림의 표가 이 모델에 들어가는 데이터다. 사람 Z마다 절편 1, 친구 수, 친절한 친구 수의 세 값이 한 행이 되고, 네 번째 열이 그 사람이 행복한지다. 첫 네 사람은 친구가 5, 18, 1, 12명이고 그 가운데 친절한 사람이 3, 2, 1, 10명이다. 관계형 데이터가 counting을 거치면 보통의 logistic regression이 쓰는 표가 된다는 것을 보여 준다.
+
 Negation이 들어간 식의 counting은 positive conjunction의 counting을 더하고 빼서 나타낼 수 있다.
 
 $$
 \sum_x R(x) \wedge \neg S(x) = \sum_x R(x) - \sum_x R(x) \wedge S(x)
 $$
 
+슬라이드에는 나머지 경우도 함께 적혀 있다. $\lvert x \rvert = \sum_x \text{True}$는 $x$가 될 수 있는 대상의 수다.
+
+$$
+\begin{aligned}
+\sum_x \neg R(x) \wedge S(x) &= \sum_x S(x) - \sum_x R(x) \wedge S(x) \\
+\sum_x \neg R(x) \wedge \neg S(x) &= \lvert x \rvert - \sum_x R(x) - \sum_x S(x) + \sum_x R(x) \wedge S(x)
+\end{aligned}
+$$
+
 따라서 MLN으로 표현할 수 있는 것은 RLR로도 표현할 수 있다.
 
 ## 8. Neuro-Symbolic AI
 
-Neuro-symbolic AI의 목표는 설명 가능하다는 symbolic AI의 장점과 확장성이 좋다는 신경망의 장점을 합치는 것이다. 주된 방법은 두 갈래다.
+Neuro-symbolic AI의 목표는 설명 가능하다는 symbolic AI의 장점과 확장성이 좋다는 신경망의 장점을 합치는 것이다.
+
+![Neuro-symbolic AI의 목표](../../assets/img/study/xai/03-symbolic-ai-and-markov-logic-networks/neuro-symbolic-combining.webp)
+
+*1절에서 본 두 모델을 더해(Combining), 설명 가능하면서 확장성도 좋은 모델을 만들고자 한다. 출처: 강의 슬라이드*
+
+주된 방법은 두 갈래다.
 
 | 갈래 | 내용 | 주로 쓰는 모델 |
 |---|---|---|
@@ -303,13 +394,41 @@ Neuro-symbolic AI의 목표는 설명 가능하다는 symbolic AI의 장점과 �
 
 ### CRED와 DeepRED
 
-**CRED**는 은닉층이 하나인 학습된 신경망에서 decision tree를 뽑아낸다. 신경망의 입력과 출력만 맞추어 decision tree를 학습시킬 수도 있지만, 신경망의 구조를 따라가며 추출해야 성능이 더 잘 나온다.
+**CRED**는 은닉층이 하나인 학습된 신경망에서 decision tree를 뽑아낸다.
 
-1. 데이터셋에 대해 hidden 값을 구하고, hidden과 output 사이의 관계를 나타내는 decision tree를 만든다.
-2. 이 tree의 내부 노드 하나하나를 이진 값으로 본다. 각 내부 노드에 대해, 입력과 그 노드 사이의 관계를 나타내는 decision tree를 만든다.
-3. Hidden-output tree와 input-hidden tree들을 합치고 단순화해, 입력과 출력의 관계를 나타내는 최종 decision tree를 얻는다.
+![CRED의 목표](../../assets/img/study/xai/03-symbolic-ai-and-markov-logic-networks/cred-goal.webp)
 
-**DeepRED**는 CRED를 깊은 신경망으로 확장한 것이다. 알고리즘은 크게 다르지 않다. Layer 하나에서 tree를 추출하던 것을 layer별로 반복해 늘려 나간다.
+*왼쪽의 학습된 신경망(물음표로 가린 부분)을, 입력 $x$에 대한 조건만으로 출력 $y$를 정하는 오른쪽의 decision tree로 바꾸는 것이 목표다. 출처: 강의 슬라이드*
+
+신경망의 입력과 출력만 맞추어 decision tree를 학습시킬 수도 있지만, 신경망의 구조를 따라가며 추출해야 성능이 더 잘 나온다. 그래서 신경망을 뒤쪽 절반과 앞쪽 절반으로 나누어 차례로 tree로 바꾼다.
+
+**1단계.** 데이터셋에 대해 hidden 값을 구하고, hidden과 output 사이의 관계를 나타내는 decision tree를 만든다.
+
+![CRED 1단계: hidden-output tree](../../assets/img/study/xai/03-symbolic-ai-and-markov-logic-networks/cred-step1.webp)
+
+*신경망의 뒤쪽 절반(hidden에서 output까지)만 tree로 바꾼다. 오른쪽 tree의 조건은 입력이 아니라 hidden unit에 대한 것($h_1 > t_1$ 등)이다. 출처: 강의 슬라이드*
+
+**2단계.** 이 tree의 내부 노드 하나하나를 이진 값으로 본다. 각 내부 노드에 대해, 입력과 그 노드 사이의 관계를 나타내는 decision tree를 만든다.
+
+![CRED 2단계: input-hidden tree](../../assets/img/study/xai/03-symbolic-ai-and-markov-logic-networks/cred-step2.webp)
+
+*왼쪽이 1단계의 tree다. 그 내부 노드마다(주황, 초록, 파랑) 같은 색 상자의 tree를 하나씩 만든다(파란 노드의 상자는 화면 밖으로 잘렸다). 상자 안의 tree는 입력 $x$에 대한 조건으로 "$h_1 > t_1$인가 아닌가"를 가려낸다. 출처: 강의 슬라이드*
+
+1단계의 tree에 있던 "$h_1 > t_1$" 같은 조건은 hidden unit에 대한 것이어서 사람이 읽을 수 없다. 2단계는 그 조건 하나하나를 입력에 대한 조건으로 풀어 쓰는 일이다.
+
+**3단계.** Hidden-output tree와 input-hidden tree들을 합치고 단순화해, 입력과 출력의 관계를 나타내는 최종 decision tree를 얻는다. 1단계 tree의 각 노드 자리에 2단계에서 만든 tree를 끼워 넣는다고 보면 되고, 결과가 맨 처음 그림 오른쪽의 tree다.
+
+**DeepRED**는 CRED를 깊은 신경망으로 확장한 것이다.
+
+![DeepRED의 목표](../../assets/img/study/xai/03-symbolic-ai-and-markov-logic-networks/deepred-goal.webp)
+
+*CRED와 같은 그림인데 신경망의 hidden layer가 세 개로 늘었다. 출처: 강의 슬라이드*
+
+알고리즘은 크게 다르지 않다. Layer 하나에서 tree를 추출하던 것을 layer별로 반복해 늘려 나간다.
+
+![DeepRED: layer마다 tree를 뽑아 합친다](../../assets/img/study/xai/03-symbolic-ai-and-markov-logic-networks/deepred-layerwise.webp)
+
+*왼쪽의 색 상자가 이웃한 layer 한 쌍이고, 쌍마다 오른쪽의 tree가 하나씩 나온다. 이 tree들을 합치고 단순화한다. 출처: 강의 슬라이드*
 
 ### DeepProbLog
 
@@ -322,9 +441,21 @@ addition(X, Y, Z) :- digit(X, N1), digit(Y, N2), Z is N1+N2.
 
 `m_digit`은 MNIST 숫자를 분류하는 신경망, `X`는 입력 이미지, `Y`는 label이다. 신경망은 입력 이미지가 0부터 9까지의 각 숫자일 확률을 계산한다. 그 확률을 "이 이미지는 숫자 0이다" 같은 predicate `digit(X, Y)`의 확률로 쓴다. 그 뒤는 ProbLog와 같다. 이 확률을 가지고 `addition` 같은 규칙에 대한 추론을 진행한다.
 
+![DeepProbLog의 프로그램과 계산 과정](../../assets/img/study/xai/03-symbolic-ai-and-markov-logic-networks/deepproblog.webp)
+
+*왼쪽은 위에서부터 프로그램, 이미지를 대입한 프로그램, 신경망의 출력을 확률로 써넣은 프로그램이다. 오른쪽은 "두 이미지의 합이 1인가"를 계산하는 과정으로, 아래에서 위로 읽는다. 출처: 강의 슬라이드(DeepProbLog 논문의 그림)*
+
+그림 오른쪽을 아래에서부터 따라가 보자. 숫자 이미지 두 장이 각각 신경망을 지나 확률이 된다. 첫 번째 이미지는 0일 확률이 0.8, 1일 확률이 0.1이고, 두 번째 이미지는 1일 확률이 0.6, 0일 확률이 0.2다(예시를 간단히 하려고 0과 1만 따진다). 합이 1이 되는 경우는 (0, 1)과 (1, 0) 두 가지이므로 각각의 확률을 곱하고($0.8 \times 0.6 = 0.48$, $0.1 \times 0.2 = 0.02$) 더하면 0.5가 된다. 점선 아래가 신경망이 하는 일이고, 점선 위가 ProbLog가 하는 일이다.
+
 ### Relational Neural Networks
 
 Relational Neural Networks(RelNNs)는 symbolic 모델을 신경망처럼 쌓는 방법이다. RLR을 layer로 쌓고, 아래 layer의 출력을 임의의 새 predicate라고 가정한다. 그 predicate를 다음 layer에서 latent feature로 쓴다. 이렇게 모델이 스스로 만든 predicate가 추론에 쓰이는 것을 predicate invention이라고 한다.
+
+![RLR 하나와, RLR을 쌓은 RelNN](../../assets/img/study/xai/03-symbolic-ai-and-markov-logic-networks/relnn.webp)
+
+*영화 평점 데이터에서 사용자의 성별을 예측하는 예다. (a)는 RLR 하나, (b)는 RLR을 두 층으로 쌓은 RelNN이다. 빨간 네모가 아래 층이 만든 새 predicate `H1(u)`, `H2(u)`다. 출처: 강의 슬라이드(RelNN 논문의 그림)*
+
+(a)에서는 나이, 직업, "액션 영화를 좋아하는가", "드라마를 좋아하는가" 같은 항이 한꺼번에 들어가 `Male(u)`를 예측한다. (b)에서는 아래 층의 RLR 두 개가 먼저 영화 취향에 대한 항으로 `H1(u)`와 `H2(u)`를 만들고, 위 층의 RLR이 그것을 `Old(u)`, `Teacher(u)` 같은 원래의 predicate와 함께 입력으로 받는다. `H1(u)`, `H2(u)`는 사람이 이름 붙인 predicate가 아니라 모델이 만든 것이어서 신경망의 hidden unit과 같은 자리에 있다.
 
 성능은 잘 나오지만 설명성은 거의 잃는다. 다음 layer에서 새로 만든 predicate뿐 아니라 기존 predicate도 함께 쓰는데, 구조를 어떻게 짤지는 더 연구가 필요하다.
 

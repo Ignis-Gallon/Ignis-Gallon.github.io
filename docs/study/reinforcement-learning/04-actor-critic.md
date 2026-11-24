@@ -186,23 +186,19 @@ A3C는 A2C에 세 가지를 더한다.
 
 ### 비동기 Agent
 
-여러 개의 local agent(worker)를 병렬로 돌리고, 그 결과로 global network 하나를 갱신한다. worker들은 각자 서로 다른 trajectory를 따라간다.
+상관관계가 생기는 까닭은 agent 하나가 한 줄기의 경험만 이어서 모으기 때문이다. A3C는 agent를 여러 개 두어 경험의 줄기를 여러 개로 만든다.
 
-```mermaid
-flowchart TB
-  G["Global Network<br/>θ, w"]
-  W1["Worker 1"]
-  W2["Worker 2"]
-  W3["Worker 3"]
-  W1 -- "sample" --> G
-  W2 -- "sample" --> G
-  W3 -- "sample" --> G
-  G -. "params" .-> W1
-  G -. "params" .-> W2
-  G -. "params" .-> W3
-```
+![같은 parameter에서 출발한 agent들이 서로 다른 trajectory를 따라가는 모습](../../assets/img/study/reinforcement-learning/04-actor-critic/a3c-worker-trajectories.webp)
 
-각 worker가 표본을 구해 global network로 보내면, global network가 gradient update를 하고 갱신된 parameter를 worker에게 돌려준다. 병렬로 돌리면 실행 순서가 뒤섞일 수 있지만, 그로 인한 충돌은 무시할 만하다고 본다. 서로 다른 경험을 하는 worker들의 표본이 섞이므로 상관관계가 어느 정도 완화된다.
+*상자 안의 $\theta, w$는 공유하는 parameter이고, 거기서 뻗어 나간 세 갈래 $\tau_1, \tau_2, \tau_3$이 agent마다 따로 겪는 trajectory다.*
+
+위 그림처럼 같은 $\theta, w$를 가지고 출발해도 agent마다 뽑는 action과 만나는 state가 달라서 trajectory는 서로 다른 방향으로 뻗는다. 한 갈래 안에서 이어진 표본들은 서로 비슷하지만, 다른 갈래의 표본과는 덜 닮았다.
+
+![global network와 worker들이 표본과 parameter를 주고받는 구조](../../assets/img/study/reinforcement-learning/04-actor-critic/a3c-global-network-workers.webp)
+
+*위의 상자가 global network($\theta, w$), 아래의 $W_1, W_2, W_3$이 worker다. worker에서 위로 올라가는 것이 표본(sample), 아래로 내려오는 것이 갱신된 parameter(params)다.*
+
+구조는 위 그림과 같다. 여러 개의 local agent(worker)를 병렬로 돌리고, 그 결과로 global network 하나를 갱신한다. 각 worker가 표본을 구해 global network로 보내면, global network가 gradient update를 하고 갱신된 parameter를 worker에게 돌려준다. 이 과정을 data 병렬화라고 한다. 병렬로 돌리면 실행 순서가 뒤섞일 수 있지만, 그로 인한 충돌은 무시할 만하다고 본다. 서로 다른 경험을 하는 worker들의 표본이 섞이므로 상관관계가 어느 정도 완화된다.
 
 ### n-step TD
 
@@ -216,7 +212,13 @@ $$
 
 이 식이 기존의 $Q(s_t, a_t)$를 대신한다. Advantage를 유지하려면 여기서도 $V(s_t)$를 뺀다. $V(s_t)$는 $s_t$에서의 기댓값이라 상수로 취급할 수 있다.
 
-표본 $N$개를 모아 갱신할 때 n-step TD를 한없이 적용할 수는 없다. 모아 둔 데이터의 끝까지만 볼 수 있기 때문이다. 예를 들어 $s_0$부터 $s_3$까지 모았다면 다음과 같이 된다.
+표본 $N$개를 모아 갱신할 때 n-step TD를 한없이 적용할 수는 없다. 모아 둔 데이터의 끝까지만 볼 수 있기 때문이다.
+
+![모은 표본의 끝까지만 볼 수 있어 시점마다 달라지는 n-step](../../assets/img/study/reinforcement-learning/04-actor-critic/n-step-td-within-batch.webp)
+
+*$V_0$부터 $V_3$까지가 모아 둔 구간이다. 빨간 화살표는 각 시점에서 끝점 $V_3$까지 건너뛰는 거리이며, 앞에서 출발할수록 길다(3-step, 2-step, 1-step).*
+
+그림에서 맨 끝의 $V_3$이 "여기서부터는 추정값으로 대신한다"는 지점이다. 어느 시점에서 출발하든 화살표는 이 끝점에서 멈춘다. 그래서 맨 앞의 $t = 0$은 실제 reward를 세 개 쓰는 3-step이 되고, 끝에 가까운 $t = 2$는 reward를 하나만 쓰는 1-step이 된다. $s_0$부터 $s_3$까지 모았을 때 시점별로 적으면 다음과 같다.
 
 | 시점 | 쓸 수 있는 TD | Advantage |
 |---|---|---|
@@ -257,7 +259,11 @@ $$
 
 첫 적분은 1이고, 둘째 적분은 $\mathbb{E}[(x-\mu)^2] = \sigma^2$이다. 결과는 $\mu$와 무관하고, 분산이 클수록 entropy가 커진다.
 
-따라서 policy의 entropy를 키우라는 것은 policy의 분포를 넓게 퍼뜨리라는 뜻이다. entropy를 policy의 objective에 넣는 것은 exploration을 더 잘 해 보라는 의미다.
+![entropy를 키우면 평균은 그대로이고 분포가 넓게 퍼진다](../../assets/img/study/reinforcement-learning/04-actor-critic/entropy-wider-policy.webp)
+
+*왼쪽이 entropy가 작은 policy, 오른쪽이 entropy를 키운 policy다. 중심 $\mu$는 그대로이고 폭만 넓어진다.*
+
+따라서 policy의 entropy를 키우라는 것은 위 그림의 왼쪽에서 오른쪽으로, policy의 분포를 넓게 퍼뜨리라는 뜻이다. 분포가 뾰족하면 $\mu$ 근처의 action만 뽑히지만, 넓게 퍼지면 $\mu$에서 먼 action도 뽑힌다. entropy를 policy의 objective에 넣는 것은 exploration을 더 잘 해 보라는 의미다.
 
 $$
 \theta \leftarrow \theta + \alpha \, \nabla_\theta \sum_{i=t-N+1}^{t} \Big( \ln p_\theta(a_i \mid s_i) \, A_i + \lambda \, H\big( p_\theta(\cdot \mid s_i) \big) \Big)

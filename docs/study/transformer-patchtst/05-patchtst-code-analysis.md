@@ -210,14 +210,20 @@ backbone은 `layers/PatchTST_backbone.py`에 있고, 네 부분으로 구성된�
 
 **RevIN(Reversible Instance Normalization).** 시계열을 위한 정규화 방법이다. `revin` 인자로 켜고 끈다. 켜면 모델에 넣기 전에 정규화하고, 모델의 출력에는 반대 과정(denormalization)을 적용해 예측을 원래 scale로 되돌린다. 정규화 방법들의 차이는 [정규화 기법 네 가지](07-normalization-techniques.md)에 정리했다.
 
-**Patching.** 관련된 설정은 다음과 같다.
+**Patching.** 긴 입력 sequence를 일정한 길이의 조각(patch)으로 잘라, 시점 하나가 아니라 조각 하나를 Transformer의 입력 단위로 쓰기 위한 단계다. 관련된 설정은 다음과 같다.
 
 - `patch_len`: patch 하나의 길이. 16
 - `stride`: 다음 patch로 넘어갈 때 이동하는 간격. 8
 - `padding_patch`: `'end'`이면 sequence 끝에 padding을 붙인다
 - `context_window`: 입력 sequence의 길이(`seq_len`). 여기서는 96으로 놓고 계산했다
 
-입력 길이가 96이고 patch 길이가 16, stride가 8이면 patch는 $(96 - 16) / 8 + 1 = 11$개가 만들어진다.
+입력 길이가 96이고 patch 길이가 16, stride가 8이면 patch는 $(96 - 16) / 8 + 1 = 11$개가 만들어진다. 코드를 읽으면서 patch가 어떻게 잘리는지 손으로 그려 본 것이 아래 그림이다.
+
+![길이 96인 sequence에서 길이 16인 patch가 8씩 밀리며 11개 만들어지는 모습을 손으로 그린 그림](../../assets/img/study/transformer-patchtst/05-patchtst-code-analysis/patch-sketch.webp)
+
+상자 하나가 patch 하나이고, 왼쪽에 적은 숫자가 그 patch의 시작 위치다. 상자가 계단처럼 8씩 밀려 내려가므로 이웃한 patch는 절반씩 겹친다. 마지막 상자는 80에서 시작해 96에서 끝난다.
+
+같은 내용을 표로 옮기면 다음과 같다.
 
 | patch | 1 | 2 | 3 | ⋯ | 10 | 11 |
 |---|---|---|---|---|---|---|
@@ -234,7 +240,13 @@ self.padding_patch_layer = nn.ReplicationPad1d((0, stride))
 
 **Backbone.** `TSTiEncoder`를 만든다. 이름의 i는 channel-independent를 뜻한다. channel에 관계없이 각 변수를 단변량 시계열로 다룬다는 의미이다. 구성은 Transformer의 encoder와 같다.
 
-1. **Input encoding.** `nn.Linear(patch_len, d_model)`로 길이 `patch_len`인 patch를 `d_model` 차원 벡터로 바꾼다. ETTh1 설정에서는 `patch_len`과 `d_model`이 모두 16이다. `nn.Linear`는 fully connected layer(dense layer)이고, 입력 sample의 feature 수와 출력 sample의 feature 수를 받는다.
+![Transformer 구조도에서 encoder 부분만 잘라 낸 그림](../../assets/img/study/transformer-patchtst/05-patchtst-code-analysis/transformer-encoder.webp)
+
+아래에서 위로 Input Embedding, Positional Encoding, 그리고 N번 반복되는 encoder layer 순서다. `TSTiEncoder`의 구성이 이 순서와 하나씩 대응된다. 출처: "Attention Is All You Need" 논문 Figure 1의 일부
+
+그림의 아래에서부터 코드와 짝지으면 다음과 같다.
+
+1. **Input encoding.** 그림의 Input Embedding 자리다. `nn.Linear(patch_len, d_model)`로 길이 `patch_len`인 patch를 `d_model` 차원 벡터로 바꾼다. ETTh1 설정에서는 `patch_len`과 `d_model`이 모두 16이다. `nn.Linear`는 fully connected layer(dense layer)이고, 입력 sample의 feature 수와 출력 sample의 feature 수를 받는다.
 
     ```python
     m = nn.Linear(20, 30)
@@ -243,11 +255,17 @@ self.padding_patch_layer = nn.ReplicationPad1d((0, stride))
     print(output.size())    # torch.Size([128, 30])
     ```
 
-2. **Positional encoding.** 학습 가능한 위치 encoding을 더해 patch의 시간 순서를 반영한다.
+2. **Positional encoding.** 그림의 Positional Encoding 자리다. 학습 가능한 위치 encoding을 더해 patch의 시간 순서를 반영한다.
 3. **Dropout.** 위 두 값을 더한 결과에 dropout을 적용한다.
-4. **TSTEncoder.** 실질적인 Transformer encoder이다.
+4. **TSTEncoder.** 그림에서 "N×"가 붙은 회색 상자다. 실질적인 Transformer encoder이다.
 
-논문의 구조도에 대응시키면, 단변량 시계열 하나가 들어와 instance normalization과 patching을 거치고, 만들어진 patch sequence에 학습 가능한 선형 projection과 위치 encoding이 적용된 뒤 encoder로 들어가는 흐름이다.
+PatchTST 논문의 구조도로 보면 지금까지 읽은 코드가 어디에 해당하는지가 한눈에 들어온다.
+
+![PatchTST의 모델 구조를 설명하는 발표 슬라이드](../../assets/img/study/transformer-patchtst/05-patchtst-code-analysis/patchtst-structure-slide.webp)
+
+가운데 구조도를 아래에서 위로 읽는다. 맨 아래의 Input Univariate Series에서 시작해 Instance Norm + Patching, Projection + Position Embedding, Transformer Encoder, Flatten + Linear Head를 차례로 지나 맨 위의 Output Univariate Series가 된다. 왼쪽에는 단계마다 데이터의 크기가 적혀 있다. 출처: PatchTST를 소개하는 발표 슬라이드 (구조도는 PatchTST 논문 Figure 1)
+
+단변량 시계열 하나($x^{(i)} \in \mathbb{R}^{1 \times L}$)가 들어와 instance normalization과 patching을 거치면 길이 $P$인 patch $N$개의 sequence($x_p^{(i)} \in \mathbb{R}^{P \times N}$)가 된다. 구조도 가운데의 세로 막대들이 이 patch다. 여기에 학습 가능한 선형 projection과 위치 encoding이 적용되어 $D$차원 벡터의 sequence가 된 뒤 encoder로 들어간다. 위에서 본 RevIN과 patching이 노란 상자 "Instance Norm + Patching"에, input encoding과 positional encoding이 "Projection + Position Embedding"에, `TSTEncoder`가 주황 상자에, 아래의 head가 초록 상자에 해당한다.
 
 `TSTEncoder`는 layer 수만큼 `TSTEncoderLayer`를 만들어 `nn.ModuleList`에 넣어 둔다. encoder layer를 몇 번 거칠지가 여기서 정해진다. `nn.ModuleList`는 module을 리스트처럼 보관하는 용도이다. 일반 파이썬 리스트에 넣으면 PyTorch가 그 module의 존재를 알지 못해 parameter가 등록되지 않으므로, `ModuleList`에 넣어 module이 있다는 것을 PyTorch에 알려야 한다. `nn.Sequential`과 달리 `ModuleList`는 들어 있는 module의 `forward()`를 대신 불러 주지 않으며, `TSTEncoder`의 `forward()`가 for 문으로 layer를 하나씩 호출한다.
 
@@ -257,7 +275,7 @@ attention은 `res_attention` 옵션이 켜진 상태가 기본이다. 이전 lay
 
 ## 6. 정리: forward의 순서
 
-여기까지 읽고 알게 된 것은, 코드의 구조가 논문의 설명과 그대로 대응된다는 점이다. forward는 다음 순서로 진행된다.
+여기까지 읽고 알게 된 것은, 코드의 구조가 논문의 설명과 그대로 대응된다는 점이다. forward는 위 구조도를 아래에서 위로 올라가는 순서로 진행된다.
 
 1. instance normalization
 2. patching

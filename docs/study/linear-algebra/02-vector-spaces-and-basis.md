@@ -64,16 +64,26 @@ vector끼리의 곱 $ab\ (a, b \in \mathbb{R}^n)$는 정의되지 않는다. 성
 
 vector space $V = (\mathcal{V}, +, \cdot)$와 공집합이 아닌 부분집합 $\mathcal{U} \subseteq \mathcal{V}$가 있다고 하자. $V$의 두 연산을 $\mathcal{U} \times \mathcal{U}$와 $\mathbb{R} \times \mathcal{U}$로 제한했을 때 $U = (\mathcal{U}, +, \cdot)$가 그 자체로 vector space이면, $U$를 $V$의 vector subspace라 한다. 즉 subspace는 덧셈과 scalar 곱의 결과가 다시 $\mathcal{U}$ 안에 들어오도록 닫혀 있다.
 
-달리 말하면 subspace는 vector space의 부분집합이므로, 표현할 수 있는 vector의 범위가 더 좁은 공간이라고 볼 수 있다. 큰 원 $\mathcal{V}$ 안에 작은 원 $\mathcal{U}$가 들어 있는 그림을 떠올리면 된다.
+![vector space 안에 들어 있는 vector subspace](../../assets/img/study/linear-algebra/02-vector-spaces-and-basis/subspace-inside-vector-space.webp)
+
+*검은 원이 vector space $\mathcal{V}$, 그 안의 파란 원이 vector subspace $\mathcal{U}$다.*
+
+위 그림처럼 subspace는 vector space 안에 들어 있는 더 작은 공간이다. vector space의 부분집합이므로, 표현할 수 있는 vector의 범위가 더 좁은 공간이라고 볼 수 있다. 다만 아무 부분집합이나 subspace가 되는 것은 아니다. 파란 원 안의 vector끼리 더하거나 scalar를 곱했을 때 결과가 파란 원 밖으로 나가지 않아야 한다.
 
 모든 vector space $V$에서 가장 자명한 subspace는 $V$ 자신과 $\{\mathbf{0}\}$이다.
 
-책에는 $\mathbb{R}^2$의 부분집합 네 개를 놓고 어느 것이 subspace인지 묻는 그림이 있다. A는 원점을 포함하는 정사각형 영역, B는 원점을 지나지 않는 직선, C는 원점에서 만나는 두 직선 사이의 마주 보는 부채꼴 영역, D는 원점 하나다. 이 가운데 D만 subspace다.
+어떤 부분집합이 subspace가 되고 어떤 것이 안 되는지는 책의 예제 그림으로 보면 분명해진다.
 
-- A는 vector를 더하면 결과가 영역 밖으로 나갈 수 있다.
-- B는 영벡터를 포함하지 않는다.
-- C도 vector를 더하면 영역 밖으로 나갈 수 있다.
-- D는 영벡터를 포함하고 덧셈과 scalar 곱에 닫혀 있어 조건을 모두 만족한다.
+![R^2의 부분집합 네 개 가운데 subspace인 것은 D뿐이다](../../assets/img/study/linear-algebra/02-vector-spaces-and-basis/subsets-of-r2.webp)
+
+*$\mathbb{R}^2$의 부분집합 네 개다. A는 원점을 포함하는 정사각형 영역, B는 원점을 지나지 않는 직선, C는 원점에서 만나는 두 직선 사이의 마주 보는 영역, D는 원점 하나다. 출처: Mathematics for Machine Learning 2.4.3절의 그림*
+
+이 가운데 D만 subspace다. 하나씩 "영벡터가 들어 있는가", "더하거나 늘려도 안에 머무는가"를 확인하면 된다.
+
+- A는 vector를 더하면 결과가 영역 밖으로 나갈 수 있다. 정사각형의 오른쪽 위 구석에 있는 vector를 자기 자신과 더하면 정사각형을 벗어난다.
+- B는 영벡터를 포함하지 않는다. 직선이 원점을 비켜 지나간다.
+- C도 vector를 더하면 영역 밖으로 나갈 수 있다. 오른쪽 위 영역의 한 경계선 위에 있는 vector와 왼쪽 아래 영역의 다른 경계선 위에 있는 vector를 더하면 색칠되지 않은 쪽으로 나간다.
+- D는 영벡터를 포함하고 덧셈과 scalar 곱에 닫혀 있어 조건을 모두 만족한다. $\mathbf{0}$은 더해도 늘려도 $\mathbf{0}$이다.
 
 연립선형방정식의 해집합과 연결하면 다음과 같다.
 

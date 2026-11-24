@@ -17,7 +17,15 @@ tags: [인과 발견, 시계열, PCMCI, Granger causality, 문헌 조사]
 
 PC, GES, LiNGAM, NOTEARS 같은 대표적인 인과 발견 알고리즘은 대부분 시간 순서가 없는 i.i.d. 데이터를 가정한다. 병원 기록, 기업 재무제표, 설문 응답처럼 표본 하나하나가 독립인 표 형태의 데이터다. 시계열은 사정이 다르다. 주가, 기온, 뇌파, 월별 경제 지표는 값이 서로 영향을 주고(non-i.i.d.), 분포가 시간에 따라 달라질 수도 있다(non-stationary).
 
-시계열에서 추가로 생기는 어려움은 다음과 같다.
+시계열 인과 발견이 풀려는 문제를 그림으로 보면 다음과 같다.
+
+![다변량 시계열에서 인과 관계와 가짜 연관을 가려내는 문제](../../assets/img/study/causal-discovery/02-instantaneous-feedback-confounder/causal-links-vs-spurious.webp)
+
+*왼쪽(A)의 시계열 네 개가 입력이고, 오른쪽(B)의 검은 화살표가 찾아야 할 인과 관계다. 화살표 옆의 $\tau$는 영향이 나타나기까지의 지연이다. 빨간 화살표는 상관은 있지만 인과는 아닌 가짜 연관이다. 출처: "Time series causal relationships discovery through feature importance and ensemble models" Figure 1.*
+
+그림 B에서 빨간 화살표가 생기는 이유가 곧 이 문제의 어려움이다. $X^0$와 $X^3$는 서로 영향을 주지 않지만 둘 다 $X^1$의 영향을 받으므로 함께 움직인다(공통 원인). $X^2$와 $X^0$는 직접 이어져 있지 않지만 $X^2 \to X^1 \to X^0$라는 경로로 이어져 있어 상관이 나타난다(간접 경로). 인과 발견 방법은 검은 화살표만 남기고 빨간 화살표는 버려야 하며, 남긴 화살표마다 지연 $\tau$까지 맞혀야 한다.
+
+시계열에서 추가로 생기는 어려움을 정리하면 다음과 같다.
 
 - **시간 지연(lag)**: 영향이 있는지뿐 아니라 언제 영향을 주는지를 찾아야 한다.
 - **자기상관**: 자기상관만으로도 상호정보량이나 전이 엔트로피가 크게 나올 수 있어 거짓 양성이 생긴다. PCMCI는 초기 단계에서 후보를 가지치기하고, 조건부 독립성 검정의 조건 집합에 자기상관 성분을 넣어 이를 줄인다.
@@ -52,7 +60,19 @@ Assaad 등의 서베이 "Survey and Evaluation of Causal Discovery Methods for T
 | 점수 기반 | 데이터의 가능도와 벌점 항의 균형을 나타내는 점수로 그래프를 찾는다 | DYNOTEARS |
 | 그 밖 | logic-based, topology-based, difference-based | |
 
-여기에 최근 논문을 더해 다음과 같이 정리했다.
+"특별히 앞서는 방식이 없다"는 결론은 서베이의 실험 표에서 그대로 보인다.
+
+![서베이의 실험 결과: 구조별 F1 점수](../../assets/img/study/causal-discovery/02-instantaneous-feedback-confounder/survey-f1-by-structure.webp)
+
+*행은 방법, 열은 정답 그래프의 기본 구조(fork, mediator, diamond)다. 굵은 글씨로 표시된 가장 높은 점수가 fork에서는 tsFCI와 TiMINo, mediator와 diamond에서는 VarLiNGAM과 TiMINo로 구조마다 다른 방법에 찍혀 있다. 같은 방법의 점수도 구조에 따라 크게 달라진다(DYNOTEARS는 fork에서 0.00, mediator에서 0.41). 출처: Assaad 외 서베이의 실험 표.*
+
+분류의 기준도 서베이마다 조금씩 다르다. Hasan 등의 서베이 "A Survey on Causal Discovery Methods for I.I.D. and Time Series Data"는 시계열 방법을 다섯 갈래로 나눈다.
+
+![시계열 인과 발견 방법의 분류](../../assets/img/study/causal-discovery/02-instantaneous-feedback-confounder/taxonomy-time-series-methods.webp)
+
+*위에서 아래로 읽는다. 제약 기반, FCM(함수적 인과 모델) 기반, gradient 기반, Granger causality 기반, 그 밖의 다섯 갈래 아래에 대표 방법이 달려 있다. Assaad 등의 "잡음 기반"이 여기서는 FCM 기반, "점수 기반"의 DYNOTEARS가 gradient 기반에 들어가 있다. 출처: Hasan 외 서베이 Figure 26.*
+
+두 서베이의 분류에 최근 논문을 더해 다음과 같이 정리했다.
 
 | 분류 | 방법 |
 |---|---|
@@ -76,6 +96,12 @@ Assaad 등의 서베이 "Survey and Evaluation of Causal Discovery Methods for T
 - **CD-NOTS**: 조건부 독립성 검정 기반 방법으로 CD-NOD를 개선했다. 비모수적이며 비정상성과 비선형성을 다루고, 동시점 인과 효과도 잡는다. PCMCI는 비선형성은 다룰 수 있지만 비정상성은 다루지 못한다.
 - **F-PCMCI**: 전이 엔트로피로 변수를 먼저 걸러 낸 뒤, 남은 변수에 PCMCI를 적용한다.
 
+방법마다 다룰 수 있는 것이 다르다는 점은 CD-NOTS 논문의 비교 표가 한눈에 보여 준다.
+
+![Granger, PCMCI, TCDF, CD-NOD, CD-NOTS의 특성 비교](../../assets/img/study/causal-discovery/02-instantaneous-feedback-confounder/cdnots-method-comparison.webp)
+
+*열이 방법, 행이 다룰 수 있는 데이터의 특성이다. Granger causality는 지연 효과 한 줄에만 표시가 있고, 맨 아래의 비정상성 줄에는 CD-NOD와 CD-NOTS만 표시가 있다. 이 표는 PCMCI의 동시점 효과 칸에도 표시를 해 두었는데, 위의 메모대로 동시점 관계는 PCMCI+에서 가능해진 것이므로 표기가 다르다는 점에 유의한다. 출처: CD-NOTS 논문 Table 1.*
+
 ## 3. Instantaneous effect
 
 ### 그래프로 정의하는 방식
@@ -90,7 +116,7 @@ $$
 
 ### 왜 생기는가
 
-원인은 결과보다 앞선다(temporal priority). 그렇다면 같은 시점의 인과 관계는 왜 생기는가. 조사한 문헌의 설명은 대체로 일치한다. 실제로는 서로 다른 시각에 일어난 원인과 결과가, 데이터의 시간 해상도가 충분하지 않아 같은 시점에 일어난 것처럼 보이는 것이다. 예를 들어 실제 지연은 1주인데 데이터가 월 단위로 집계되어 있으면 그 관계는 같은 달 안에서 나타난다. TCDF 논문도 instantaneous effect를 원인과 결과 사이의 지연이 0인 경우로 정의하면서, 시간 단위가 너무 거칠어 원인과 결과의 순서를 미리 정할 수 없을 때 주로 생긴다고 설명한다. 이를 무시하면 잘못된 해석으로 이어질 수 있다.
+원인은 결과보다 앞선다(temporal priority). 그렇다면 같은 시점의 인과 관계는 왜 생기는가. 조사한 문헌의 설명은 대체로 일치한다. 정말로 동시에 일어난 것이 아니라, 시계가 거칠어서 동시로 보인다는 것이다. 실제로는 서로 다른 시각에 일어난 원인과 결과가, 데이터의 시간 해상도가 충분하지 않아 같은 시점에 일어난 것처럼 보인다. 예를 들어 실제 지연은 1주인데 데이터가 월 단위로 집계되어 있으면 그 관계는 같은 달 안에서 나타난다. TCDF 논문도 instantaneous effect를 원인과 결과 사이의 지연이 0인 경우로 정의하면서, 시간 단위가 너무 거칠어 원인과 결과의 순서를 미리 정할 수 없을 때 주로 생긴다고 설명한다. 이를 무시하면 잘못된 해석으로 이어질 수 있다.
 
 관련해서, 측정 주기가 실제 인과 주기보다 긴 subsampling 상황에서도 원래 주기의 인과 관계를 복원할 수 있다는 결과가 있다. 분기 데이터에서 월 단위의 인과 관계를 복원하는 식이다.
 
@@ -139,9 +165,17 @@ $$
 
 가 모두 성립하면 feedback이 있다고 하고 $Y_t \Leftrightarrow X_t$로 쓴다. $X$가 $Y$의 원인이면서 $Y$도 $X$의 원인인 경우다.
 
+그림으로 정의한 문헌도 있었다. 두 변수 사이에 있을 수 있는 관계를 여섯 가지로 나열한 그림이다.
+
+![두 변수 사이에 있을 수 있는 여섯 가지 관계](../../assets/img/study/causal-discovery/02-instantaneous-feedback-confounder/six-pairwise-relations.webp){ width="620" }
+
+*(5)가 feedback loop다. $X$에서 $Y$로, $Y$에서 $X$로 가는 화살표가 함께 있다. (4)는 다음 절에서 볼 confounder($Z$가 $X$와 $Y$의 공통 원인), (3)은 두 변수가 공통의 결과 $W$를 갖는 경우다. 출처: "Learning Bivariate Functional Causal Models".*
+
+같은 문헌은 feedback loop를 "$X$가 $Y$의 원인이고 $Y$가 $X$의 원인"인 경우라고 적은 뒤, 이 경우를 다루지 않고 두 변수 사이의 그래프를 DAG로 한정한다. 정의는 하되 대상에서는 빼는 것이다.
+
 ### 지연된 feedback과 동시점 cycle
 
-읽으면서 가장 헷갈린 것은 "DAG는 cycle을 허용하지 않는데 시계열에서 feedback은 어떻게 표현되는가"였다. Runge 등의 리뷰 "Causal inference for time series"를 읽고 다음과 같이 정리했다. 시계열 그래프의 노드는 변수가 아니라 (변수, 시점) 쌍이다.
+읽으면서 가장 헷갈린 것은 "DAG는 cycle을 허용하지 않는데 시계열에서 feedback은 어떻게 표현되는가"였다. Runge 등의 리뷰 "Causal inference for time series"를 읽고 다음과 같이 정리했다. 열쇠는 시계열 그래프의 노드가 변수가 아니라 (변수, 시점) 쌍이라는 점이다. $X_{t-1}$과 $X_t$는 서로 다른 노드이므로, $X$에서 $Y$로 갔다가 다음 시점의 $X$로 돌아오는 화살표들은 제자리로 돌아오지 않는다.
 
 | 구조 | DAG에서 |
 |---|---|
@@ -154,6 +188,14 @@ $$
 
 "cycle은 summary graph에서만 가능하다"는 문장도 같은 맥락에서 이해했다. 시점을 접어 시계열 하나를 노드 하나로 나타내는 summary graph에서는 $X_{t-1} \to Y_t$와 $Y_{t-1} \to X_t$가 $X \to Y$와 $Y \to X$가 되어 cycle로 보인다. 시간 축으로 펼친 그래프에서는 cycle이 아니다.
 
+같은 시스템을 펼친 그래프와 접은 그래프로 나란히 그린 서베이의 그림을 보면 차이가 분명하다.
+
+![full time causal graph, window causal graph, summary causal graph](../../assets/img/study/causal-discovery/02-instantaneous-feedback-confounder/full-window-summary-graphs.webp)
+
+*위(a)는 모든 시점을 펼친 그래프, 왼쪽 아래(b)는 그중 한 구간만 자른 그래프, 오른쪽 아래(c)는 시점을 접은 summary graph다. (a)와 (b)에서 화살표는 모두 왼쪽(과거)에서 오른쪽(현재)으로, 또는 같은 시점 안에서 한 방향으로만 가므로 cycle이 없다. (c)에서는 각 변수가 자기 자신으로 돌아오는 고리를 갖는다. 출처: Assaad 외 서베이 Figure 5.*
+
+(c)의 고리는 (a)에서 $\mathcal{X}^s_{t-1} \to \mathcal{X}^s_t$처럼 같은 변수의 과거에서 현재로 가는 수평 화살표를 접은 것이다. 펼친 그래프에서는 그냥 오른쪽으로 뻗는 화살표였던 것이, 시점을 접자 제자리로 돌아오는 고리가 되었다. 서로 다른 변수 사이의 지연된 feedback도 같은 방식으로 summary graph에서만 cycle이 된다.
+
 동시점 cycle에 대해서는, PC 알고리즘이 cycle이 있어도 일관성을 가진다는 결과를 근거로 비순환 SCM에 대한 방법이 동시점 cycle이 있는 경우로 확장될 것이라고 기대하는 논문이 있었다. 조건부 독립성 검정 결과와 배경지식을 SAT solver로 결합해 cycle과 잠재 변수를 함께 찾는 접근, LiNGAM의 비순환 가정을 약화한 방법도 서베이에 소개되어 있다.
 
 ### Self-loop
@@ -164,7 +206,17 @@ $$
 
 ### 정의
 
-confounder는 두 변수 이상의 공통 원인이다. 공통 원인이 관측되지 않으면, 직접적인 인과 관계가 없는 두 변수 사이에 가짜 의존성(spurious dependency)이 생긴다. 세 개념 중 언급은 가장 많았지만, 거의 모든 논문이 수식이 아니라 그림으로 정의한다. 공통 원인 $Z$에서 두 변수로 화살표가 나가는 그림이다.
+confounder는 두 변수 이상의 공통 원인이다. 공통 원인이 관측되지 않으면, 직접적인 인과 관계가 없는 두 변수 사이에 가짜 의존성(spurious dependency)이 생긴다. 세 개념 중 언급은 가장 많았지만, 거의 모든 논문이 수식이 아니라 그림으로 정의한다. 공통 원인에서 두 변수로 화살표가 나가는 그림이다.
+
+![confounder와 collider의 기본 구조](../../assets/img/study/causal-discovery/02-instantaneous-feedback-confounder/confounder-and-collider.webp){ width="360" }
+
+*왼쪽이 confounder다. $X^p$에서 $X^q$와 $X^r$로 화살표가 나간다. 오른쪽은 화살표의 방향이 반대인 collider로, 두 변수가 하나의 공통 결과 $X^q$를 갖는다. 출처: Assaad 외 서베이 Figure 2.*
+
+왼쪽 구조에서 $X^p$를 보지 못하면 $X^q$와 $X^r$는 이유 없이 함께 움직이는 것처럼 보인다. 인과 효과를 추정하는 논문도 같은 방식으로 그림을 그려 문제를 정의한다.
+
+![SCM으로 그린 confounder의 세 가지 경우](../../assets/img/study/causal-discovery/02-instantaneous-feedback-confounder/scm-confounder-examples.webp){ width="520" }
+
+*$Y$는 결과, $W$는 개입, $Z$가 둘의 confounder다. 회색 노드는 관측된 변수, 흰 노드는 관측되지 않은 변수다. (a)에서는 $Z$가 관측되고, (b)에서는 $Z$가 숨어 있어 대리 변수 $X$로 추론하며, (c)에는 관측된 confounder $S$가 하나 더 있다. 출처: "Causal Modeling with Stochastic Confounders" Figure 1.*
 
 가정으로는 인과 충분성(causal sufficiency)이라는 이름으로 등장한다. 관측된 변수들의 모든 공통 원인이 관측되어 있다는 가정이다. 대부분의 인과 발견 방법이 이 가정을 두므로 관측되지 않은 confounder를 다루지 못한다. 여러 서베이가 실제 데이터에는 숨은 confounder가 흔하다는 점을 한계로 지적한다.
 
@@ -196,9 +248,27 @@ $\mathbf{B}$는 관측된 과정의 인과 전이 행렬, $\mathbf{C}$는 $\math
 
 ### 지연이 다른 confounder
 
-TCDF 논문이 지적한 경우가 인상적이었다. confounder가 두 변수에 서로 다른 지연으로 영향을 주면, 먼저 영향을 받은 변수가 나중에 영향을 받은 변수의 원인인 것처럼 보인다. 관측되지 않은 confounder가 몇 개인지조차 모르는 상황이 많으므로, 방법이 숨은 confounder의 존재를 가설로 세울 수 있어야 그 결과들 사이에 잘못된 인과 관계를 학습하지 않는다.
+TCDF 논문이 지적한 경우가 인상적이었다. confounder가 두 변수에 서로 다른 지연으로 영향을 주면, 먼저 영향을 받은 변수가 나중에 영향을 받은 변수의 원인인 것처럼 보인다.
 
-subsampling을 다룬 논문("Causal Discovery from Subsampled Time Series with Proxy Variables")의 그림도 같은 현상을 잘 보여 준다. 두 변수 모두에 영향을 준 중간 시점의 값이 관측되지 않으면, 그 둘 사이에 양방향 간선이 생긴다.
+![두 변수에 서로 다른 지연으로 영향을 주는 confounder](../../assets/img/study/causal-discovery/02-instantaneous-feedback-confounder/tcdf-confounder-unequal-delay.webp){ width="340" }
+
+*$X_1$이 $X_2$에는 1시점 뒤에, $X_3$에는 4시점 뒤에 영향을 준다(검은 화살표). 그러면 $X_2$가 움직이고 3시점 뒤에 $X_3$가 움직이므로, 실제로는 없는 회색 화살표 $X_2 \to X_3$(지연 3)가 있는 것처럼 보인다. 출처: TCDF 논문 Figure 2(b).*
+
+$X_1$을 보지 못한 채 $X_2$와 $X_3$만 보면 회색 화살표를 지울 근거가 없다. 관측되지 않은 confounder가 몇 개인지조차 모르는 상황이 많으므로, 방법이 숨은 confounder의 존재를 가설로 세울 수 있어야 그 결과들 사이에 잘못된 인과 관계를 학습하지 않는다.
+
+subsampling을 다룬 논문("Causal Discovery from Subsampled Time Series with Proxy Variables")의 그림도 같은 현상을 잘 보여 준다. 원래 시스템은 아래와 같이 매 시점 값이 있지만, 측정은 두 시점에 한 번만 이루어진다고 하자.
+
+![두 시점에 한 번만 관측되는 시계열의 full time DAG](../../assets/img/study/causal-discovery/02-instantaneous-feedback-confounder/subsampled-full-time-dag.webp){ width="380" }
+
+*세 변수 $A$, $M$, $B$의 원래 인과 구조. 실선 원($t_1$, $t_3$, $t_5$)은 관측된 시점, 점선 원($t_2$, $t_4$)은 관측되지 않은 시점이다. 출처: 같은 논문의 그림 (b).*
+
+점선 원을 지우고 관측된 시점만으로 그래프를 다시 그리면 다음과 같이 된다.
+
+![관측된 시점만으로 그린 MAG](../../assets/img/study/causal-discovery/02-instantaneous-feedback-confounder/subsampled-mag.webp){ width="360" }
+
+*같은 시점의 변수 사이에 원래는 없던 양방향 간선(둥글게 휜 양쪽 화살표)이 생겼다. 출처: 같은 논문의 그림 (c).*
+
+첫째 그림에서 $A(t_2)$는 $A(t_3)$와 $M(t_3)$ 모두에 영향을 준다. 그런데 $t_2$는 관측되지 않으므로, $A(t_2)$는 $A(t_3)$와 $M(t_3)$의 숨은 공통 원인이 된다. 그 결과가 둘째 그림의 $A(t_3) \leftrightarrow M(t_3)$다. 두 변수 모두에 영향을 준 중간 시점의 값이 관측되지 않으면, 그 둘 사이에 양방향 간선이 생기는 것이다. 새로운 변수가 숨어 있지 않아도, 같은 변수의 관측되지 않은 시점이 confounder 노릇을 할 수 있다는 점을 이 그림에서 알았다.
 
 ## 6. 조사 결과
 

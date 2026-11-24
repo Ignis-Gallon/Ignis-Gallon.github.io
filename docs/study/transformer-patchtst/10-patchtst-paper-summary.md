@@ -53,21 +53,25 @@ Transformer는 sequence의 원소들 사이의 관계를 자동으로 학습하�
 - **Channel-mixing**: 한 시점의 모든 channel 값을 하나의 벡터로 묶어 input token으로 삼고, 이것을 embedding 공간으로 projection해 정보를 섞는다.
 - **Channel-independence**: input token 하나가 channel 하나의 정보만 갖는다.
 
-channel-independence는 CNN과 linear 모델에서는 잘 동작한다는 것이 알려져 있었지만, Transformer 기반 모델에는 적용된 적이 없었다.
+channel-independence는 CNN과 linear 모델에서는 잘 동작한다는 것이 알려져 있었지만, Transformer 기반 모델에는 적용된 적이 없었다. 다변량 시계열을 channel별로 한 줄씩 떼어 내는 모습은 아래 "모델 구조" 절의 그림에 있다.
 
 ### 이 설계의 장점
 
-논문은 Table 1의 사례 연구를 들어 세 가지 장점을 설명한다.
+논문은 Table 1의 사례 연구를 들어 세 가지 장점을 설명한다. 아래의 세 장점은 모두 이 표의 숫자를 읽는 것이다.
 
-**1. 복잡도 감소.** 기본 Transformer는 attention 때문에 input token 수 $N$에 대해 $O(N^2)$의 복잡도를 갖는다. 전처리를 하지 않으면 $N$은 입력 sequence의 길이 $L$과 같아서 계산 자원이 많이 든다. patching을 적용하면 $N$을 대략 $L/S$로 줄일 수 있다. $S$는 patch 사이의 간격인 stride이다. Table 1의 예에서는 큰 데이터셋에서 학습 시간이 최대 22배 줄었다.
+![Traffic 데이터셋에서 look-back window, input token 수, patch 사용 여부에 따른 MSE와 실행 시간을 비교한 표](../../assets/img/study/transformer-patchtst/10-patchtst-paper-summary/table1-case-study.webp)
 
-**2. 더 긴 look-back window에서 학습할 수 있다.** Table 1에서 look-back window $L$을 96에서 336으로 늘리면 MSE가 0.518에서 0.397로 줄어든다. 그러나 단순히 $L$을 늘리면 메모리와 계산량이 그만큼 더 든다.
+왼쪽 표의 위쪽 다섯 줄이 PatchTST다. $L$은 look-back window의 길이, $N$은 input token의 수이고, patch 열에 ✓가 있는 줄이 patching을 쓴 경우다. 위에서 아래로 내려가며 MSE가 0.518에서 0.349까지 줄어드는 것을 보면 된다. 오른쪽 표는 patch를 썼을 때와 쓰지 않았을 때의 실행 시간이다. 출처: 논문 Table 1
 
-시계열에는 시간적으로 중복된 정보가 많아서, 이전 연구들은 downsampling이나 sparse한 attention 연결로 일부 값을 버렸고, 그렇게 해도 모델은 예측에 충분한 정보를 얻을 수 있었다. 논문은 $L = 380$인 시계열을 4 step마다 sampling하고 마지막 한 점을 추가해 input token 수를 $N = 96$으로 맞춘 경우를 실험했다($380 / 4 = 95$에 1개를 더한 것이다). 이때의 MSE는 0.447로, 가장 최근 96 step을 그대로 넣었을 때의 0.518보다 낮았다. input token의 수가 같더라도 look-back window가 길수록 더 중요한 정보를 담고 있다는 뜻이다.
+**1. 복잡도 감소.** 기본 Transformer는 attention 때문에 input token 수 $N$에 대해 $O(N^2)$의 복잡도를 갖는다. 전처리를 하지 않으면 $N$은 입력 sequence의 길이 $L$과 같아서 계산 자원이 많이 든다. patching을 적용하면 $N$을 대략 $L/S$로 줄일 수 있다. $S$는 patch 사이의 간격인 stride이다. 왼쪽 표에서 $L = 336$일 때 patch를 쓰면 $N$이 336에서 42로 줄어든다. 오른쪽 표를 보면 큰 데이터셋에서 실행 시간이 최대 22배 줄었다(Traffic에서 10040초가 464초로).
 
-여기서 질문이 나온다. look-back window는 길게 유지하면서 값을 버리지 않을 방법은 없을까? patching이 그 대안이다. patching은 비슷한 값을 갖는 이웃 time step들을 묶어 input token 수를 줄이므로 계산량이 줄어든다. Table 1에서 $L = 336$일 때 patching을 쓰면 MSE가 0.397에서 0.367로 더 낮아진다.
+**2. 더 긴 look-back window에서 학습할 수 있다.** 왼쪽 표의 첫째 줄과 셋째 줄을 비교하면, look-back window $L$을 96에서 336으로 늘릴 때 MSE가 0.518에서 0.397로 줄어든다. 그러나 단순히 $L$을 늘리면 메모리와 계산량이 그만큼 더 든다.
 
-**3. representation learning이 가능하다.** 강력한 self-supervised learning 기법이 등장하면서, 데이터의 추상적인 representation을 잡아내려면 비선형 layer를 여러 겹 가진 정교한 모델이 필요해졌다. linear 모델 같은 단순한 모델은 표현력에 한계가 있어 이런 작업에 적합하지 않다. PatchTST는 Transformer가 시계열 예측에 효과적이라는 것을 확인하는 데 그치지 않고, 예측 성능을 더 높일 수 있는 representation 능력이 있음을 보인다. Table 1에서 PatchTST는 self-supervised 방식으로 가장 낮은 MSE인 0.349를 얻었다.
+시계열에는 시간적으로 중복된 정보가 많아서, 이전 연구들은 downsampling이나 sparse한 attention 연결로 일부 값을 버렸고, 그렇게 해도 모델은 예측에 충분한 정보를 얻을 수 있었다. 논문은 $L = 380$인 시계열을 4 step마다 sampling하고 마지막 한 점을 추가해 input token 수를 $N = 96$으로 맞춘 경우를 실험했다($380 / 4 = 95$에 1개를 더한 것이다). 표의 둘째 줄(down-sampled)이 이 경우다. 이때의 MSE는 0.447로, 가장 최근 96 step을 그대로 넣었을 때의 0.518보다 낮았다. input token의 수가 같더라도 look-back window가 길수록 더 중요한 정보를 담고 있다는 뜻이다.
+
+여기서 질문이 나온다. look-back window는 길게 유지하면서 값을 버리지 않을 방법은 없을까? patching이 그 대안이다. patching은 비슷한 값을 갖는 이웃 time step들을 묶어 input token 수를 줄이므로 계산량이 줄어든다. 표의 셋째 줄과 넷째 줄을 비교하면, $L = 336$일 때 patching을 쓰면 MSE가 0.397에서 0.367로 더 낮아진다.
+
+**3. representation learning이 가능하다.** 강력한 self-supervised learning 기법이 등장하면서, 데이터의 추상적인 representation을 잡아내려면 비선형 layer를 여러 겹 가진 정교한 모델이 필요해졌다. linear 모델 같은 단순한 모델은 표현력에 한계가 있어 이런 작업에 적합하지 않다. PatchTST는 Transformer가 시계열 예측에 효과적이라는 것을 확인하는 데 그치지 않고, 예측 성능을 더 높일 수 있는 representation 능력이 있음을 보인다. 표의 다섯째 줄에서 PatchTST는 self-supervised 방식으로 가장 낮은 MSE인 0.349를 얻었다. 같은 조건($L = 336$)의 channel-mixing 모델 FEDformer는 0.597, linear 모델인 DLinear는 0.410이다.
 
 ## Related Work
 
@@ -109,6 +113,14 @@ Transformer는 여러 종류의 데이터에서 잠재력을 보여 왔다. 그 
 
 다변량 시계열 sample의 look-back window 길이가 $L$이고($x_1, \dots, x_L$), 각 time step의 $x_t$는 $M$차원 벡터이다. 여기서 미래의 $T$개 값($x_{L+1}, \dots, x_{L+T}$)을 예측하는 것이 목표이다. PatchTST는 vanilla Transformer encoder를 핵심 구조로 쓴다.
 
+모델 전체가 하는 일은 그림 하나로 요약된다. 여러 변수가 겹쳐 있는 시계열을 한 줄씩 떼어 내고, 같은 Transformer에 한 줄씩 넣고, 나온 예측을 다시 쌓는 것이다.
+
+![다변량 시계열을 변수별 단변량 시계열로 나누어 같은 Transformer backbone에 넣고 결과를 다시 합치는 PatchTST의 전체 구조](../../assets/img/study/transformer-patchtst/10-patchtst-paper-summary/fig1a-model-overview.webp)
+
+왼쪽에서 오른쪽으로 읽는다. 맨 왼쪽의 한 덩어리($x \in \mathbb{R}^{M \times L}$)가 $M$개의 줄로 풀리고(channel-independence), 줄마다 가운데의 Transformer Backbone을 지나 파란색 예측이 되고, 맨 오른쪽에서 다시 한 덩어리($\hat{x} \in \mathbb{R}^{M \times T}$)로 합쳐진다(concatenate). 출처: 논문 Figure 1(a)
+
+그림에서 초록색 줄 다섯 개가 모두 같은 회색 상자 하나로 들어간다는 점이 channel-independence의 핵심이다. 변수마다 모델이 따로 있는 것이 아니라 backbone 하나를 함께 쓰고, 한 줄을 처리할 때 다른 줄의 값은 보지 않는다.
+
 ### Forward 과정
 
 time index 1에서 시작하는 길이 $L$의 $i$번째 단변량 시계열을 다음과 같이 쓴다. 변수가 $M$개이므로 $i = 1, \dots, M$이다.
@@ -117,7 +129,13 @@ $$
 x^{(i)}_{1:L} = \left(x^{(i)}_1, \dots, x^{(i)}_L\right)
 $$
 
-입력 $(x_1, \dots, x_L)$은 $M$개의 단변량 시계열 $x^{(i)} \in \mathbb{R}^{1 \times L}$로 나뉘고, 각각이 Transformer backbone에 독립적으로 들어간다. 구조도에서 데이터가 거치는 단계와 그때의 shape은 다음과 같다.
+입력 $(x_1, \dots, x_L)$은 $M$개의 단변량 시계열 $x^{(i)} \in \mathbb{R}^{1 \times L}$로 나뉘고, 각각이 Transformer backbone에 독립적으로 들어간다. 위 그림의 회색 상자 하나를 펼친 것이 아래 그림이다.
+
+![Instance Norm과 Patching, Projection과 Position Embedding, Transformer Encoder, Flatten과 Linear Head로 이루어진 PatchTST의 backbone](../../assets/img/study/transformer-patchtst/10-patchtst-paper-summary/fig1b-backbone.webp)
+
+아래에서 위로 읽는다. 맨 아래에서 단변량 시계열 한 줄이 들어가 상자를 하나씩 지나고, 맨 위에서 예측이 나온다. 가운데의 세로 막대들이 patch다. 왼쪽에는 단계마다의 기호와 shape이 적혀 있고, 오른쪽의 회색 상자는 주황색 Transformer Encoder의 안쪽이다. 출처: 논문 Figure 1(b)
+
+그림 왼쪽의 기호를 아래에서 위로 옮기면 다음과 같다.
 
 | 단계 | 기호 | shape |
 |---|---|---|
@@ -135,7 +153,7 @@ $$
 
 ### Patching
 
-각 단변량 시계열 $x^{(i)}$는 여러 개의 patch로 나뉜다. patch끼리는 겹칠 수도 있고 겹치지 않을 수도 있다. patch의 길이를 $P$, stride를 $S$라고 하면 patching의 결과는 patch의 sequence이다.
+backbone 그림의 맨 아래 노란 상자에서 일어나는 일이다. 각 단변량 시계열 $x^{(i)}$는 여러 개의 patch로 나뉜다. patch끼리는 겹칠 수도 있고 겹치지 않을 수도 있다. patch의 길이를 $P$, stride를 $S$라고 하면 patching의 결과는 patch의 sequence이다.
 
 $$
 x^{(i)}_p \in \mathbb{R}^{P \times N}
@@ -153,7 +171,7 @@ patch를 쓰면 input token의 수가 $L$에서 대략 $L/S$로 줄어든다. at
 
 ### Transformer encoder
 
-vanilla Transformer encoder로 관측된 신호를 latent representation으로 사상한다.
+backbone 그림에서 patch 위에 놓인 두 상자, "Projection + Position Embedding"과 "Transformer Encoder"에 해당한다. vanilla Transformer encoder로 관측된 신호를 latent representation으로 사상한다.
 
 Transformer는 입력과 출력의 크기가 항상 같고, 모든 layer에서 같은 크기 $D$의 latent 벡터를 쓴다. 그래서 patch를 학습 가능한 linear projection $\mathbf{W}_p \in \mathbb{R}^{D \times P}$로 $D$차원에 사상한다. 코드에서는 이 $D$를 `d_model`이라고 부른다. 여기에 patch의 시간 순서를 알려 주는 학습 가능한 위치 encoding $\mathbf{W}_{pos} \in \mathbb{R}^{D \times N}$을 더한다.
 
@@ -189,11 +207,17 @@ encoder를 거친 출력 $z^{(i)}$는 $(D, N)$으로 입력과 크기가 같다.
 
 ### PatchTST는 변수 사이의 관계를 보는가
 
-다변량 예측은 변수 사이의 상관관계를 반영해 다루는 것이라고 생각했는데, PatchTST의 방식은 그것과 다르다. PatchTST가 각 변수를 다루는 방식은 단변량이다. 학습할 때 여러 변수를 하나의 batch에 넣어 한꺼번에 계산할 뿐이고, 그렇게 묶어서 계산한다고 해서 변수 사이의 관계를 모델링하는 것은 아니다. 코드에서 이 부분이 어떻게 구현되어 있는지는 [forward 과정](09-patchtst-forward-pass.md)의 shape 표에 정리했다.
+다변량 예측은 변수 사이의 상관관계를 반영해 다루는 것이라고 생각했는데, PatchTST의 방식은 그것과 다르다. "모델 구조" 절의 그림에서 본 것처럼 변수는 한 줄씩 따로 backbone을 지나고, 줄과 줄 사이를 잇는 화살표는 없다. PatchTST가 각 변수를 다루는 방식은 단변량이다. 학습할 때 여러 변수를 하나의 batch에 넣어 한꺼번에 계산할 뿐이고, 그렇게 묶어서 계산한다고 해서 변수 사이의 관계를 모델링하는 것은 아니다. 코드에서 이 부분이 어떻게 구현되어 있는지는 [forward 과정](09-patchtst-forward-pass.md)의 shape 표에 정리했다.
 
 ## 실험 결과
 
-노트의 마지막은 지도 학습 방식의 다변량 장기 예측 결과 표이다. ETTh1에서는 예측 길이 $T \in \{96, 192, 336, 720\}$에 대해 예측한 결과가 실려 있다.
+노트의 마지막은 지도 학습 방식의 다변량 장기 예측 결과 표이다.
+
+![8개 데이터셋과 4개 예측 길이에서 PatchTST와 비교 모델들의 MSE, MAE를 정리한 표](../../assets/img/study/transformer-patchtst/10-patchtst-paper-summary/table3-supervised-results.webp)
+
+행은 데이터셋과 예측 길이, 열은 모델이다. 왼쪽 두 열(PatchTST/64, PatchTST/42)이 PatchTST이고, 값이 작을수록 좋다. 굵은 글씨가 가장 좋은 값, 밑줄이 두 번째로 좋은 값인데, 굵은 글씨가 대부분 왼쪽 두 열에 몰려 있다. 출처: 논문 Table 3
+
+ETTh1에서는 예측 길이 $T \in \{96, 192, 336, 720\}$에 대해 예측한 결과가 실려 있다. 표의 다른 데이터셋도 ILI를 빼면 같은 네 가지 길이를 쓰고, ILI만 24, 36, 48, 60이다.
 
 ## 남았던 질문과 답
 

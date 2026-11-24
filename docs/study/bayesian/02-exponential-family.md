@@ -29,7 +29,13 @@ Gaussian, Bernoulli, Poisson, Beta처럼 따로 배운 분포들은 사실 하�
 
 ## 출발점: Gaussian의 MLE
 
-히스토그램으로 그렸을 때 종 모양으로 보이는 데이터가 있다고 하자. 이 데이터를 만든 Gaussian의 모수를 구하는 가장 쉬운 방법은 MLE다. 표본이 서로 독립이므로 각 표본의 밀도를 곱한 것을 최대화한다.
+지수족의 일반형을 바로 보면 기호가 많아 막막하다. 그래서 강의는 가장 익숙한 Gaussian에서 출발해, 식을 조금 고쳐 쓰면 어떤 구조가 드러나는지를 먼저 보여 준다.
+
+![종 모양 히스토그램과 그 위에 겹친 Gaussian 곡선](../../assets/img/study/bayesian/02-exponential-family/gaussian-histogram.webp)
+
+녹색 막대가 데이터의 히스토그램이고 파란 곡선이 그 데이터를 잘 설명하는 Gaussian이다. 풀려는 문제는 "막대만 주어졌을 때 이 파란 곡선의 모수를 어떻게 찾는가"다. 출처: 강의 화면(Mutual Information, "The Exponential Family" 1편).
+
+히스토그램으로 그렸을 때 이렇게 종 모양으로 보이는 데이터가 있다고 하자. 이 데이터를 만든 Gaussian의 모수를 구하는 가장 쉬운 방법은 MLE다. 표본이 서로 독립이므로 각 표본의 밀도를 곱한 것을 최대화한다.
 
 $$
 \mu^*, \sigma^* = \arg\max_{\mu, \sigma} \prod_{i=1}^{N} \mathcal{N}(x_i \mid \mu, \sigma)
@@ -50,7 +56,13 @@ $$
 \eta_1 = \frac{\mu}{\sigma^2}, \qquad \eta_2 = -\frac{1}{2\sigma^2}
 $$
 
-exp 앞의 분모도 $\mu$와 $\sigma$로만 이루어져 있으므로 $\eta_1, \eta_2$의 함수 $Z(\eta_1, \eta_2)$로 쓸 수 있다. 결과적으로 Gaussian은 "데이터로 만든 벡터 $[x, x^2]$과 모수 벡터의 내적을 exp에 넣고, 모수에만 의존하는 값으로 나눈 것"이 된다. 지수족은 이 구조를 일반화한 것이다.
+exp 앞의 분모도 $\mu$와 $\sigma$로만 이루어져 있으므로 $\eta_1, \eta_2$의 함수 $Z(\eta_1, \eta_2)$로 쓸 수 있다.
+
+![Gaussian 식에서 natural parameter와 normalizer가 되는 부분](../../assets/img/study/bayesian/02-exponential-family/gaussian-natural-parameters.webp)
+
+위 식의 둘째 줄에 이름을 붙인 것이다. 오른쪽 파란 상자(데이터 벡터 $[x_i, x_i^2]$과 곱해지는 모수 벡터)가 natural parameter가 되고, 왼쪽 파란 상자(exp 앞의 분모)가 normalizer $Z$가 된다. 강의 화면의 $\theta_1, \theta_2$가 이 글의 $\eta_1, \eta_2$다. 출처: 강의 화면.
+
+결과적으로 Gaussian은 "데이터로 만든 벡터 $[x, x^2]$과 모수 벡터의 내적을 exp에 넣고, 모수에만 의존하는 값으로 나눈 것"이 된다. 지수족은 이 구조를 일반화한 것이다.
 
 ## 일반형
 
@@ -77,7 +89,13 @@ $\eta$는 natural parameter다. 우리가 평소에 쓰는 모수(Gaussian의 $\
 | Gaussian | $\mu, \sigma^2$ | $\eta_1 = \dfrac{\mu}{\sigma^2},\ \eta_2 = -\dfrac{1}{2\sigma^2}$ |
 | Bernoulli | 성공 확률 $p$ | $\eta = \log\dfrac{p}{1-p}$ |
 
-Bernoulli의 $\eta$는 logit이다. $\frac{p}{1-p}$를 odds라고 하고, 여기에 자연로그를 취한 것이 logit(log-odds)이다. logit은 0과 1 사이의 확률을 $(-\infty, \infty)$ 범위의 실수로 바꾼다. $p = 0.5$이면 0이고, $p$가 1에 가까워지면 양의 무한대로, 0에 가까워지면 음의 무한대로 간다.
+Bernoulli의 $\eta$는 logit이다. $\frac{p}{1-p}$를 odds라고 하고, 여기에 자연로그를 취한 것이 logit(log-odds)이다. logit이 하는 일은 0과 1 사이에 갇힌 확률을 $(-\infty, \infty)$ 범위의 실수로 펴는 것이다.
+
+![확률 p에 대한 logit 곡선](../../assets/img/study/bayesian/02-exponential-family/logit-curve.webp)
+
+가로축이 확률 $p$, 세로축이 logit이다. 곡선은 $p = 0.5$에서 가로축을 지나고(logit = 0), $p$가 1에 가까워지면 위로 끝없이 올라가며, 0에 가까워지면 아래로 끝없이 내려간다.
+
+뒤에서 Bernoulli의 $\eta$를 $-4$에서 $4$까지 움직이는 그래프가 나오는데, $\eta$가 확률이 아니라 이 곡선의 세로축 값이라는 점을 기억해 두면 헷갈리지 않는다.
 
 ### $t(x)$: 충분통계량
 
@@ -208,13 +226,25 @@ $$
 
 ### 다항분포와 $h(x)$의 의미
 
-강의의 두 번째 예제는 $h(x)$가 왜 필요한지를 보여 준다. 데이터의 각 관측이 길이 3인 벡터 $x = [x_a, x_b, x_c]$이고, 성분은 음수가 아닌 정수이며 합이 항상 10이라고 하자. 예를 들면 $[6, 0, 4]$, $[3, 3, 4]$, $[5, 3, 2]$ 같은 값이다.
+강의의 두 번째 예제는 $h(x)$가 왜 필요한지를 보여 준다. 데이터의 각 관측이 길이 3인 벡터 $x = [x_a, x_b, x_c]$이고, 성분은 음수가 아닌 정수이며 합이 항상 10이라고 하자.
+
+![행마다 합이 10인 세 정수로 이루어진 데이터](../../assets/img/study/bayesian/02-exponential-family/multinomial-data.webp)
+
+한 행이 관측 하나다. $[6, 0, 4]$, $[3, 3, 4]$, $[5, 3, 2]$처럼 어느 행이든 세 수를 더하면 10이다. 출처: 강의 화면.
+
+이 데이터를 지수족으로 모델링하려면 앞에서와 같이 세 가지를 골라야 한다.
 
 - 합하는 영역: 합이 10인 음이 아닌 정수 세 개의 조합 전체를 $\mathcal{X}$라 하고, 이 집합 위에서 더한다.
 - $t(x) = [x_a, x_b]$: 열마다 모수를 하나씩 두는 것이 자연스럽지만, 합이 10이라는 제약 때문에 둘을 알면 나머지 하나는 정해진다. 그래서 길이는 2면 충분하다.
 - $h(x)$: 여기가 핵심이다.
 
-$x$가 횟수라고 생각하자. $a$, $b$, $c$ 중 하나가 나오는 사건이 10번 일어났고, $x$는 각각이 나온 횟수다. 수열 `aabbcababc`는 $[4, 4, 2]$가 된다. 이렇게 보면 모수와 무관하게 어떤 $x$는 다른 $x$보다 나오기 쉽다. $[10, 0, 0]$을 만드는 수열은 `aaaaaaaaaa` 하나뿐이지만, $[9, 1, 0]$을 만드는 수열은 `b`가 들어갈 자리에 따라 10개다. 그래서 $h(x)$를 "$x$를 만드는 수열의 개수"로 둔다.
+$x$가 횟수라고 생각하자. $a$, $b$, $c$ 중 하나가 나오는 사건이 10번 일어났고, $x$는 각각이 나온 횟수다.
+
+![같은 횟수 벡터를 만드는 수열의 개수 비교](../../assets/img/study/bayesian/02-exponential-family/multinomial-sequence-count.webp)
+
+가운데 부분을 보면 된다. $[10, 0, 0]$을 만드는 수열은 한 줄뿐인데, $[9, 1, 0]$을 만드는 수열은 `b`의 자리에 따라 열 줄이다. 출처: 강의 화면.
+
+그림 맨 위의 예처럼 수열 `aabbcababc`는 $a$가 4번, $b$가 4번, $c$가 2번이므로 $[4, 4, 2]$가 된다. 이렇게 수열을 세어 $x$를 만든다고 보면, 모수와 무관하게 어떤 $x$는 다른 $x$보다 나오기 쉽다. $[10, 0, 0]$을 만드는 수열은 `aaaaaaaaaa` 하나뿐이지만, $[9, 1, 0]$을 만드는 수열은 `b`가 들어갈 자리에 따라 10개다. 각 사건의 확률을 따지기 전에, 만들 수 있는 길이 이미 10배 많은 것이다. 그래서 $h(x)$를 "$x$를 만드는 수열의 개수"로 둔다.
 
 $$
 h(x) = \frac{10!}{x_a!\, x_b!\, x_c!}
@@ -270,23 +300,37 @@ $$
 
 ### Bernoulli로 확인
 
-Bernoulli에서 $t(x) = x$이고 $A(\eta) = \log(1 + e^{\eta})$다. $\eta$를 움직이면서 $t(x)$의 평균과 분산이 어떻게 변하는지 본다.
+식으로 증명하기 전에 그림으로 먼저 확인한다. Bernoulli에서 $t(x) = x$이고 $A(\eta) = \log(1 + e^{\eta})$다. 강의는 $\eta$를 움직이면서 그래프 네 개를 그린다. 위의 둘은 $t(x)$의 평균과 분산을 직접 계산한 것이고, 아래의 둘은 log-normalizer를 한 번, 두 번 미분한 것이다.
 
-"$\eta$는 확률인데 어떻게 $-4$에서 $4$까지 넓은 범위로 그릴 수 있는가"가 처음의 의문이었다. $\eta$는 확률이 아니라 logit $\log\frac{\mu}{1-\mu}$이므로 음의 무한대부터 양의 무한대까지 움직일 수 있다.
+![Bernoulli에서 t(x)의 평균·분산과 log-normalizer의 1차·2차 미분](../../assets/img/study/bayesian/02-exponential-family/bernoulli-mean-variance.webp)
 
-평균은 $\mathbb{E}[x] = \mu = \sigma(\eta)$다. $\eta = 0$이면 0과 1이 반반으로 나오므로 0.5이고, $\eta$가 커지면 1로, 작아지면 0으로 가는 S자 곡선이다. $A$를 미분해도 같은 것이 나온다.
+위아래를 짝지어 본다. 왼쪽 위(평균)와 왼쪽 아래(1차 미분)가 같은 S자 곡선이고, 오른쪽 위(분산)와 오른쪽 아래(2차 미분)가 같은 종 모양이다. 가로축의 $\theta$가 이 글의 $\eta$다. 출처: 강의 화면(Mutual Information, "The Exponential Family" 2편).
+
+"$\eta$는 확률인데 어떻게 가로축을 $-4$에서 $4$까지 넓은 범위로 그릴 수 있는가"가 처음의 의문이었다. $\eta$는 확률이 아니라 logit $\log\frac{\mu}{1-\mu}$이므로 음의 무한대부터 양의 무한대까지 움직일 수 있다.
+
+왼쪽 열부터 본다. 평균은 $\mathbb{E}[x] = \mu = \sigma(\eta)$다. $\eta = 0$이면 0과 1이 반반으로 나오므로 0.5이고, $\eta$가 커지면 1로, 작아지면 0으로 가는 S자 곡선이다. $A$를 미분해도 같은 것이 나온다.
 
 $$
 \frac{dA}{d\eta} = \frac{e^{\eta}}{1 + e^{\eta}} = \sigma(\eta)
 $$
 
-분산 곡선은 $\eta = 0$에서 0.25로 가장 높고 양쪽으로 갈수록 0에 가까워지는 종 모양인데, 노트에는 왜 이런 모양인지 모르겠다고 적어 두었다. Bernoulli의 분산은 $\mu(1-\mu)$다. 앞면과 뒷면이 반반일 때 결과가 가장 불확실하므로 $\mu = 0.5$에서 최대이고, $\eta$가 한쪽으로 치우치면 결과가 거의 정해지므로 0에 가까워진다. $A$를 두 번 미분한 결과도 이와 같다.
+오른쪽 열의 분산 곡선은 $\eta = 0$에서 0.25로 가장 높고 양쪽으로 갈수록 0에 가까워지는 종 모양인데, 노트에는 왜 이런 모양인지 모르겠다고 적어 두었다. Bernoulli의 분산은 $\mu(1-\mu)$다. 앞면과 뒷면이 반반일 때 결과가 가장 불확실하므로 $\mu = 0.5$에서 최대이고, $\eta$가 한쪽으로 치우치면 결과가 거의 정해지므로 0에 가까워진다. $A$를 두 번 미분한 결과도 이와 같다.
 
 $$
 \frac{d^2A}{d\eta^2} = \sigma(\eta)\left(1 - \sigma(\eta)\right) = \mu(1-\mu)
 $$
 
-강의는 두 분포를 더 보여 준다.
+강의는 두 분포를 더 보여 준다. 곡선의 모양은 분포마다 전혀 다르지만, 위아래 그래프가 서로 같다는 점은 그대로다.
+
+![Exponential 분포에서 t(x)의 평균·분산과 log-normalizer의 미분](../../assets/img/study/bayesian/02-exponential-family/exponential-mean-variance.webp)
+
+Exponential 분포다. $\eta$는 음수만 가능해서 가로축이 0의 왼쪽에만 있고, $\eta$가 0에 가까워질수록 평균과 분산이 급하게 커진다. 출처: 강의 화면.
+
+![Poisson 분포에서 t(x)의 평균·분산과 log-normalizer의 미분](../../assets/img/study/bayesian/02-exponential-family/poisson-mean-variance.webp)
+
+Poisson 분포다. 네 그래프가 모두 같은 곡선 $e^{\eta}$인데, Poisson은 평균과 분산이 같기 때문이다. 출처: 강의 화면.
+
+세 분포의 식을 표로 모으면 다음과 같다.
 
 | 분포 | $\eta$ | $A(\eta)$ | $A'(\eta)$ = 평균 | $A''(\eta)$ = 분산 |
 |---|---|---|---|---|
@@ -441,6 +485,10 @@ $$
 
 마지막 줄로 넘어갈 때 $\frac{1}{Z_l(\eta)^N} = e^{-N\log Z_l(\eta)}$를 써서 likelihood의 normalizer를 exp 안으로 넣었다. 손으로 따라 쓰면서 가장 눈에 들어온 부분이다. likelihood의 $\frac{1}{Z_l(\eta)}$이 prior의 충분통계량 $-\log Z_l(\eta)$와 같은 자리에 합쳐지도록 prior를 설계한 것이다.
 
+![posterior 유도를 손으로 따라 쓴 노트](../../assets/img/study/bayesian/02-exponential-family/posterior-derivation-handwritten.webp)
+
+강의의 증명을 손으로 따라 쓴 것이다. 둘째 줄에서 빨간 밑줄로 evidence, likelihood, prior 세 덩어리를 나누었고, 셋째 줄의 빨간 화살표가 likelihood의 $\frac{1}{Z_l}$이 exp 안으로 들어가 $\tau_0$에 1을 더하는 자리를 가리킨다. 강의의 표기를 그대로 써서 $\theta$가 이 글의 $\eta$이고, 갱신이 $1 + \tau_0$으로 적혀 있다(이유는 아래에 적었다).
+
 $\eta$에 의존하는 부분 $h_p(\eta)\exp(\cdot)$은 prior와 꼴이 같고 $\tau$만 달라졌다. posterior는 정규화된 분포여야 하므로 앞의 상수는 새 $\tau$에 대한 prior의 정규화 상수와 같을 수밖에 없다.
 
 $$
@@ -453,7 +501,25 @@ $$
 
 ### Gaussian 예제
 
-강의의 마지막 예제는 종 모양 히스토그램 데이터에 Gaussian likelihood를 쓰는 경우다. natural parameter가 $(\eta_1, \eta_2)$ 둘이므로 모수 공간은 2차원 평면이고, 평면 위의 점 하나가 Gaussian 하나에 대응한다. MLE는 이 평면에서 점 하나를 고른다. 베이즈 방식은 평면 위의 분포를 구하고, 거기서 $\eta$를 여러 개 뽑아 그럴듯한 Gaussian 여러 개를 함께 본다.
+강의의 마지막 예제는 종 모양 히스토그램 데이터에 Gaussian likelihood를 쓰는 경우다. MLE와 베이즈 방식이 실제로 무엇을 내놓는지를 그림 세 장으로 비교한다. 세 그림 모두 축의 $\theta_1, \theta_2$가 이 글의 $\eta_1, \eta_2$다.
+
+![모수 평면의 점 하나와 그에 대응하는 Gaussian 곡선](../../assets/img/study/bayesian/02-exponential-family/gaussian-parameter-point.webp)
+
+아래 평면의 녹색 점 하나가 위의 녹색 곡선 하나에 대응한다. 점을 옮기면 곡선의 위치와 폭이 바뀐다. 보라색 막대는 데이터의 히스토그램이다. 출처: 강의 화면(2편).
+
+natural parameter가 $(\eta_1, \eta_2)$ 둘이므로 모수 공간은 2차원 평면이고, 평면 위의 점 하나가 Gaussian 하나에 대응한다. 위 그림의 점에 해당하는 곡선은 아직 막대와 어긋나 있다.
+
+![MLE로 찾은 Gaussian이 히스토그램에 맞은 모습](../../assets/img/study/bayesian/02-exponential-family/gaussian-mle-fit.webp)
+
+MLE는 평면에서 점 하나를 골라 곡선이 막대에 가장 잘 맞게 한다. 답은 이 곡선 하나다. 출처: 강의 화면.
+
+![모수 평면 위의 분포에서 뽑은 여러 점과 그에 대응하는 여러 Gaussian](../../assets/img/study/bayesian/02-exponential-family/gaussian-bayes-samples.webp)
+
+베이즈 방식은 점 하나가 아니라 평면 위의 분포를 다룬다. 아래 평면의 밝은 부분이 그 분포이고, 거기서 뽑은 점(녹색 원) 하나하나가 위의 곡선 하나가 된다. 출처: 강의 화면.
+
+MLE가 평면에서 점 하나를 고른다면, 베이즈 방식은 평면 위의 분포를 구하고 거기서 $\eta$를 여러 개 뽑아 Gaussian 여러 개를 함께 본다. 마지막 그림에서 곡선이 여러 겹으로 겹쳐 있는 것이 그 뜻이다.
+
+이 평면 위의 분포를 어떤 꼴로 잡을지가 남은 문제다.
 
 conjugate prior는 위의 규칙으로 정해진다. $h_l(x) = 1$로 둔 Gaussian에서 $\log Z_l(\eta) = -\frac{\eta_1^2}{4\eta_2} + \frac{1}{2}\log\left(-\frac{\pi}{\eta_2}\right)$이므로
 

@@ -43,7 +43,17 @@ Distillation은 모델이 가진 개념의 표현은 그대로 두고 다양성�
 
 **LoRA(Low-Rank Adaptation).** 큰 모델 전체를 다시 훈련하지 않고, 작은 adaptor만 학습해 원하는 개념이나 스타일을 추가하는 방법이다. 매우 적은 파라미터로 fine-tuning할 수 있고, 학습한 adaptor만 떼어 다른 곳에 붙여 쓸 수 있다.
 
-**Concept Sliders.** 특정 속성을 슬라이더처럼 조절할 수 있게 하는 방법이다. 내가 이해한 구현 방식은 다음과 같다.
+![LoRA 학습에 쓴 이미지, LoRA 없이 생성한 이미지, LoRA를 붙여 생성한 이미지](../assets/img/papers/2025-04-09-distilling-diversity/lora-example.webp)
+
+LoRA를 찾아보며 본 예시다. 왼쪽이 학습에 쓴 이미지, 가운데가 LoRA 없이 생성한 이미지, 오른쪽이 LoRA를 붙여 생성한 이미지다. 같은 "우산을 쓴 로봇"이지만 오른쪽은 가운데보다 학습 이미지의 구도(커다란 우산 아래에 선 작은 로봇)에 가까워졌다. 모델 본체는 그대로 두고 adaptor만 붙였을 때 생기는 차이다.
+
+**Concept Sliders.** 특정 속성을 슬라이더처럼 조절할 수 있게 하는 방법이다.
+
+![Cooked와 Fine Dining 두 슬라이더를 함께 움직였을 때의 음식 이미지](../assets/img/papers/2025-04-09-distilling-diversity/concept-sliders-example.webp)
+
+가로 방향이 "Cooked" 슬라이더, 세로 방향이 "Fine Dining" 슬라이더다. 오른쪽으로 갈수록 재료가 익힌 요리로 바뀌고, 아래로 갈수록 접시에 조금씩 담아낸 고급 요리의 모습이 된다. 두 속성을 서로 얽히지 않게 따로 조절하는 것이 목표다. 출처: Concept Sliders 논문
+
+내가 이해한 구현 방식은 다음과 같다.
 
 1. 젊은 사람의 이미지와 나이 든 사람의 이미지처럼 속성이 대비되는 데이터로 LoRA를 학습한다. 목표하는 개념에 대해 다른 속성과 얽히지 않은(disentangled) 방향을 찾는 것이 목적이다.
 2. 학습한 LoRA weight의 차이를 분석해 하나의 벡터로 만든다. 예를 들면 "나이 벡터"다.
@@ -82,7 +92,19 @@ Distillation을 하면 추론은 빨라지지만 다양성이 줄어든다. 그�
 
 표에 DreamBooth라는 이름의 행은 보이지 않는다. DreamBooth는 개념을 조절하는 것이 아니라 개념이 있는지 없는지의 문제인 personalization이어서, 정성 평가에 집중한 것이 아닐까 추측했다.
 
-정성 결과에서는 SDXL에서 fine-tuning한 adaptor를 distilled 모델에 붙였을 때 해당 특성이 옮겨 간 것을 볼 수 있다. Step 수가 크게 줄었는데도 효과가 유지된다. 다만 adaptor를 붙이기 전의 이미지도 함께 실었다면 비교가 더 분명했을 것이라고 생각했다. 반대 방향(distilled → base)의 결과는 부록에 있고 정량 결과는 제공되지 않는다.
+정성 결과는 다음 그림이다.
+
+![Base에서 학습한 adaptor를 네 가지 distilled 모델에 붙여 생성한 이미지](../assets/img/papers/2025-04-09-distilling-diversity/control-transfer-base-to-distilled.webp)
+
+맨 왼쪽 열(Base→Base)이 adaptor를 학습한 SDXL에서 그대로 쓴 결과이고, 나머지 네 열이 같은 adaptor를 distilled 모델에 붙인 결과다. 줄마다 방법이 다르다. 위에서부터 Custom Diffusion("Cartoon Character"), DreamBooth("Pixel Art"), Concept Sliders("Big Eyes")다. 출처: 논문
+
+어느 줄에서든 다섯 열이 같은 특성을 보인다. 맨 아랫줄은 어느 모델에서나 눈이 커졌고, 가운뎃줄은 어느 모델에서나 pixel art로 그려졌다. SDXL에서 fine-tuning한 adaptor를 distilled 모델에 붙였을 때 해당 특성이 옮겨 간 것이다. Step 수가 크게 줄었는데도 효과가 유지된다. 표에 없던 DreamBooth는 이 그림에 가운뎃줄로 들어 있다. 다만 adaptor를 붙이기 전의 이미지도 함께 실었다면 비교가 더 분명했을 것이라고 생각했다.
+
+반대 방향(distilled → base)의 결과는 부록에 있고 정량 결과는 제공되지 않는다.
+
+![Distilled 모델에서 학습한 adaptor를 base 모델에 붙여 생성한 이미지](../assets/img/papers/2025-04-09-distilling-diversity/figa1-reverse-control-transfer.webp)
+
+윗줄이 adaptor를 학습한 distilled 모델의 결과, 아랫줄이 그 adaptor를 SDXL base에 붙인 결과다. 금빛 용, 전사, chibi 스타일이 아랫줄에도 그대로 나타난다. 그림 설명에 따르면 LCM은 학습이 어려워 이 실험에서 빠졌다. 출처: 논문 Figure A.1
 
 개념의 표현이 유지된다면 다양성은 왜 줄어드는가. 이 질문이 다음 절로 이어진다.
 
@@ -90,7 +112,11 @@ Distillation을 하면 추론은 빨라지지만 다양성이 줄어든다. 그�
 
 DT(Diffusion Target) Visualization은 reverse process의 각 step에서 모델이 최종 출력을 무엇으로 예상하고 있는지를 본다.
 
-Diffusion은 forward process에서 이미지 $\mathbf{x}_0$에 Gaussian noise를 더해 가고, 마지막 step $T$에서는 순수한 Gaussian noise가 된다. Reverse process에서는 step $t$에서 noise를 예측하고 그것을 제거해 $t-1$의 이미지를 얻는다.
+![Diffusion의 forward process와 reverse process](../assets/img/papers/2025-04-09-distilling-diversity/ddpm-forward-reverse.webp)
+
+오른쪽 끝의 $\mathbf{x}_0$가 이미지이고 왼쪽 끝의 $\mathbf{x}_T$가 순수한 noise다. 점선 화살표 $q$가 noise를 더하는 forward process, 실선 화살표 $p_\theta$가 noise를 걷어 내는 reverse process다. 출처: DDPM 논문
+
+Diffusion은 forward process에서 이미지 $\mathbf{x}_0$에 Gaussian noise를 더해 가고, 마지막 step $T$에서는 순수한 Gaussian noise가 된다. 그림에서 오른쪽에서 왼쪽으로 가는 방향이다. Reverse process에서는 step $t$에서 noise를 예측하고 그것을 제거해 $t-1$의 이미지를 얻는다. 왼쪽에서 오른쪽으로 한 칸 가는 것이다.
 
 $$
 \mathbf{x}_{t-1} = \frac{\mathbf{x}_t - \sqrt{1 - \alpha_t}\,\epsilon_\theta(\mathbf{x}_t, t)}{\sqrt{\alpha_t}}
@@ -104,26 +130,50 @@ $$
 \tilde{\mathbf{x}}_{0,t} = \frac{\mathbf{x}_t - \sqrt{1 - \bar{\alpha}_t}\,\epsilon_\theta(\mathbf{x}_t, t)}{\sqrt{\bar{\alpha}_t}}
 $$
 
-실제로 이미지를 생성하려면 남은 step을 모두 거치며 noise를 다시 예측해야 한다. 이 식은 그 대신 "지금 예측한 noise를 가지고 끝까지 간다면 무엇이 나오는가"를 본다. 남은 단계를 건너뛰어 바로 $\mathbf{x}_0$를 구하는 것으로 해석했다. 한 step을 가는 식과 비교하면 $\alpha_t$ 자리에 $\bar{\alpha}_t$가 들어가 있다. $\bar{\alpha}_t$는 처음부터 $t$까지의 $\alpha$를 누적한 값이다. 전체 denoising을 끝내지 않고도 모델이 지금 어떤 그림을 그리고 있는지 볼 수 있게 해 주는 도구다.
+위 그림으로 말하면, 한 칸씩 가지 않고 지금 있는 $\mathbf{x}_t$에서 오른쪽 끝의 $\mathbf{x}_0$로 한 번에 건너뛰어 보는 것이다. 실제로 이미지를 생성하려면 남은 step을 모두 거치며 noise를 다시 예측해야 한다. 이 식은 그 대신 "지금 예측한 noise를 가지고 끝까지 간다면 무엇이 나오는가"를 본다. 남은 단계를 건너뛰어 바로 $\mathbf{x}_0$를 구하는 것으로 해석했다. 한 step을 가는 식과 비교하면 $\alpha_t$ 자리에 $\bar{\alpha}_t$가 들어가 있다. $\bar{\alpha}_t$는 처음부터 $t$까지의 $\alpha$를 누적한 값이다. 전체 denoising을 끝내지 않고도 모델이 지금 어떤 그림을 그리고 있는지 볼 수 있게 해 주는 도구다.
 
 ### Artifact가 생기는 지점
 
-"an image of a dog and a cat sitting on a sofa"라는 프롬프트로 생성한 최종 이미지에 개만 있고 고양이가 빠진 경우를 본다. DT-Visualization으로 따라가 보면 모델은 초기에는 고양이를 그리려 했지만 reverse process를 거치며 그 개념을 지우거나 무시하게 된다. 이런 결정이 어느 step에서 일어나는지를 볼 수 있다. 이 과정은 base 모델보다 distilled 모델에서 훨씬 빨리 일어난다.
+"an image of a dog and a cat sitting on a sofa"라는 프롬프트로 생성한 최종 이미지에 개는 온전한데 고양이가 제대로 그려지지 않은 경우를 본다.
+
+![최종 이미지와 T=5, 10, 15에서의 DT-Visualization. 개와 고양이 자리를 상자로 표시했다](../assets/img/papers/2025-04-09-distilling-diversity/dt-visualization-artifact.webp)
+
+맨 왼쪽이 최종 이미지이고 오른쪽 세 장이 step 5, 10, 15에서 모델이 예상한 최종 이미지다. 파란 상자가 개, 빨간 상자가 고양이가 있어야 할 자리이며, 아래에 두 상자를 확대해 놓았다. 출처: 논문
+
+빨간 상자만 따라가면 된다. $T = 10$에서는 고양이 얼굴이 또렷하게 보인다. $T = 15$에서는 그 얼굴이 뭉개지고, 최종 이미지에서는 고양이 얼굴이 제대로 남아 있지 않다. 모델은 초기에는 고양이를 그리려 했지만 reverse process를 거치며 그 개념을 지우거나 무시하게 된 것이다. 이런 결정이 어느 step에서 일어나는지를 이렇게 볼 수 있다. 이 과정은 base 모델보다 distilled 모델에서 훨씬 빨리 일어난다.
 
 ### Mode collapse가 생기는 지점
 
 같은 도구를 base 모델과 distilled 모델에 적용해 비교한다.
 
-- Base 모델은 이미지의 구조를 여러 step에 걸쳐 점진적으로 만든다.
-- Distilled 모델은 첫 번째 denoising step에서 이미지의 구조를 완성해 버린다.
+![일반적인 denoising 시각화(왼쪽)와 DT-Visualization(오른쪽)을 base 모델과 네 가지 distilled 모델에 적용한 결과](../assets/img/papers/2025-04-09-distilling-diversity/denoising-vs-dt-visualization.webp)
 
-Distilled 모델은 결정을 너무 빨리 내린다. 그래서 random seed를 바꾸어도 결과가 매우 비슷하다. 이것이 diversity loss이고 mode collapse다. 중간 결과를 그대로 그리는 일반적인 시각화보다 DT-Visualization이 이 차이를 더 잘 보여 준다.
+가로는 진행률(0%, 30%, 60%, 100%)이고 세로는 모델이다. 빨간 선 위의 한 줄이 base 모델(SDXL-Base), 아래 네 줄이 distilled 모델이다. 왼쪽 절반은 중간 결과 $\mathbf{x}_t$를 그대로 그린 것이고 오른쪽 절반이 DT-Visualization이다. 빨간 선은 읽으면서 그어 둔 것이다. 출처: 논문
 
-정량적으로는 COCO-10k 프롬프트에 대해 각 step의 DT-Visualization과 최종 이미지 사이의 DreamSim distance를 잰다. DreamSim은 사람이 느끼는 유사성을 반영한 이미지 유사도 척도이고, 값이 작을수록 비슷하다. Base 모델은 초반 step에서 최종 출력과의 유사도가 낮다가 점차 올라간다. Distilled 모델은 초반 step부터 유사도가 높다.
+볼 곳은 오른쪽 절반의 0% 열이다.
+
+- Base 모델(맨 윗줄)의 0%는 형체를 알아보기 어려운 얼룩이다. 30%, 60%로 가면서 개의 모습이 잡힌다. 이미지의 구조를 여러 step에 걸쳐 점진적으로 만든다.
+- Distilled 모델(아래 네 줄)의 0%에는 조금 흐릿한 경우는 있어도 이미 개가 있고, 100%의 이미지와 구도가 거의 같다. 첫 번째 denoising step에서 이미지의 구조를 완성해 버린다.
+
+왼쪽 절반에서는 이 차이가 보이지 않는다. 어느 모델이든 0%는 noise일 뿐이기 때문이다. 중간 결과를 그대로 그리는 일반적인 시각화보다 DT-Visualization이 이 차이를 더 잘 보여 준다는 것이 이 뜻이다.
+
+Distilled 모델은 결정을 너무 빨리 내린다. 그래서 random seed를 바꾸어도 결과가 매우 비슷하다. 이것이 diversity loss이고 mode collapse다.
+
+![같은 프롬프트에 seed를 바꾸어 생성한 이미지: base, distilled, diversity distillation](../assets/img/papers/2025-04-09-distilling-diversity/samples-base-distilled-hybrid.webp)
+
+가운데 묶음이 distilled 모델이다. "image of a car"에는 붉은 계열의 차를 앞쪽에서 가까이 잡은 구도만, 우주 비행사 프롬프트에는 헬멧을 가까이서 잡은 구도만 나온다. 왼쪽의 base 모델은 차의 색과 배경, 구도가 제각각이다. 오른쪽 묶음은 3절에서 다룰 diversity distillation의 결과다. 출처: 논문
+
+정량적으로는 COCO-10k 프롬프트에 대해 각 step의 DT-Visualization과 최종 이미지 사이의 DreamSim distance를 잰다. DreamSim은 사람이 느끼는 유사성을 반영한 이미지 유사도 척도이고, 값이 작을수록 비슷하다.
+
+![진행률에 따른 DT-Visualization과 최종 이미지 사이의 거리: base 모델과 distilled 모델](../assets/img/papers/2025-04-09-distilling-diversity/dt-similarity-curve.webp)
+
+빨간 선이 base 모델, 파란 선이 distilled 모델이다. 세로축의 이름은 similarity로 적혀 있지만 값은 distance여서, 낮을수록 최종 이미지와 비슷하다. 출처: 논문
+
+출발점의 높이가 다르다. Base 모델은 0%에서 0.8을 넘는 곳에서 시작해 가파르게 내려온다. 초반 step에서 최종 출력과의 유사도가 낮다가 점차 올라간다는 뜻이다. Distilled 모델은 0.3에서 시작한다. 초반 step부터 유사도가 높다. Base 모델이 distilled 모델의 출발점 높이까지 내려오는 데는 전체의 20% 남짓이 걸리고, 절반쯤 지나면 두 선이 거의 붙는다.
 
 ## 3. Diversity distillation
 
-Distilled 모델의 초기 denoising step이 다양성을 결정하는 원인이라면, 그 부분만 바꾸면 다양성이 돌아와야 한다. 논문은 이것을 실험으로 확인한다. 다양성에 결정적인 초기 step만 base 모델로 돌리고, 그 뒤는 distilled 모델로 돌린다.
+Distilled 모델의 초기 denoising step이 다양성을 결정하는 원인이라면, 그 부분만 바꾸면 다양성이 돌아와야 한다. 논문은 이것을 실험으로 확인한다. 다양성에 결정적인 초기 step만 base 모델로 돌리고, 그 뒤는 distilled 모델로 돌린다. 2절의 seed별 이미지 그림에서 오른쪽 묶음이 이렇게 만든 결과다. 가운데의 distilled 모델과 달리 차의 색, 각도, 화풍이 다시 제각각이 된다.
 
 ### 결과
 
@@ -158,16 +208,20 @@ Hybrid가 평균적으로 가장 높다. Base만 쓴 것보다 base와 distilled
 
 다양성의 척도로는 FID를 쓴다. 실제 데이터셋에는 다양한 이미지가 있으므로 생성 분포의 공분산이 작으면 다양성도 낮다고 볼 수 있기 때문이다.
 
+![Guidance scale, base 모델을 쓰는 step 수, base 모델의 inference step 수에 따른 FID](../assets/img/papers/2025-04-09-distilling-diversity/hyperparameter-analysis.webp)
+
+세 그래프 모두 세로축이 FID이고 낮을수록 좋다. 파란 선이 hybrid의 값이고, 빨간 X가 가장 좋았던 설정이다. 가로 점선은 비교 기준으로, 빨간 점선이 base 모델, 초록 점선이 distilled 모델이다. 출처: 논문
+
 - **Guidance.** Classifier-free guidance(CFG)는 생성된 이미지가 프롬프트를 얼마나 강하게 따르게 할지를 조절한다.
 
     $$
     \epsilon_{\text{guided}} = (1 + w)\,\epsilon_{\text{cond}} - w\,\epsilon_{\text{uncond}}
     $$
 
-    Guidance는 대부분의 diffusion 모델에서 필수로 쓰이는데, hybrid 모델에서는 guidance를 약하게 줄수록 다양성이 높게 나왔다.
+    Guidance는 대부분의 diffusion 모델에서 필수로 쓰이는데, hybrid 모델에서는 guidance를 약하게 줄수록 다양성이 높게 나왔다. 그림 (a)에서 FID는 guidance scale이 0일 때 가장 낮고, 키울수록 가파르게 올라간다.
 
-- **Base 모델을 쓰는 step 수.** $k = 1$, 즉 첫 step 하나만 base 모델로 돌려도 다양성이 상당히 회복된다. 그 이상 늘려도 효율이 떨어진다.
-- **Base 모델의 inference step 수.** Step 수를 늘리면 계산 비용은 오르지만 다양성의 증가는 점점 줄어든다. 그래서 첫 step에서 일대일로 교체하는 것이 가장 효율적이라고 주장한다.
+- **Base 모델을 쓰는 step 수.** $k = 1$, 즉 첫 step 하나만 base 모델로 돌려도 다양성이 상당히 회복된다. 그 이상 늘려도 효율이 떨어진다. 그림 (b)에서 가로축 1에 빨간 X가 있고, 2와 3으로 가면 FID가 오히려 크게 나빠진다.
+- **Base 모델의 inference step 수.** Step 수를 늘리면 계산 비용은 오르지만 다양성의 증가는 점점 줄어든다. 그림 (c)에서 파란 선은 4부터 100까지 거의 수평이다. 그래서 첫 step에서 일대일로 교체하는 것이 가장 효율적이라고 주장한다.
 
 ## 한계와 읽으며 든 생각
 

@@ -34,16 +34,24 @@ forward의 시작점은 `PatchTST.py`에 있는 `Model` 클래스의 `forward()`
 
 ## PatchTST_backbone
 
-`PatchTST_backbone`의 `forward()`는 네 단계로 진행된다.
+`PatchTST_backbone`의 `forward()`가 하는 일은 아래 구조도를 아래에서 위로 한 번 올라가는 것이다.
 
-1. **Instance normalization.** RevIN을 쓰도록 설정되어 있으면 입력을 정규화한다.
-2. **Patching.** 설정한 patch 길이와 stride에 따라 실제 patch를 만든다.
-3. **모델.** patch를 backbone인 `TSTiEncoder`에 넣고, 그 출력을 head에 넣는다.
+![PatchTST의 모델 구조를 설명하는 발표 슬라이드](../../assets/img/study/transformer-patchtst/09-patchtst-forward-pass/patchtst-structure-slide.webp)
+
+가운데 구조도의 맨 아래(Input Univariate Series)가 입력이고 맨 위(Output Univariate Series)가 예측이다. 그 사이의 상자들을 아래에서부터 차례로 지난다. 오른쪽의 회색 상자는 주황색 Transformer Encoder의 안쪽을 펼친 것이다. 출처: PatchTST를 소개하는 발표 슬라이드 (구조도는 PatchTST 논문 Figure 1)
+
+코드로는 네 단계다.
+
+1. **Instance normalization.** RevIN을 쓰도록 설정되어 있으면 입력을 정규화한다. 구조도의 노란 상자 "Instance Norm + Patching"의 앞 절반이다.
+2. **Patching.** 설정한 patch 길이와 stride에 따라 실제 patch를 만든다. 같은 상자의 뒤 절반이고, 그 위의 세로 막대들이 만들어진 patch다.
+3. **모델.** patch를 backbone인 `TSTiEncoder`에 넣고, 그 출력을 head에 넣는다. "Projection + Position Embedding"부터 "Flatten + Linear Head"까지다.
 4. **Denormalization.** RevIN을 썼다면 출력을 원래 scale로 되돌린다.
+
+아래 절들은 3번의 안쪽을 한 겹씩 들어간다.
 
 ## TSTiEncoder
 
-`TSTiEncoder`는 patch에 선형 projection(`W_P`)을 적용하고 위치 encoding(`W_pos`)을 더한 다음, dropout을 거쳐 encoder에 넣는다.
+구조도의 "Projection + Position Embedding" 상자에 해당한다. `TSTiEncoder`는 patch에 선형 projection(`W_P`)을 적용하고 위치 encoding(`W_pos`)을 더한 다음, dropout을 거쳐 encoder에 넣는다.
 
 ## TSTEncoder
 
@@ -51,17 +59,23 @@ encoder는 `TSTEncoder`이고, 실질적인 attention이 여기서 수행된다.
 
 ## TSTEncoderLayer
 
-`TSTEncoderLayer`는 Transformer encoder의 layer 하나이다. Multi-Head Attention과 Add & Norm, Feed Forward와 Add & Norm으로 이루어진 그 블록이다. 이 블록이 layer 수만큼 만들어져 `TSTEncoder`에 보관되어 있다. `forward()`가 하는 일을 코드 순서대로 적으면 다음과 같다.
+`TSTEncoderLayer`는 Transformer encoder의 layer 하나이다.
 
-**Multi-Head Attention sublayer**
+![Transformer encoder 구조도에서 layer 하나에 해당하는 부분을 분홍색 선으로 둘러 표시한 그림](../../assets/img/study/transformer-patchtst/09-patchtst-forward-pass/encoder-layer.webp)
+
+분홍색 선으로 두른 부분이 `TSTEncoderLayer` 하나다. 아래에서 위로 Multi-Head Attention, Add & Norm, Feed Forward, Add & Norm 순서이고, 왼쪽으로 돌아 올라가는 화살표 두 개가 residual connection이다. 출처: "Attention Is All You Need" 논문 Figure 1의 일부에 직접 표시한 것
+
+이 블록이 layer 수만큼(그림의 "N×") 만들어져 `TSTEncoder`에 보관되어 있다. `forward()`의 코드는 이 그림을 아래에서 위로 올라가는 순서 그대로이고, 아래쪽 절반(Multi-Head Attention과 Add & Norm)과 위쪽 절반(Feed Forward와 Add & Norm)의 두 sublayer로 나뉜다.
+
+**Multi-Head Attention sublayer** (그림의 아래쪽 절반)
 
 1. `if self.pre_norm:` 참이면 attention에 넣기 전에 `norm_attn`을 적용한다.
 2. `if self.res_attention:` 참일 때와 거짓일 때 서로 다른 방식으로 `self_attn`을 호출한다. 참이면 이전 layer의 score를 함께 넘기고 이번 layer의 score를 돌려받는다. 여기까지가 Multi-Head Attention이다.
 3. `if self.store_attn:` 참이면 attention 가중치를 저장해 둔다.
-4. `src + self.dropout_attn(src2)`: 입력(residual connection)과 attention의 출력을 더한다.
-5. `if not self.pre_norm:` 앞에서 정규화하지 않았다면 여기서 `norm_attn`을 적용한다.
+4. `src + self.dropout_attn(src2)`: 입력(residual connection)과 attention의 출력을 더한다. 그림의 Add & Norm에서 "Add"에 해당한다.
+5. `if not self.pre_norm:` 앞에서 정규화하지 않았다면 여기서 `norm_attn`을 적용한다. "Norm"에 해당한다.
 
-**Feed-forward sublayer**
+**Feed-forward sublayer** (그림의 위쪽 절반)
 
 1. `if self.pre_norm:` 참이면 feed-forward에 넣기 전에 `norm_ffn`을 적용한다.
 2. `self.ff(src)`: position-wise feed-forward를 진행한다.
@@ -69,11 +83,17 @@ encoder는 `TSTEncoder`이고, 실질적인 attention이 여기서 수행된다.
 4. `if not self.pre_norm:` 앞에서 정규화하지 않았다면 여기서 `norm_ffn`을 적용한다.
 5. `res_attention`을 쓰면 출력과 score를 함께 돌려주고, 아니면 출력만 돌려준다.
 
-`pre_norm`은 정규화를 attention과 feed-forward의 앞에서 할지 뒤에서 할지를 정하는 옵션이다. 참이면 각 sublayer에 들어가기 전에 정규화하고, sublayer를 나온 뒤에는 정규화하지 않는다. 기본값은 거짓이어서, 원래의 Transformer처럼 residual을 더한 뒤에 정규화한다.
+`pre_norm`은 정규화를 attention과 feed-forward의 앞에서 할지 뒤에서 할지를 정하는 옵션이다. 참이면 각 sublayer에 들어가기 전에 정규화하고, sublayer를 나온 뒤에는 정규화하지 않는다. 기본값은 거짓이어서, 그림처럼 residual을 더한 뒤에 정규화한다(Add & Norm).
 
 ## MultiheadAttention
 
-입력으로부터 Query, Key, Value를 만들고 self-attention을 계산하는 부분이다.
+입력으로부터 Query, Key, Value를 만들고 self-attention을 계산하는 부분이다. 위 그림의 주황색 Multi-Head Attention 상자 하나의 안쪽이고, 그 안쪽을 그린 것이 아래 그림이다.
+
+![Scaled Dot-Product Attention과 Multi-Head Attention의 구조](../../assets/img/study/transformer-patchtst/09-patchtst-forward-pass/scaled-dot-product-attention.webp)
+
+오른쪽이 `_MultiheadAttention`, 왼쪽이 그 안에서 불리는 `_ScaledDotProductAttention`이다. 오른쪽 그림 아래의 Linear 세 개가 Query, Key, Value를 만들고, 위의 Concat과 Linear가 head들의 결과를 합친다. 출처: [첫 번째 Transformer 강의](02-transformer-lecture-notes-1.md)의 슬라이드 (구조도는 "Attention Is All You Need" 논문 Figure 2)
+
+오른쪽 그림 아래의 Linear 세 개가 코드에서는 다음 세 줄이다.
 
 ```python
 self.W_Q = nn.Linear(d_model, d_k * n_heads, bias=qkv_bias)
@@ -85,22 +105,24 @@ Query, Key, Value를 만드는 linear layer가 하나씩 있다. 각 layer의 �
 
 ## ScaledDotProductAttention
 
-1. 전달받은 Query와 Key를 행렬곱해 attention energy를 구한다.
-2. 여기에 scale을 곱한다. softmax에 큰 값이 들어가 gradient가 사라지는 것을 막기 위한 것이다.
-3. 이전 layer의 attention score를 더하는 옵션이 있다. 이전 score가 전달되면 더해 준다.
-4. attention mask가 주어지면 score에 적용한다.
-5. softmax를 적용해 attention 가중치를 구하고, attention dropout을 적용한다.
-6. attention 가중치와 Value를 행렬곱해 attention value를 구한다.
+위 그림의 왼쪽을 아래에서 위로 올라가는 순서다. 괄호 안이 그림의 상자 이름이다.
+
+1. 전달받은 Query와 Key를 행렬곱해 attention energy를 구한다. (MatMul)
+2. 여기에 scale을 곱한다. softmax에 큰 값이 들어가 gradient가 사라지는 것을 막기 위한 것이다. (Scale)
+3. 이전 layer의 attention score를 더하는 옵션이 있다. 이전 score가 전달되면 더해 준다. 그림에는 없는 단계다.
+4. attention mask가 주어지면 score에 적용한다. (Mask)
+5. softmax를 적용해 attention 가중치를 구하고, attention dropout을 적용한다. (SoftMax)
+6. attention 가중치와 Value를 행렬곱해 attention value를 구한다. (맨 위의 MatMul)
 
 3번은 `res_attention`이 켜져 있을 때 두 번째 layer부터 동작한다. 첫 layer에는 넘겨받을 이전 score가 없다. 4번의 mask는 기본 설정에서 주어지지 않으므로 쓰이지 않는다.
 
-head별로 구해진 attention value를 이어 붙이면 입력과 같은 차원(`d_model`)이 된다. 마지막으로 linear layer를 한 번 더 거쳐 내보낸다.
+head별로 구해진 attention value를 이어 붙이면 입력과 같은 차원(`d_model`)이 된다. 마지막으로 linear layer를 한 번 더 거쳐 내보낸다. 그림 오른쪽 위의 Concat과 Linear다.
 
 `d_model`이 embedding의 열 크기, 즉 patch 하나를 나타내는 벡터의 차원이라는 점을 기억해 두면 차원을 따라가기 쉽다.
 
 ## Flatten과 Head
 
-encoder의 출력은 head로 들어간다. `pretrain_head`가 참이면 사전학습용 head를 쓰고, `head_type`이 `flatten`이면 `Flatten_Head`를 쓴다. 기본은 `flatten`이다. `Flatten_Head`는 Flatten, Linear, Dropout을 차례로 거쳐 최종 예측을 만든다.
+encoder의 출력은 head로 들어간다. 처음에 본 PatchTST 구조도에서 Transformer Encoder 바로 위의 초록 상자 "Flatten + Linear Head"다. `pretrain_head`가 참이면 사전학습용 head를 쓰고, `head_type`이 `flatten`이면 `Flatten_Head`를 쓴다. 기본은 `flatten`이다. `Flatten_Head`는 Flatten, Linear, Dropout을 차례로 거쳐 최종 예측을 만든다.
 
 ## 남았던 질문과 답
 

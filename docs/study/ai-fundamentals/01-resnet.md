@@ -20,17 +20,31 @@ ResNet이 좋은 평가를 받는 이유는 크게 두 가지다.
 1. 성능이 매우 뛰어났다.
 2. 논문이 제시한 아이디어가 직관적이고 단순했다.
 
-일반적으로 네트워크가 깊어질수록 데이터에서 더 풍부한 특징을 뽑아낼 수 있고 성능도 좋아진다. 그런데 layer를 단순히 많이 쌓기만 하면 어느 지점부터는 오히려 성능이 떨어진다. ResNet 이전의 모델로 실험해 보면 더 깊은 모델의 error가 더 높게 나온다.
+이 논문이 풀려는 문제는 한 문장으로 "layer를 더 쌓았는데 왜 성능이 나빠지는가"다. 일반적으로 네트워크가 깊어질수록 데이터에서 더 풍부한 특징을 뽑아낼 수 있고 성능도 좋아진다. 그런데 layer를 단순히 많이 쌓기만 하면 어느 지점부터는 오히려 성능이 떨어진다.
 
-여기서 눈여겨볼 점은 test error만이 아니라 **training error**도 높아진다는 것이다. 깊은 모델이 학습 데이터에 과적합해서 일반화가 안 되는 것이 아니라, 학습 데이터조차 제대로 맞추지 못한다는 뜻이다. 논문은 이 문제를 residual learning으로 풀었고, 이것이 이 논문의 contribution이다.
+![일반적인 CNN과 residual learning을 적용한 CNN의 ImageNet training error 비교](../../assets/img/study/ai-fundamentals/01-resnet/training-error-plain-vs-resnet.webp)
+
+두 그래프에서 빨간 선(34 layer)과 하늘색 선(18 layer)의 위아래 순서를 보면 된다. 왼쪽의 일반적인 CNN에서는 더 깊은 34 layer의 error가 더 높고, residual learning을 적용한 오른쪽에서는 순서가 뒤집혀 34 layer가 더 낮다. 논문의 그림 설명에 따르면 가는 선이 training error, 굵은 선이 validation error다. 출처: 강의 슬라이드(그래프는 논문 Figure 4)
+
+왼쪽 그래프처럼 ResNet 이전의 모델은 더 깊은 쪽의 error가 더 높게 나온다. 여기서 눈여겨볼 점은 test error만이 아니라 **training error**(가는 선)에서도 34 layer가 더 높다는 것이다. 깊은 모델이 학습 데이터에 과적합해서 일반화가 안 되는 것이 아니라, 학습 데이터조차 제대로 맞추지 못한다는 뜻이다. 논문은 이 문제를 residual learning으로 풀어 오른쪽 그래프의 결과를 얻었고, 이것이 이 논문의 contribution이다.
 
 ## 배경: CNN과 VGG
 
-논문은 독자가 CNN을 알고 있다고 가정한다. CNN에서는 서로 다른 filter가 입력 위를 sliding하며 영역별로 convolution을 수행해 activation map을 만든다. Filter는 모두 학습되는 값이고, 학습이 진행되면서 filter마다 서로 다른 특징을 뽑도록 만들어진다. RGB 3채널 입력에 filter 6개를 적용하면 출력 activation map의 채널은 6개가 되고, 각 채널은 서로 다른 특징 정보를 담는다.
+논문은 독자가 CNN을 알고 있다고 가정한다. CNN에서는 서로 다른 filter가 입력 위를 sliding하며 영역별로 convolution을 수행해 activation map을 만든다. Filter는 모두 학습되는 값이고, 학습이 진행되면서 filter마다 서로 다른 특징을 뽑도록 만들어진다.
+
+![RGB 3채널 입력에 filter 6개를 적용해 6채널 feature map을 얻는 그림](../../assets/img/study/ai-fundamentals/01-resnet/cnn-feature-map.webp)
+
+Filter 하나가 출력 채널 하나를 만든다. 왼쪽의 RGB 3채널($C = 3$) 입력에 filter 6개를 적용하면 오른쪽처럼 채널이 6개($C = 6$)인 activation map이 나오고, 각 채널은 서로 다른 특징 정보를 담는다. 출처: 강의 슬라이드
 
 일반적인 CNN은 layer가 깊어질수록 채널 수(filter 개수)가 늘고 너비와 높이는 줄어드는 식으로 구성된다. Padding을 따로 붙이지 않으면 convolution을 거칠 때마다 너비와 높이가 줄어든다.
 
-VGG("Very Deep Convolutional Networks for Large-Scale Image Recognition", ICLR 2015)는 ResNet 이전에 ImageNet 대회에서 좋은 성능을 낸 네트워크다. 작은 크기의 filter를 여러 번 써서 layer를 깊게 쌓은 것이 특징이다. VGG-16은 convolution layer 13개와 fully connected layer 3개로, weight가 있는 layer가 16개다. 작은 filter를 쓰더라도 convolution을 여러 번 거치면, 깊은 곳의 activation 하나는 결과적으로 입력의 넓은 영역을 보게 된다. 파라미터가 많다는 단점이 있지만 convolution layer의 장점을 잘 살린 구조여서 지금도 backbone으로 자주 쓰인다.
+VGG("Very Deep Convolutional Networks for Large-Scale Image Recognition", ICLR 2015)는 ResNet 이전에 ImageNet 대회에서 좋은 성능을 낸 네트워크다. 작은 크기의 filter를 여러 번 써서 layer를 깊게 쌓은 것이 특징이다.
+
+![VGG-16의 layer 구성과 단계별 feature map 크기](../../assets/img/study/ai-fundamentals/01-resnet/vgg16-architecture.webp)
+
+윗줄이 layer의 순서, 아랫줄이 그 지점의 feature map 크기다. 왼쪽에서 오른쪽으로 갈수록 너비와 높이는 $224 \to 112 \to 56 \to 28 \to 14 \to 7$로 줄고 채널은 $64 \to 128 \to 256 \to 512$로 늘어나는, 앞에서 말한 CNN의 전형적인 모양이다. 출처: 강의 슬라이드
+
+그림의 윗줄에서 파란 상자(conv)를 세면 13개, 주황 상자(fc)가 3개다. 그래서 weight가 있는 layer가 16개이고 이름이 VGG-16이다. 작은 filter를 쓰더라도 convolution을 여러 번 거치면, 깊은 곳의 activation 하나는 결과적으로 입력의 넓은 영역을 보게 된다. 파라미터가 많다는 단점이 있지만 convolution layer의 장점을 잘 살린 구조여서 지금도 backbone으로 자주 쓰인다.
 
 그렇다면 layer를 깊게 쌓을수록 성능이 계속 좋아질까. 그렇지 않았고, 파라미터 수도 여전히 많았다. 다른 접근이 필요했고, 그 배경에서 나온 것이 ResNet이다.
 
@@ -38,23 +52,27 @@ VGG("Very Deep Convolutional Networks for Large-Scale Image Recognition", ICLR 2
 
 Residual block의 역할은 네트워크의 최적화 난이도를 낮추는 것이다. 논문은 layer가 깊어질수록 학습이 어려워지고 의도한 대로 최적화하기가 쉽지 않다고 본다. VGG식으로 convolution을 깊게 쌓기만 해서는 학습이 잘 되지 않으니, 학습이 잘 되도록 구조를 바꾸자는 것이다.
 
-학습시키고자 하는 원래의 mapping을 $H(x)$라고 하자. 보통의 네트워크는 입력을 convolution(weight layer)에 통과시켜 특징을 뽑고, ReLU 같은 activation function으로 비선형성을 준 뒤, 다시 convolution을 거치는 식으로 $H(x)$를 직접 만든다. ResNet은 $H(x)$를 곧바로 학습하는 대신 다음을 학습한다.
+![Plain layers와 residual block의 구조 비교](../../assets/img/study/ai-fundamentals/01-resnet/plain-vs-residual-block.webp)
+
+두 구조의 차이는 오른쪽 그림에서 $x$가 weight layer를 건너뛰어 아래의 $\oplus$로 곧장 내려가는 선 하나뿐이다. 이 선이 shortcut(identity)이고, 앞선 layer까지 학습된 정보 $x$를 그대로 실어 나른다. 출처: 강의 슬라이드
+
+학습시키고자 하는 원래의 mapping을 $H(x)$라고 하자. 왼쪽의 plain layers는 입력을 convolution(weight layer)에 통과시켜 특징을 뽑고, ReLU 같은 activation function으로 비선형성을 준 뒤, 다시 convolution을 거치는 식으로 $H(x)$를 직접 만든다. 오른쪽의 residual block은 $H(x)$를 곧바로 학습하는 대신 다음을 학습한다.
 
 $$
 F(x) = H(x) - x
 $$
 
-구조로 보면 weight layer 몇 개를 거친 결과 $F(x)$에 입력 $x$를 그대로 더해 $H(x) = F(x) + x$를 만든다.
+그림에서 괄호로 묶인 weight layer 두 개가 $F(x)$를 만들고, $\oplus$에서 shortcut으로 내려온 $x$가 더해져 $H(x) = F(x) + x$가 된다.
 
-```mermaid
-flowchart LR
-    X["x"] --> W1["weight layer"] --> R1["ReLU"] --> W2["weight layer"] -- "F(x)" --> ADD(("+")) -- "F(x) + x" --> R2["ReLU"] --> Y["출력"]
-    X -- "shortcut (identity)" --> ADD
-```
+이렇게 하면 앞선 layer까지 학습한 정보 $x$는 그대로 가져오고, 거기에 추가로 필요한 $F(x)$만 학습하면 된다. 숫자로 예를 들면, 입력이 3이고 만들어야 할 값이 3.1일 때 plain layers는 3.1을 통째로 만들어야 하지만 residual block은 변화량 0.1만 만들면 된다. 차이(residual)를 학습한다고 해서 residual learning이라는 이름이 붙었다.
 
-이렇게 하면 앞선 layer까지 학습한 정보 $x$는 그대로 가져오고, 거기에 추가로 필요한 $F(x)$만 학습하면 된다. $H(x)$ 전체를 학습할 때는 여러 weight layer가 각자 mapping을 새로 만들어야 하므로 수렴이 어렵고, 이 어려움은 layer가 깊어질수록 커진다. 반면 남은 부분(residual)만 학습하는 것은 그보다 쉽다. 그래서 이 형태로 네트워크를 바꾸면 더 높은 성능이 나올 수 있다는 것이 논문의 생각이다.
+$H(x)$ 전체를 학습할 때는 여러 weight layer가 각자 mapping을 새로 만들어야 하므로 수렴이 어렵고, 이 어려움은 layer가 깊어질수록 커진다. 반면 남은 부분만 학습하는 것은 그보다 쉽다. 그래서 이 형태로 네트워크를 바꾸면 더 높은 성능이 나올 수 있다는 것이 논문의 생각이다.
 
 ### 수식
+
+![Residual block의 각 부분과 수식의 대응](../../assets/img/study/ai-fundamentals/01-resnet/residual-block-formula.webp)
+
+색을 맞춰 보면 된다. 분홍색 weight layer가 $W_1$, 초록색 relu가 $\sigma$, 파란색 weight layer가 $W_2$이고, 아래 식의 두 항은 각각 weight layer를 지나는 경로와 shortcut 경로다. 출처: 강의 슬라이드
 
 $\sigma$를 activation function(ReLU)이라고 하면, weight layer 두 개로 된 residual function은 다음과 같다. 입력에 $W_1$을 곱하고 activation을 거친 뒤 $W_2$를 곱한다.
 
@@ -91,7 +109,13 @@ CNN을 깊게 쌓는 시도는 이미지 분류에서 큰 돌파구였다. CNN�
 
 그러면 "layer를 깊게 쌓기만 하면 더 좋은 네트워크가 학습되는 것 아닌가"라는 의문이 든다. 그러나 깊게 쌓는 것이 다른 문제를 일으킨다는 것은 오래전부터 알려져 있었다. 대표적인 것이 vanishing gradient다. Sigmoid 같은 activation function을 쓰면 역전파 과정에서 gradient가 0에 가까워져 학습이 잘 되지 않는다. 이를 풀기 위한 방법 가운데 하나가 가중치를 적절히 초기화하는 것이고, 같은 저자가 2015년 "Delving Deep into Rectifiers"에서 제안한 He initialization이 그 예다.
 
-논문이 문제 삼는 것은 이것과는 다른 **degradation problem**이다. 깊이가 어느 정도를 넘으면 accuracy가 더 오르지 않고 오히려 떨어진다. 그리고 이것은 overfitting 때문이 아니다. 같은 환경에서 layer만 더 쌓았는데 training error가 높아진다. 학습 자체가 잘 안 되는 것이다.
+논문이 문제 삼는 것은 이것과는 다른 **degradation problem**이다. 깊이가 어느 정도를 넘으면 accuracy가 더 오르지 않고 오히려 떨어진다.
+
+![20 layer와 56 layer plain network의 training error와 test error](../../assets/img/study/ai-fundamentals/01-resnet/degradation-cifar10.webp)
+
+왼쪽이 training error, 오른쪽이 test error다. 두 그래프 모두에서 빨간 선(56 layer)이 노란 선(20 layer)보다 위에 있다. 출처: 논문 Figure 1
+
+Overfitting이라면 training error는 낮고 test error만 높아야 한다. 그런데 그림에서는 같은 환경에서 layer만 더 쌓은 56 layer 쪽이 왼쪽의 training error부터 더 높다. 그러니 이것은 overfitting 때문이 아니고, 학습 자체가 잘 안 되는 것이다.
 
 논문의 저자들은 이 문제가 vanishing gradient 때문도 아니라고 말한다. 학습 과정에서 forward와 backward의 신호를 확인했을 때 신호가 사라지는 현상은 보이지 않았다는 것이다. 저자들은 깊은 plain network의 수렴 속도가 매우 낮기 때문일 것이라고 추측한다. 요약하면 "그냥 학습 난이도 자체가 높다"는 주장이다.
 
@@ -113,12 +137,16 @@ Shortcut connection은 identity mapping이므로 추가 파라미터가 필요 �
 
 같은 내용을 다른 강의에서는 다음과 같이 설명한다.
 
-모델의 이상적인 출력이 $H(x)$일 때, 이것을 $F(x)$만으로 만드는 것과 $F(x) + x$로 만드는 것 중 어느 쪽이 쉬울까. $H(x)$를 $x$에 가깝게 만들어야 하는 상황을 가정해 보자.
+![Skip connection이 있을 때와 없을 때 weight가 무엇이 되어야 하는지를 묻는 강의 슬라이드](../../assets/img/study/ai-fundamentals/01-resnet/skip-connection-question.webp)
 
-- Skip connection이 없으면 weight 행렬이 identity 행렬에 가까워져야 한다.
-- Skip connection이 있으면 weight 행렬이 영행렬에 가까워지면 된다.
+슬라이드가 던지는 질문은 하나다. $H(x) \approx x$를 만들고 싶을 때 skip connection이 없는 모델과 있는 모델에서 weight 행렬이 각각 무엇이 되어야 하는가. 출처: 강의 슬라이드
 
-그런데 weight는 He, Xavier, LeCun 어느 방법을 쓰든 0 근처의 값으로 초기화된다. 따라서 skip connection이 있는 쪽이 $H(x)$를 $x$에 가깝게 만들기 훨씬 쉽다.
+모델의 이상적인 출력이 $H(x)$일 때, 이것을 $F(x)$만으로 만드는 것과 $x + F(x)$로 만드는 것 중 어느 쪽이 쉬울까. 슬라이드의 순서대로 $H(x)$를 $x$에 가깝게 만들어야 하는 상황을 가정해 보자. 편의상 $x$의 성분은 모두 양수라고 둔다(ResNet은 ReLU를 쓰므로 자연스러운 가정이다).
+
+- Skip connection이 없으면 $F(x)$가 곧 $x$가 되어야 하므로 weight 행렬이 identity 행렬에 가까워져야 한다.
+- Skip connection이 있으면 $x$는 이미 더해져 있으므로 $F(x)$가 0이 되면 된다. Weight 행렬이 영행렬에 가까워지면 된다.
+
+그런데 weight는 He, Xavier, LeCun 어느 방법을 쓰든 평균이 0이고 표준편차가 아주 작은, 0 근처의 값으로 초기화된다. 출발점이 이미 영행렬 근처이므로, 학습으로 identity 행렬까지 가야 하는 쪽보다 skip connection이 있는 쪽이 $H(x)$를 $x$에 가깝게 만들기 훨씬 쉽다.
 
 그러면 왜 $H(x)$가 $x$에 가까워야 한다고 볼 수 있는가. 모델이 아주 깊다면 입력에서부터 값을 조금씩 바꿔 나가는 것이 이상적이다. 원하는 것은 낮은 test error인데, layer마다 값이 크게 바뀌는 네트워크는 과적합되었을 가능성이 높다. 잘 학습된 ResNet이라면 다음 layer로 갈 때 값의 변화가 크지 않을 것이다. Skip connection은 "한 layer에서 모든 것을 다 하려 하지 말고 조금씩만 바꾸라"고 모델에게 귀띔해 주는 장치인 셈이다. 논문도 layer가 깊은 모델일수록 response의 표준편차가 작다는 실험 결과를 제시한다.
 
@@ -157,8 +185,18 @@ $$
 
 Bottleneck은 깊은 모델에서 복잡도를 줄이기 위한 구조다. $3 \times 3$ convolution 두 개 대신 $1 \times 1$, $3 \times 3$, $1 \times 1$ convolution 세 개를 쓴다.
 
+![기본 residual block과 bottleneck block](../../assets/img/study/ai-fundamentals/01-resnet/bottleneck-block.webp)
+
+왼쪽이 $3 \times 3$ 두 개로 된 기본 block, 오른쪽이 bottleneck block이다. 오른쪽에서 상자에 적힌 채널 수가 $256 \to 64 \to 64 \to 256$으로 줄었다가 다시 늘어나는 것을 보면 된다. 출처: 논문 Figure 5
+
+![채널 수가 가운데에서 좁아졌다가 다시 넓어지는 모양을 그린 그림](../../assets/img/study/ai-fundamentals/01-resnet/bottleneck-sketch.webp){ width="420" }
+
+병의 목처럼 가운데가 좁아지는 모양이어서 bottleneck이다. 양 끝의 넓은 부분이 $1 \times 1$, 가운데의 좁은 부분이 $3 \times 3$ convolution의 자리다.
+
+세 convolution이 맡는 일은 다음과 같다.
+
 1. 첫 $1 \times 1$ convolution이 채널 수를 줄여 연산량과 메모리 사용량을 줄인다.
-2. $3 \times 3$ convolution이 줄어든 차원에서 특징을 추출한다.
+2. $3 \times 3$ convolution이 줄어든 차원에서 특징을 추출한다. 비용이 큰 $3 \times 3$ 연산을 좁은 곳에서만 하는 셈이다.
 3. 마지막 $1 \times 1$ convolution이 채널 수를 복원해 residual connection으로 더할 수 있게 한다.
 
 이 구조에서는 block의 입력과 출력의 shape이 같아지므로 identity shortcut이 특히 효과적이다. Identity shortcut에는 파라미터가 없어서 빠르고 가볍기 때문이다.

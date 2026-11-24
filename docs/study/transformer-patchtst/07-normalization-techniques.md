@@ -13,7 +13,20 @@ tags: [Normalization, Batch Normalization, Layer Normalization, Instance Normali
 
 [PatchTST 공식 코드](05-patchtst-code-analysis.md)에 나오는 RevIN(Reversible Instance Normalization)을 이해하려고, instance normalization이 다른 정규화 기법과 어떻게 다른지 블로그 글을 보고 짧게 정리한 노트이다.
 
-네 기법은 모두 feature를 평균 0, 분산 1이 되도록 정규화한다. 차이는 평균과 분산을 어느 범위에서 구하느냐에 있다. 이미지를 다루는 CNN의 feature가 (batch, channel, 높이, 너비) 모양이라고 할 때 다음과 같이 나뉜다.
+네 기법은 모두 feature를 평균 0, 분산 1이 되도록 정규화한다. 차이는 평균과 분산을 어느 범위에서 구하느냐에 있다.
+
+![Batch Norm, Layer Norm, Instance Norm, Group Norm이 정규화하는 범위를 색으로 구분한 그림](../../assets/img/study/transformer-patchtst/07-normalization-techniques/normalization-comparison.webp)
+
+정육면체 하나가 sample(instance) 하나의 feature이고, 옆으로 늘어선 정육면체들이 mini-batch(N)다. 정육면체의 세 축은 높이(H), 너비(W), channel(C)이다. **같은 색으로 칠한 부분이 평균과 분산을 함께 구하는 범위**다. 출처: 참고한 블로그 글
+
+그림을 줄마다 보면 네 기법의 차이가 색이 나뉘는 방식으로 드러난다.
+
+- Batch Norm: 같은 색이 정육면체 여러 개에 걸쳐 있고, channel마다 색이 다르다.
+- Layer Norm: 정육면체 하나가 통째로 한 색이다.
+- Instance Norm: 정육면체 하나 안에서 channel마다 색이 다르고, 옆 정육면체와는 색을 공유하지 않는다.
+- Group Norm: 정육면체 하나 안에서 channel을 몇 개씩 묶어 색을 나눈다. 그림은 그룹이 2개(G=2)인 경우다.
+
+이미지를 다루는 CNN의 feature가 (batch, channel, 높이, 너비) 모양이라고 할 때, 말로 정리하면 다음과 같다.
 
 | 기법 | 평균과 분산을 구하는 범위 |
 |---|---|
@@ -25,7 +38,7 @@ tags: [Normalization, Batch Normalization, Layer Normalization, Instance Normali
 - **Batch Norm**은 mini-batch에 들어 있는 모든 sample에서 같은 channel의 값을 모아 정규화한다.
 - **Layer Norm**은 sample 하나에서 나온 feature를 channel 구분 없이 한 번에 정규화한다.
 - **Instance Norm**은 sample 하나의 channel 각각을 따로 정규화한다. 즉 instance 안에 있는 channel마다 자기 값만으로 정규화한다.
-- **Group Norm**은 sample 하나의 channel을 N개의 그룹으로 묶어 그룹 단위로 정규화한다.
+- **Group Norm**은 sample 하나의 channel을 N개의 그룹으로 묶어 그룹 단위로 정규화한다. 그림에 적혀 있듯이 그룹이 1개(G=1)이면 Layer Norm과 같고, 그룹 수가 channel 수와 같으면(G=C) Instance Norm과 같다.
 
 ## 남았던 질문과 답
 

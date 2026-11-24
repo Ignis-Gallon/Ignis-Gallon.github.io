@@ -15,7 +15,13 @@ tags: [Skip Connection, Residual Learning, ResNet, Weight Initialization]
 
 ## Skip connection
 
-Layer에 $x$가 들어와서 $F(x)$가 나가던 것을, $x + F(x)$가 나가도록 연결해 주는 것이 skip connection이다. ResNet의 기본 블록은 weight layer 두 개와 그 사이의 ReLU로 이루어져 있고, 입력 $x$가 이 블록을 건너뛰어(identity) 출력에 더해진다. 블록 안의 계산을 식으로 쓰면 다음과 같다.
+Layer에 $x$가 들어와서 $F(x)$가 나가던 것을, $x + F(x)$가 나가도록 연결해 주는 것이 skip connection이다.
+
+![weight layer 두 개를 건너뛰어 입력 x가 출력에 더해지는 ResNet의 residual block](../../assets/img/study/transformer-patchtst/03-skip-connection/residual-block.webp)
+
+입력 $x$가 가는 길이 둘이다. 가운데로 내려가는 길은 weight layer 두 개를 지나 $F(x)$가 되고, 오른쪽으로 돌아가는 길(identity)은 아무것도 거치지 않은 $x$ 그대로다. 두 길이 아래의 ⊕에서 만나 $F(x) + x$가 된다. 출처: 강의 화면 (ResNet 논문 Figure 2에 강의자가 표시를 더한 것)
+
+오른쪽으로 돌아가는 선이 skip connection이다. 가운데 길, 즉 weight layer 두 개와 그 사이의 ReLU가 하는 계산을 식으로 쓰면 다음과 같다.
 
 $$
 F(x) = \sigma(x W_1)\, W_2
@@ -30,9 +36,9 @@ Layer에 들어온 $x$를 받아서 만들고 싶은 이상적인 출력을 $H(x
 
 비교해 보면 $H(x)$를 $x + F(x)$로 만드는 쪽이 더 쉽다. 왜 그런지를 보기 위해 $x$와 $H(x)$가 매우 비슷한 값이라고 가정한다. ResNet은 ReLU를 쓰므로 둘 다 양수라고 본다.
 
-**Skip connection이 없을 때.** $x$로 $H(x) \approx x$를 만들려면 weight matrix $W_1$, $W_2$가 둘 다 identity가 되어야 한다.
+**Skip connection이 없을 때.** 위 그림에서 오른쪽으로 돌아가는 선을 지운 경우다. 가운데 길만으로 $x$에서 $H(x) \approx x$를 만들어야 하므로, weight matrix $W_1$, $W_2$가 둘 다 identity가 되어야 한다.
 
-**Skip connection이 있을 때.** 이미 $x$가 더해지므로 $F(x)$는 0이 되어야 한다. 즉 weight matrix가 영행렬이 되면 된다.
+**Skip connection이 있을 때.** 돌아가는 선으로 이미 $x$가 더해지므로, 가운데 길의 $F(x)$는 0이 되어야 한다. 즉 weight matrix가 영행렬이 되면 된다.
 
 여기서 중요한 것은 weight의 초깃값이다. Xavier, He, LeCun 가운데 어떤 초기화를 쓰든 평균이 0이고 표준편차가 매우 작다. 다시 말해 weight는 0에 가까운 값에서 출발한다. 그렇다면 skip connection 없이 weight matrix를 학습으로 identity에 가깝게 만드는 것보다, skip connection을 써서 0에 가까운 weight matrix를 그대로 쓰는 쪽이 훨씬 유리하다.
 

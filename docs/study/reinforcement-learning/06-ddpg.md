@@ -15,12 +15,17 @@ tags: [강화학습, DDPG, Deterministic Policy Gradient, Actor-Critic, Off-poli
 
 ## DDPG의 아이디어
 
-앞의 Policy-based 방법들은 stochastic policy를 썼다. network가 분포의 parameter($\mu_t$, $\sigma_t$)를 내놓고, 그 분포에서 action을 뽑았다. DDPG는 deterministic policy를 쓴다. network가 action $a_{\theta,t}$ 하나를 바로 내놓는다.
+DDPG의 출발점은 "분포를 내놓고 거기서 뽑는 대신, action을 바로 내놓으면 어떨까"다. 아래 두 그림을 비교하면 차이가 분명하다.
 
-| | network의 출력 | action |
-|---|---|---|
-| Stochastic Policy | $\mu_t, \sigma_t$ | 분포에서 sampling |
-| Deterministic Policy | $a_{\theta,t}$ | 출력 그대로 |
+![stochastic policy: network가 분포의 평균과 표준편차를 내놓는다](../../assets/img/study/reinforcement-learning/06-ddpg/stochastic-policy-network.webp)
+
+*Stochastic Policy. network $\theta$가 $s_t$를 받아 분포의 parameter $\mu_t$, $\sigma_t$를 내놓는다. action은 이 분포에서 한 번 더 뽑아야 정해진다.*
+
+![deterministic policy: network가 action 하나를 바로 내놓는다](../../assets/img/study/reinforcement-learning/06-ddpg/deterministic-policy-network.webp)
+
+*Deterministic Policy. 같은 network가 action $a_{\theta,t}$ 하나를 바로 내놓는다. 뽑는 단계가 없다.*
+
+앞의 Policy-based 방법들은 첫 그림의 stochastic policy를 썼다. network가 분포의 parameter($\mu_t$, $\sigma_t$)를 내놓고, 그 분포에서 action을 뽑았다. DDPG는 둘째 그림의 deterministic policy를 쓴다. 출력이 두 갈래에서 하나로 줄었고, 그 하나가 곧 action $a_{\theta,t}$다. 같은 state를 넣으면 언제나 같은 action이 나온다.
 
 분포로 보면, policy가 $a_{\theta,t}$에 놓인 $\delta$ function이 되도록 $\theta$를 학습시키는 것이다.
 
@@ -160,15 +165,13 @@ $$
 
 그런데 식에는 $Q(s_t, a_{\theta,t})$가 들어 있고, 이 $Q$를 직접 구하기는 어렵다. 그래서 $Q$도 parameterize한다. Q-network($w$)는 1-step TD로 $Q$를 학습하고, policy network($\theta$)는 그 $Q$를 써서 갱신한다. 결국 Actor-Critic 구조다.
 
-```mermaid
-flowchart LR
-  S["s_t"] --> A["Actor θ"]
-  A -- "a_θ,t" --> C["Critic w"]
-  S --> C
-  C --> Q["Q(s_t, a_θ,t)"]
-```
+![DDPG의 구조: Actor가 고른 action과 state를 Critic이 함께 받아 Q값을 낸다](../../assets/img/study/reinforcement-learning/06-ddpg/actor-critic-architecture.webp)
 
-DDPG의 Q-network는 DQN과 달리 $s_t$와 $a_{\theta,t}$를 함께 입력으로 받는다. policy network가 action을 이미 하나로 정해 주기 때문이다.
+*검은색이 Actor($\theta$), 빨간색이 Critic($w$)이다. Critic으로 들어가는 화살표가 둘이라는 점을 보면 된다. 하나는 $s_t$이고 다른 하나는 Actor가 내놓은 $a_{\theta,t}$다.*
+
+그림을 왼쪽부터 따라가면, $s_t$가 Actor에 들어가 action $a_{\theta,t}$가 나오고, 이 action이 $s_t$와 함께 Critic에 들어가 $Q(s_t, a_{\theta,t})$가 나온다. Actor가 "이 action을 하겠다"고 하면 Critic이 "그 action은 이만큼 좋다"고 점수를 매기는 구조다. Actor의 출력이 Critic의 입력으로 곧바로 이어져 있으므로, Q값을 $\theta$로 미분할 수 있다. 앞에서 구한 표본 $a'_{\theta,t} \, \nabla_{a_{\theta,t}} Q(s_t, a_{\theta,t})$가 바로 이 연결을 거슬러 올라가는 미분이다.
+
+DDPG의 Q-network는 DQN과 달리 $s_t$와 $a_{\theta,t}$를 함께 입력으로 받는다. DQN은 state만 넣고 action별 Q값을 한꺼번에 출력했지만, 여기서는 policy network가 action을 이미 하나로 정해 주기 때문에 그 action의 Q값 하나만 구하면 된다.
 
 ## 알고리즘
 
@@ -176,7 +179,11 @@ $\theta, w$를 초기화하고 다음을 반복한다. off-policy이고 Replay B
 
 **(1) Action 수행: $a_{\theta,t} + \epsilon_t$**
 
-deterministic policy에는 variance가 없어 그대로는 exploration이 되지 않는다. 그래서 action에 noise $\epsilon_t$를 섞는다.
+![Actor의 출력에 noise를 더해 action을 정한다](../../assets/img/study/reinforcement-learning/06-ddpg/action-noise.webp)
+
+*Actor가 내놓은 $a_{\theta,t}$에 빨간색 $\epsilon_t$를 더한 것이 실제로 수행하는 action이다.*
+
+deterministic policy에는 variance가 없어 그대로는 exploration이 되지 않는다. 같은 state에서는 늘 같은 action만 해 보게 되기 때문이다. 그래서 위 그림처럼 network의 출력 뒤에 noise $\epsilon_t$를 더해, 원래 고른 action의 주변도 시도해 보게 한다.
 
 **(2) Replay Buffer에 저장: $(s_t, a_t, R_t, s_{t+1})$**
 

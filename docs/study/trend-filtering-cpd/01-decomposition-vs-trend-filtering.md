@@ -90,6 +90,14 @@ Trend filtering은 분해의 하위 작업으로 포함될 수 있다. 그러나
 - 데이터에 강한 seasonality가 있으면 trend filtering은 정확한 추세를 추출하지 못할 수 있다. 계절적 변동이 추세에 그대로 남을 수 있기 때문이다.
 - DTF-net 논문은 L1 trend filtering이 정상(stationary) 데이터에서는 더 강한 성능을 보인다고 말한다. 추세를 조각별 직선(piecewise linear)으로 표현한다는 가정이, 노이즈가 적고 추세가 실제로 매끄러운 데이터와 잘 맞기 때문이라고 이해했다.
 
+둘째 항목의 근거가 되는 것이 논문의 예측 실험 결과다. Trend filtering으로 뽑은 추세를 예측 모델에 추가 입력으로 넣고 예측 오차를 비교한 표다.
+
+![DTF-net 논문의 시계열 예측 실험 결과](../../assets/img/study/trend-filtering-cpd/01-decomposition-vs-trend-filtering/table2-forecasting-results.webp)
+
+*왼쪽 두 묶음이 비교 대상이다. `DTF-Linear`는 DTF-net의 추세를, `ℓ1(λ=0.1)-Linear`는 L1 trend filtering의 추세를 쓴 모델이다. Exchange와 Illness에서는 DTF-Linear의 값(굵은 글씨)이 더 작은 행이 많고, ETTh1의 짧은 예측 길이(24, 48)에서는 ℓ1 쪽의 값(기울인 글씨)이 더 작다. 출처: DTF-net 논문 Table 2*
+
+Exchange Rate와 Illness는 주기성이 없는 데이터여서 L1 trend filtering이 뚜렷한 추세를 뽑는 데 어려움을 겪고, DTF-net은 이런 비정상 데이터에서 안정적이었다. 반대로 L1이 앞선 칸은 셋 가운데 노이즈가 가장 적고 정상에 가까운 데이터의 단기 예측이다. 노이즈가 적으면 노이즈를 abrupt change로 잘못 판단하는 경우도 줄어든다.
+
 ## 남았던 질문과 답
 
 공부할 당시에는 풀지 못하고 남겨 둔 질문들이다. 글을 정리하면서 답을 찾아 덧붙였다.

@@ -58,12 +58,24 @@ RevIN(Reversible Instance Normalization)은 정규화와 역정규화를 짝으�
 
 이 문제를 정면으로 다룬 논문이 "Non-stationary Transformers: Exploring the Stationarity in Time Series Forecasting"(NeurIPS 2022)이다.
 
+논문의 첫 그림이 over-stationarization이 실제로 어떻게 보이는지를 보여 준다.
+
+![비정상 시계열의 세 구간에 대해 vanilla Transformer, 정규화를 적용한 Transformer, Non-stationary Transformer가 학습한 attention map](../../assets/img/study/ai-fundamentals/06-nonstationarity-and-periodicity/over-stationarization-attention.webp)
+
+맨 왼쪽의 시계열 하나에서 평균과 분산이 서로 다른 세 구간(I, II, III)을 떼어 냈고, 오른쪽의 네모들이 각 구간에서 학습된 attention이다. 세로로 세 장씩 견주어 본다. (a) 열은 세 장의 무늬가 서로 다르고, (b) 열은 세 장이 거의 똑같으며, (c) 열은 다시 서로 다르다. 출처: 논문 리뷰 영상의 슬라이드(그림은 논문 Figure 1)
+
+- (a) 원래의 비정상 시계열로 학습한 vanilla Transformer의 attention은 구간마다 다른 temporal dependency를 반영한다.
+- (b) 같은 모델에 정규화한 시계열을 넣으면 서로 다른 구간에 대한 attention이 비슷비슷해진다. 세 구간이 정규화를 거치며 같은 평균과 분산을 갖게 되어 모델에게는 같은 것으로 보이기 때문이다. Temporal dependency가 제대로 반영되지 않는다.
+- (c) Non-stationary Transformer의 attention은 원래 시계열에서 얻은 (a)에 다시 가까워진다.
+
 **기존 연구의 한계.**
 
 1. Transformer 기반 예측 모델들은 구조를 고도화하는 데 집중했다. 시계열에 맞는 attention을 제안했지만 비정상성에 대한 고려는 부족했다.
 2. 비정상성 정보를 모델링에 활용하지 않았다. RevIN처럼 입력 쪽에서 비정상성을 다루는 연구는 많았지만, 정규화로 정보를 일괄 제거하면 attention에서 over-stationarization이 생긴다. Attention 구조 자체를 바꿔 비정상성을 고려하려는 시도는 당시(2022년)에는 많지 않았다.
 
-논문의 첫 그림이 이 문제를 보여 준다. 원래의 비정상 시계열로 학습한 vanilla Transformer의 attention은 시계열마다 다른 temporal dependency를 반영한다. 같은 모델에 정규화한 시계열을 넣으면 서로 다른 시계열에 대한 attention이 비슷비슷해져 temporal dependency가 제대로 반영되지 않는다. Non-stationary Transformer의 attention은 원래 시계열에서 얻은 것에 다시 가까워진다.
+![원래 시계열에서 정상성 정보만 쓰고 비정상성 정보를 버리는 기존 연구와 둘 다 쓰는 제안 연구](../../assets/img/study/ai-fundamentals/06-nonstationarity-and-periodicity/previous-vs-proposed.webp)
+
+왼쪽(기존 연구)에서는 원래 시계열을 둘로 나눈 것 가운데 아래의 non-stationarity 상자에 X 표가 쳐져 있다. 오른쪽(제안 연구)은 그 상자를 버리지 않고 함께 쓴다. 출처: 논문 리뷰 영상의 슬라이드
 
 **방법.** 길이 $S$, 변수 $C$개의 look-back window $x$가 입력이다.
 
@@ -73,7 +85,11 @@ RevIN(Reversible Instance Normalization)은 정규화와 역정규화를 짝으�
     x' = \frac{x - \mu_x}{\sigma_x}
     $$
 
-2. **De-stationary Attention.** Attention은 이미 비정상성이 제거된 $x'$의 embedding으로 계산되므로, 출력에서 de-normalization을 하는 것만으로는 비정상성을 정확히 반영할 수 없다. 그래서 query와 key의 곱을 scaling하는 자리에 두 값 $\tau$와 $\Delta$를 넣는다.
+2. **De-stationary Attention.** Attention은 이미 비정상성이 제거된 $x'$의 embedding으로 계산되므로, 출력에서 de-normalization을 하는 것만으로는 비정상성을 정확히 반영할 수 없다. 그래서 정규화하면서 떼어 낸 통계량을 attention 안으로 다시 넣어 준다. 넣는 자리는 query와 key의 곱을 scaling하는 곳이고, 두 값 $\tau$와 $\Delta$의 형태로 넣는다.
+
+    ![De-stationary attention의 구조와 식](../../assets/img/study/ai-fundamentals/06-nonstationarity-and-periodicity/de-stationary-attention.webp)
+
+    왼쪽의 작은 그림이 attention 하나의 내부다. 아래에서 위로 MatMul, Rescale, Softmax, MatMul의 순서인데, 빨간 Rescale 상자에 옆에서 $\tau, \Delta$가 들어온다. 보통의 attention이라면 $\sqrt{d_k}$로 나누기만 하는 자리다. 출처: 논문 리뷰 영상의 슬라이드(그림은 논문의 구조도)
 
     $$
     \mathrm{Attn}(Q', K', V', \tau, \Delta) = \mathrm{Softmax}\left( \frac{\tau\, Q' K'^{\top} + \mathbf{1}\Delta^{\top}}{\sqrt{d_k}} \right) V'
@@ -83,7 +99,7 @@ RevIN(Reversible Instance Normalization)은 정규화와 역정규화를 짝으�
     \log \tau = \mathrm{MLP}(\sigma_x, x), \qquad \Delta = \mathrm{MLP}(\mu_x, x)
     $$
 
-    $Q'$, $K'$, $V'$은 정규화된 입력에서 만든 query, key, value다. $\tau$와 $\Delta$는 정규화 전의 통계량($\sigma_x$, $\mu_x$)과 원래 입력 $x$를 받는 MLP의 출력이다. 값 자체가 고정된 파라미터인 것은 아니고, 이 값을 만들어 내는 MLP가 학습된다. 여기서 MLP는 attention과 별개로 둔 작은 feed-forward network라고 보면 된다.
+    $Q'$, $K'$, $V'$은 정규화된 입력에서 만든 query, key, value다. $\tau$와 $\Delta$는 정규화 전의 통계량($\sigma_x$, $\mu_x$)과 원래 입력 $x$를 받는 MLP의 출력이다. 값 자체가 고정된 파라미터인 것은 아니고, 이 값을 만들어 내는 MLP가 학습된다. 여기서 MLP는 attention과 별개로 둔 작은 feed-forward network라고 보면 된다. 식에서 $\tau$는 attention score 전체에 곱해지고 $\Delta$는 더해진다. 표준편차에서 나온 값이 score의 크기를, 평균에서 나온 값이 score의 위치를 되돌려 놓는 셈이다.
 
 3. **De-normalization과 예측.** Encoder의 출력을 decoder에 넣어 예측 길이만큼 forecasting하고, 저장해 둔 통계량으로 출력을 되돌린다.
 
@@ -123,9 +139,19 @@ RevIN(Reversible Instance Normalization)은 정규화와 역정규화를 짝으�
 | 주기성(cycle) | 고정된 빈도가 아닌 형태로 나타나는 증가와 감소의 패턴 |
 | 불규칙 요소(residual) | 설명할 수 없는 임의의 변동. 돌발적인 요인으로 생긴다 |
 
+![시계열의 네 성분에 대한 설명과 실제 시계열 네 개의 그래프](../../assets/img/study/ai-fundamentals/06-nonstationarity-and-periodicity/time-series-components.webp)
+
+오른쪽의 네 그래프가 성분이 실제 데이터에서 어떻게 보이는지의 예다. 오른쪽 위는 내려가는 추세가 뚜렷하고, 왼쪽 아래는 올라가는 추세 위에 일정한 간격의 반복(계절성)이 얹혀 있으며, 오른쪽 아래는 규칙을 찾기 어려운 변동이다. 출처: 논문 리뷰 영상의 슬라이드(그래프는 "Forecasting: Principles and Practice")
+
 용어 하나를 짚어 둔다. 위 표의 "주기성(cycle)"은 간격이 일정하지 않은 등락을 가리킨다. 반면 TimesNet이 말하는 period는 FFT로 찾은 주파수에 대응하는, 길이가 정해진 반복이다. 노트에는 두 가지를 섞어 적었는데, TimesNet의 periodicity는 표에서는 계절성 쪽에 더 가깝다.
 
-Fourier transform은 원래 신호 처리의 도구였지만 지금은 이미지 처리, 자연어 처리 등 여러 분야에서 쓰인다. Time domain의 신호를 여러 개의 주기 함수(sin과 cos)로 분해해, 각 주파수 성분이 얼마나 강하게 들어 있는지(amplitude)와 어느 위치에서 시작하는지(phase)를 구한다. 출발점은 주기 함수를 sin과 cos의 합으로 쓰는 Fourier series다.
+Fourier transform은 원래 신호 처리의 도구였지만 지금은 이미지 처리, 자연어 처리 등 여러 분야에서 쓰인다. 하는 일은 같은 신호를 다른 방향에서 바라보는 것이다.
+
+![같은 신호를 time domain에서 본 모습과 frequency domain에서 본 모습](../../assets/img/study/ai-fundamentals/06-nonstationarity-and-periodicity/fourier-transform-domains.webp)
+
+보라색 화살표 쪽에서 보면 왼쪽 보라색 틀 안의 구불구불한 신호가 보인다(time domain). 이 신호는 가운데에 그려진 단순한 파동 여러 개(초록, 보라)를 더한 것이다. 파란색 화살표 쪽에서 보면 오른쪽 파란색 틀처럼 파동 하나가 뾰족한 막대 하나로 보이고(frequency domain), 막대의 높이가 그 파동의 세기(amplitude)다. 출처: 논문 리뷰 영상의 슬라이드
+
+Time domain의 신호를 여러 개의 주기 함수(sin과 cos)로 분해해, 각 주파수 성분이 얼마나 강하게 들어 있는지(amplitude)와 어느 위치에서 시작하는지(phase)를 구한다. 출발점은 주기 함수를 sin과 cos의 합으로 쓰는 Fourier series다.
 
 $$
 f(t) = a_0 + \sum_{n=1}^{\infty} \big( a_n \cos n\omega t + b_n \sin n\omega t \big)
@@ -142,6 +168,10 @@ Fourier transform을 조금 더 자세히 본 내용은 [푸리에 변환 메모
 
 ### 왜 1D로는 부족한가
 
+![ETTh1과 Exchange 데이터의 time domain 그래프와 1D 시계열의 한계를 정리한 슬라이드](../../assets/img/study/ai-fundamentals/06-nonstationarity-and-periodicity/one-dimensional-limit.webp)
+
+위의 두 그래프는 실제 데이터셋의 한 구간이다. 왼쪽 ETTh1은 비슷한 골이 일정한 간격으로 되풀이되고, 오른쪽 Exchange는 그런 반복 없이 오르내린다. 어느 쪽이든 시점 하나가 가진 것은 숫자 하나뿐이다. 출처: 논문 리뷰 영상의 슬라이드
+
 - 시계열은 시간 순서대로 이어지고, 각 시점은 scalar 값 하나만 가진다.
 - 시점 하나의 scalar 값만으로는 분석에 필요한 의미 정보를 충분히 얻을 수 없다. 연속성, 주기성, 추세 같은 시계열 고유의 속성을 반영해 모델링해야 한다.
 - 실제 데이터에서는 상승, 하락, 변동 같은 여러 variation이 겹쳐서 복잡한 패턴을 만든다. 이 variation들을 잘 잡아 representation을 뽑는 것이 중요하다.
@@ -150,7 +180,13 @@ TimesNet은 지금까지 대부분의 모델이 입력으로 써 온 1D 시계�
 
 ### Multi-periodicity
 
-Multi-periodicity는 시계열 하나에도 여러 주기가 함께 있다는 뜻이다. 기온은 하루를 주기로 변하지만 크게 보면 일 년을 주기로도 변한다. 한 시점은 인접한 구간의 패턴에도 영향을 받지만 이웃한 주기의 변화에도 크게 영향을 받는다. 여러 주기가 겹치고 상호작용하기 때문에 variation을 모델링하기가 복잡해진다. 실제 시계열의 상당수가 이런 성질을 가지므로 이를 고려하는 것이 중요하다.
+Multi-periodicity는 시계열 하나에도 여러 주기가 함께 있다는 뜻이다.
+
+![TimesNet 논문의 multi-periodicity 그림과 4년 동안의 서울 기온 그래프](../../assets/img/study/ai-fundamentals/06-nonstationarity-and-periodicity/multi-periodicity.webp)
+
+오른쪽은 2018년 1월부터 2021년 12월까지의 서울 기온이다. 큰 봉우리가 네 번, 곧 일 년에 한 번씩 되풀이된다. 왼쪽은 논문의 그림으로, 시계열 하나(맨 왼쪽)에서 길이가 다른 주기 셋(period 1, 2, 3)을 찾아 주기마다 2D로 다시 배열하는 과정이다. 출처: 논문 리뷰 영상의 슬라이드(왼쪽 그림은 논문 Figure 1)
+
+기온은 하루를 주기로 변하지만 크게 보면 오른쪽 그래프처럼 일 년을 주기로도 변한다. 한 시점은 인접한 구간의 패턴에도 영향을 받지만 이웃한 주기의 변화에도 크게 영향을 받는다. 오늘 오후 3시의 기온은 한 시간 전의 기온과도 닮았지만 어제 오후 3시의 기온과도 닮았다는 식이다. 여러 주기가 겹치고 상호작용하기 때문에 variation을 모델링하기가 복잡해진다. 실제 시계열의 상당수가 이런 성질을 가지므로 이를 고려하는 것이 중요하다.
 
 !!! question "Q. 장기 예측(LTSF)이어서 FFT가 잘 듣는 것은 아닐까?"
     긴 기간의 측정 데이터일수록 주기가 더 많이, 더 분명하게 나타날 것이다. 그 주기를 집중적으로 본다는 것은 데이터의 비정상성을 주기 단위로 파악하는 일이라고 해석할 수도 있다. 그렇다면 locality를 잘 학습하는 것만으로는 부족하고, 데이터 자체에 내재된 주기를 잘 파악하는 것이 함께 필요하다.
@@ -158,13 +194,30 @@ Multi-periodicity는 시계열 하나에도 여러 주기가 함께 있다는 �
 TimesNet은 변화를 두 종류로 나눈다.
 
 - **Intraperiod-variation**: 한 주기 안에서 인접한 시점들 사이의 변화다. 짧은 범위의 패턴이고, 1D 시계열을 입력으로 모델링할 때 보통 고려하는 것이 이것이다.
+
+    ![이어진 두 주기가 2D tensor의 두 열이 되는 것을 색으로 표시한 그림](../../assets/img/study/ai-fundamentals/06-nonstationarity-and-periodicity/intraperiod-variation.webp)
+
+    맨 왼쪽의 1D 그래프에서 이어진 두 주기를 노란색과 초록색으로 칠했다. 오른쪽 위의 2D tensor에서는 이 두 구간이 나란히 선 두 열이 된다. 열 하나를 따라가는 방향(빨간 화살표)의 변화가 intraperiod-variation이다. 출처: 논문 리뷰 영상의 슬라이드(그림은 논문 Figure 1)
+
 - **Interperiod-variation**: 서로 다른 주기에 있지만 위상(phase)이 같은 시점들 사이의 변화다. 긴 범위의 패턴을 반영한다.
 
-1D 시계열을 주기 길이마다 잘라 나란히 세우면 2D tensor가 된다. 한 열에는 한 주기 안의 시점들이 들어가고(intraperiod), 한 행에는 주기는 다르지만 위상이 같은 시점들이 들어간다(interperiod). 두 방향을 함께 보면 인접한 시점의 변화와, 떨어져 있지만 같은 위상에 있는 시점의 변화를 동시에 잡을 수 있다.
+    ![한 주기만큼 떨어진 두 시점이 2D tensor에서 같은 행의 이웃한 칸에 놓이는 것을 표시한 그림](../../assets/img/study/ai-fundamentals/06-nonstationarity-and-periodicity/interperiod-variation.webp)
+
+    1D 그래프에서 같은 색 동그라미 두 개는 한 주기만큼 떨어져 있는, 위상이 같은 시점이다. 2D tensor에서는 이 두 점이 같은 행의 옆 칸에 놓인다. 행을 따라가는 방향(파란 화살표)의 변화가 interperiod-variation이다. 출처: 논문 리뷰 영상의 슬라이드(그림은 논문 Figure 1)
+
+달력에 비유할 수 있다. 날짜를 한 줄로 길게 늘어놓으면 이번 주 화요일과 다음 주 화요일은 7칸 떨어져 있지만, 7칸마다 줄을 바꿔 달력 모양으로 놓으면 둘은 위아래로 바로 붙은 칸이 된다. TimesNet이 하는 일이 이것이다(달력은 한 주가 한 행이고 TimesNet의 그림은 한 주기가 한 열이라는 방향의 차이만 있다). 1D 시계열을 주기 길이마다 잘라 나란히 세우면 2D tensor가 된다. 한 열에는 한 주기 안의 시점들이 들어가고(intraperiod), 한 행에는 주기는 다르지만 위상이 같은 시점들이 들어간다(interperiod). 두 방향을 함께 보면 인접한 시점의 변화와, 떨어져 있지만 같은 위상에 있는 시점의 변화를 동시에 잡을 수 있다.
 
 ### FFT로 주기 찾기
 
-눈에 띄는 주기가 없으면 주기를 직접 찾기 어렵다. 그래서 입력 시퀀스에 FFT를 적용한다.
+2D로 접으려면 몇 칸마다 접을지, 곧 주기의 길이를 알아야 한다. 눈에 띄는 주기가 없으면 주기를 직접 찾기 어렵다. 그래서 입력 시퀀스에 FFT를 적용한다.
+
+![1D 시계열에 FFT를 적용해 amplitude가 큰 주파수를 고르고 주파수마다 2D로 reshape하는 과정](../../assets/img/study/ai-fundamentals/06-nonstationarity-and-periodicity/fft-to-2d.webp)
+
+빨간 점선 안이 이 단계다. 왼쪽의 1D 시계열을 FFT하면 오른쪽의 amplitude 그래프가 나오고, 거기서 솟아 있는 봉우리(frequency 1, 2, 3)를 고른다. 그 아래는 다음 단계로, 고른 주파수마다 열의 수와 행의 수가 다른 2D tensor가 하나씩 만들어진다. 출처: 논문 리뷰 영상의 슬라이드(그림은 논문 Figure 2)
+
+![TimesNet의 전체 구조에서 FFT for Period 단계의 위치와 식](../../assets/img/study/ai-fundamentals/06-nonstationarity-and-periodicity/timesblock-fft-for-period.webp)
+
+오른쪽이 TimesNet의 전체 구조다. Embedding 위에 TimesBlock이 residual connection($+$)으로 쌓여 있고, TimesBlock 하나를 확대한 상자 안에서 빨간 점선으로 표시한 "FFT for Period"가 지금 설명하는 부분이다. 출처: 논문 리뷰 영상의 슬라이드
 
 1. FFT로 주파수별 amplitude를 구한다. 모든 채널($d_{model}$개)에 대해 계산한 뒤 평균해 주파수마다 값 하나를 얻는다.
 2. Amplitude가 가장 큰 주파수 $k$개 $\{f_1, \dots, f_k\}$를 고른다. 주파수 영역은 sparse하므로, 의미 없는 고주파가 만드는 잡음을 피하려고 상위 $k$개만 쓴다.
@@ -190,21 +243,35 @@ $$
 X_{2D}^{l,i} = \mathrm{Reshape}_{p_i, f_i}\big(\mathrm{Padding}(X_{1D}^{l-1})\big), \qquad i \in \{1, \dots, k\}
 $$
 
+![TimesBlock 안에서 Reshape 단계의 위치와 padding, reshape의 설명](../../assets/img/study/ai-fundamentals/06-nonstationarity-and-periodicity/timesblock-reshape.webp)
+
+오른쪽 구조도에서 빨간 점선이 이번에는 "Reshape" 상자로 옮겨 갔다. 상자가 여러 장 겹쳐 그려져 있고 옆에 $K$라고 적힌 것은 고른 주파수의 수만큼 같은 일을 한다는 뜻이다. 출처: 논문 리뷰 영상의 슬라이드
+
 - 길이 $T$가 $p_i$로 나누어떨어지지 않으면 padding을 붙여 shape을 맞춘다.
 - $T \times d_{model}$의 데이터가 $p_i \times f_i \times d_{model}$이 된다. 행이 $p_i$개, 열이 $f_i$개다.
 - 주파수마다 주기가 다르므로 서로 다른 모양의 2D tensor가 $k$개 만들어진다.
 
-이렇게 만든 2D tensor에 2D convolution을 적용해 두 방향의 variation을 함께 뽑는다. 노트는 여기까지 정리했다. 영상의 구조도를 보면 그 뒤에 결과를 다시 1D로 되돌리고 $k$개의 결과를 합치는 단계가 이어지며, 이 묶음이 TimesBlock 하나다. TimesBlock은 residual connection으로 여러 층 쌓인다.
+이렇게 만든 2D tensor에 2D convolution을 적용해 두 방향의 variation을 함께 뽑는다. 노트는 여기까지 정리했다. 그 뒤의 단계는 영상의 구조도에서 볼 수 있다.
+
+![1D 표현을 2D로 바꿔 inception block에 넣고, 다시 1D로 되돌려 adaptive aggregation으로 합치는 TimesBlock의 흐름](../../assets/img/study/ai-fundamentals/06-nonstationarity-and-periodicity/timesblock-flow.webp)
+
+왼쪽 아래 그림을 아래에서 위로 읽는다. 맨 아래의 1D 표현이 가운데(2D space)에서 모양이 다른 2D tensor 여러 개가 되어 inception block(2D convolution)을 지나고, 위(1D space)에서 다시 1D로 펴진 $k$개의 결과가 adaptive aggregation에서 하나로 합쳐진다. 위쪽의 식은 embedding이 입력의 shape을 $T \times C$에서 $T \times d_{model}$로 바꾼다는 내용이다. 출처: 논문 리뷰 영상의 슬라이드(왼쪽 아래 그림은 논문의 구조도)
+
+그림처럼 2D convolution의 결과를 다시 1D로 되돌리고 $k$개의 결과를 합치는 단계가 이어지며, 이 묶음이 TimesBlock 하나다. TimesBlock은 residual connection으로 여러 층 쌓인다.
 
 ### Embedding
 
 TimesBlock에 들어가기 전의 embedding은 세 가지를 더해서 만든다.
 
+![Positional, token, temporal embedding을 더하는 TimesNet의 embedding](../../assets/img/study/ai-fundamentals/06-nonstationarity-and-periodicity/timesnet-embedding.webp)
+
+왼쪽 위에서 세 줄이 $+$로 이어져 있다. 파란 줄($P_0, P_1, \dots$)이 positional, 노란 줄($T_0, T_1, \dots$)이 token, 초록 줄이 temporal embedding이다. 초록 줄은 세 층으로 되어 있는데, 시점마다 다른 $D$, 여러 시점이 함께 쓰는 $W$, 더 많은 시점이 함께 쓰는 $M$이다. 출처: 논문 리뷰 영상의 슬라이드
+
 1. Positional embedding: 시퀀스 안에서의 위치 정보를 반영한다. 일반적인 Transformer의 positional encoding을 쓴다.
 2. Token embedding: 입력을 $d_{model}$ 차원으로 projection한다. 다변량 입력 $T \times C$가 $T \times d_{model}$이 된다.
 3. Temporal embedding: 데이터에 시간 정보(월, 요일, 시각 등)가 들어 있을 때 그것을 함께 학습에 쓴다. 시간 정보가 있는 데이터에만 적용한다.
 
-노트에는 "element-wise로 더하는가?"라고 적어 두었는데, 영상의 그림에서 세 embedding은 같은 위치끼리 더해진다.
+노트에는 "element-wise로 더하는가?"라고 적어 두었는데, 위 그림에서 세 embedding은 같은 위치끼리(세로로 줄을 맞춰) 더해진다.
 
 ### 왜 FFT 기반 분해가 효과가 있었을까
 

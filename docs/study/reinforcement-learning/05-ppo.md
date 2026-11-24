@@ -42,7 +42,13 @@ $$
 \mathbb{E}_{x \sim p}[f(x)] = \int f(x) \, \frac{p(x)}{q(x)} \, q(x) \, dx = \mathbb{E}_{x \sim q}\left[ f(x) \, \frac{p(x)}{q(x)} \right]
 $$
 
-parameter가 $\theta_{\text{OLD}} \rightarrow \theta_{\text{new}} \rightarrow \theta_{\text{new2}} \rightarrow \cdots$로 갱신되어 간다고 하자. 원래는 $\theta_{\text{OLD}}$에서 뽑은 표본으로 한 번 갱신하면, 그다음 갱신을 위해서는 $\theta_{\text{new}}$를 따라 새로 뽑아야 한다. Importance Sampling을 쓰면 $\theta_{\text{OLD}}$에서 뽑은 표본을 계속 써도 된다.
+이것을 policy의 갱신에 적용하면 어떻게 되는지를 아래 그림이 보여 준다.
+
+![parameter가 갱신되어 가는 순서와 옛 parameter의 표본을 다시 쓰는 방법](../../assets/img/study/reinforcement-learning/05-ppo/reuse-old-policy-samples.webp)
+
+*(1) $\theta_{\text{OLD}}$, (2) $\theta_{\text{new}}$, (3) $\theta_{\text{new2}}$의 순서로 parameter가 갱신된다. 아래의 메모는 (2)를 갱신할 때 (1)에서 뽑은 표본을 다시 써도 된다는 내용이다.*
+
+parameter가 그림의 윗줄처럼 $\theta_{\text{OLD}} \rightarrow \theta_{\text{new}} \rightarrow \theta_{\text{new2}} \rightarrow \cdots$로 갱신되어 간다고 하자. 먼저 (1) $\theta_{\text{OLD}}$에서 표본을 뽑아 갱신하면 (2) $\theta_{\text{new}}$가 된다. 원래대로라면 (2)를 다시 갱신하기 위해서는 (2)의 분포 $p_{\theta_{\text{new}}}(s_t, a_t)$를 따라 표본을 새로 뽑아야 한다. Importance Sampling을 쓰면 그럴 필요가 없다. 앞의 식에서 $p$ 자리에 지금의 policy를, $q$ 자리에 $\theta_{\text{OLD}}$의 policy를 놓으면, (1)에서 뽑아 둔 표본에 비율만 곱해 계속 쓸 수 있다.
 
 gradient 식의 $p_\theta(s_t, a_t)$에 $p_{\theta_{\text{OLD}}}(s_t, a_t)$를 곱하고 나눈다.
 
@@ -106,7 +112,11 @@ $$
 \max_\theta \sum_{i=t-N+1}^{t} J_i^{\text{Clip}}, \qquad J_i^{\text{Clip}} \triangleq \min \big\{ r_i A_i, \; \mathrm{clip}(r_i, 1-\epsilon, 1+\epsilon) \, A_i \big\}
 $$
 
-$\mathrm{clip}$은 $r_i$가 $1+\epsilon$보다 크면 $1+\epsilon$으로, $1-\epsilon$보다 작으면 $1-\epsilon$으로 잘라 내는 함수다. 원래 값과 잘라 낸 값 중 더 작은 쪽을 고른다. $\epsilon$이 아주 작은 수일 때, 이렇게 하면 제약이 없는 문제가 된다고 한다. 왜 그런지 경우를 나누어 본다.
+![r이 일정 범위를 벗어나면 잘라 내는 clip 함수](../../assets/img/study/reinforcement-learning/05-ppo/clip-function.webp)
+
+*가로축은 $r_i$, 빨간 선은 $\mathrm{clip}(r_i, 1-\epsilon, 1+\epsilon)$이다. 가운데 구간에서는 $r_i$를 그대로 내보내고, 양쪽 바깥에서는 평평하다.*
+
+$\mathrm{clip}$은 위 그림의 빨간 선처럼 $r_i$가 $1+\epsilon$보다 크면 $1+\epsilon$으로, $1-\epsilon$보다 작으면 $1-\epsilon$으로 잘라 내는 함수다. $r_i$가 $1$ 근처에 있을 때만 값이 그대로 통과한다. $J_i^{\text{Clip}}$은 원래 값 $r_i A_i$와 잘라 낸 값 $\mathrm{clip}(r_i) A_i$ 중 더 작은 쪽을 고른다. $\epsilon$이 아주 작은 수일 때, 이렇게 하면 제약이 없는 문제가 된다고 한다. 왜 그런지 경우를 나누어 본다.
 
 ### $J_i^{\text{Clip}}$의 모양
 
@@ -114,15 +124,27 @@ $r_i$는 확률 밀도를 확률 밀도로 나눈 값이므로 항상 양수다.
 
 **$A_i > 0$인 경우.** $A_i$가 양수로 고정이므로 $r_i$와 $\mathrm{clip}(r_i)$ 중 작은 쪽이 선택된다.
 
+![Advantage가 양수일 때의 clip된 objective](../../assets/img/study/reinforcement-learning/05-ppo/clip-objective-positive-advantage.webp)
+
+*가로축은 $r_i$, 세로축은 $J_i^{\text{Clip}}$이다. 직선으로 올라가다가 $r_i = 1+\epsilon$부터 평평해진다.*
+
+그래프에서 볼 것은 오른쪽의 평평한 구간이다. $r_i$가 $1+\epsilon$을 넘으면 $r_i$를 아무리 키워도 $J_i^{\text{Clip}}$이 늘지 않는다. 구간별로 어느 값이 선택되는지를 적으면 다음과 같다.
+
 | $r_i$의 범위 | $\mathrm{clip}(r_i)$ | 선택되는 값 |
 |---|---|---|
 | $r_i < 0.9$ | $0.9$로 고정 | $r_i A_i$ (원래 값이 더 작다) |
 | $0.9 \le r_i \le 1.1$ | $r_i$ | $r_i A_i$ (둘이 같다) |
 | $r_i > 1.1$ | $1.1$로 고정 | $1.1 A_i$ (잘라 낸 값이 더 작다) |
 
-$J_i^{\text{Clip}}$은 $r_i$에 따라 직선으로 올라가다가 $r_i = 1 + \epsilon$에서 평평해진다.
+표의 세 줄을 이으면 위의 그래프가 된다. $J_i^{\text{Clip}}$은 $r_i$에 따라 직선으로 올라가다가 $r_i = 1 + \epsilon$에서 평평해진다.
 
 **$A_i < 0$인 경우.** 예로 $A_i = -1$이라 하자. 음수를 곱하므로 대소가 뒤집힌다.
+
+![Advantage가 음수일 때의 clip된 objective](../../assets/img/study/reinforcement-learning/05-ppo/clip-objective-negative-advantage.webp)
+
+*세로축이 아래로 향해 있고 값은 모두 음수다. $r_i$가 $1-\epsilon$보다 작은 구간은 평평하고, 그 오른쪽으로는 $r_i$가 커질수록 계속 내려간다.*
+
+이번에는 평평한 구간이 왼쪽에 있다. $r_i$를 $1-\epsilon$ 아래로 줄여도 $J_i^{\text{Clip}}$이 더 올라가지 않는다. 반대로 오른쪽은 잘리지 않아서, $r_i$가 커지면 $J_i^{\text{Clip}}$이 끝없이 내려간다. 예를 들어 $r_i = 10$이면 원래 값은 $-10$, 잘라 낸 값은 $-1.1$이므로 더 작은 $-10$이 선택된다.
 
 | $r_i$의 범위 | $\mathrm{clip}(r_i) A_i$ | 선택되는 값 |
 |---|---|---|
@@ -133,6 +155,8 @@ $J_i^{\text{Clip}}$은 $r_i$에 따라 직선으로 올라가다가 $r_i = 1 + \
 $J_i^{\text{Clip}}$은 $r_i$가 커질수록 계속 내려가고, $r_i$가 $1 - \epsilon$보다 작아지면 평평해진다.
 
 ### 왜 제약이 필요 없어지는가
+
+위의 두 그래프에서 평평한 구간이 핵심이다. objective를 최대화하는 쪽에서 보면, 평평한 구간으로 더 들어가 봐야 얻는 것이 없다.
 
 **$A_i$가 양수일 때.** Advantage가 양수라는 것은 $R_t + \gamma V(s_{t+1}) - V(s_t) > 0$, 곧 그 action의 결과가 $V(s_t)$로 예상한 것보다 좋았다는 뜻이다. 좋은 평가를 받은 action이므로 objective를 키우려면 그 action의 확률을 키워야 하고, 그러면 $r_i$가 커진다. 그런데 $J_i^{\text{Clip}}$은 $r_i$가 $1 + \epsilon$을 넘으면 더 커지지 않는다. $r_i$를 아무리 키우려 해도 얻는 것이 없으므로 그 이상 키우지 않는다. 따라서 두 분포는 비슷하게 유지된다.
 
@@ -216,7 +240,11 @@ $$
 \hat{A}_i^{\text{GAE}} \triangleq \sum_{k=i}^{t} (\gamma\lambda)^{k-i} \, \delta_k
 $$
 
-예를 들어 $s_0$부터 $s_5$까지, 곧 $\delta_0$부터 $\delta_4$까지 다섯 개를 모았다면 다음과 같다.
+![모아 둔 여섯 state의 value가 차례로 이어진 모습](../../assets/img/study/reinforcement-learning/05-ppo/collected-states-v0-v5.webp)
+
+*$V_0$부터 $V_5$까지가 모아 둔 구간이다. 화살표 하나가 1-step TD Error 하나($\delta_0 \sim \delta_4$)에 해당한다.*
+
+예를 들어 위 그림처럼 $s_0$부터 $s_5$까지, 곧 화살표 다섯 개에 해당하는 $\delta_0$부터 $\delta_4$까지를 모았다면 다음과 같다. 각 시점에서 출발해 오른쪽 끝까지 남아 있는 화살표를 모두 더하되, 멀리 있는 것일수록 $\gamma\lambda$를 여러 번 곱해 작게 반영한다.
 
 $$
 \begin{aligned}

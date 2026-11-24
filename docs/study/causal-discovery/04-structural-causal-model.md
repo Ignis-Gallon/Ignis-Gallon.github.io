@@ -23,7 +23,7 @@ tags: [인과 추론, 구조적 인과 모델, do-calculus, 반사실, 시계열
 
 ## 2. 반사실과 potential outcome
 
-두 번째 시도는 반사실(counterfactual)이다. David Lewis(1973)의 반사실 이론과 Donald Rubin(1974)의 potential outcome 틀이 여기에 속한다. $X$가 $Y$의 원인이라고 말하려면
+"함께 일어난다"로는 부족했으므로, 두 번째 시도는 "그 일이 없었다면 어떻게 되었을까"를 묻는다. 이것이 반사실(counterfactual)이다. David Lewis(1973)의 반사실 이론과 Donald Rubin(1974)의 potential outcome 틀이 여기에 속한다. $X$가 $Y$의 원인이라고 말하려면
 
 - $X$가 일어났을 때 $Y$가 일어나야 하고,
 - $X$가 일어나지 않았다면 $Y$도 일어나지 않았어야 한다.
@@ -57,6 +57,8 @@ Suzy가 던져서 병이 떨어졌다. 상식적으로 Suzy의 투구가 원인�
 
 ## 3. Causal model
 
+필요한 것은 "무엇이 무엇을 어떻게 결정하는가"를 변수마다 식으로 적어 둔 모델이다. 식이 있으면 한 변수를 바꾸었을 때 나머지가 어떻게 따라 바뀌는지를 계산할 수 있다.
+
 causal model은 $\mathcal{M} = \langle \mathbf{V}, \mathbf{U}, \mathbf{F} \rangle$로 정의한다.
 
 - $\mathbf{V}$: 내생(endogenous) 변수의 집합. 모델 안에서 값이 정해지는 변수다.
@@ -65,7 +67,13 @@ causal model은 $\mathcal{M} = \langle \mathbf{V}, \mathbf{U}, \mathbf{F} \rangl
 
 $\mathbf{U}$는 하나의 상황(context)을 나타낸다. $\mathbf{U} = \mathbf{u}$로 고정하면 모든 $\mathbf{V}$의 값이 정해진다. 불확실성은 모두 $\mathbf{U}$에 있다. 쉽게 말해 causal model은 각 변수의 값이 어떻게 정해지는지를 나타내는 함수와, 그 관계를 표현하는 그래프다.
 
-Suzy와 Billy의 문제를 다섯 변수로 적는다. ST(Suzy가 던진다), BT(Billy가 던진다), SH(Suzy의 공이 맞는다), BH(Billy의 공이 맞는다), BFO(병이 떨어진다)이며, BH는 "Billy가 던졌고 Suzy의 공이 맞지 않았을 때" 참이다.
+Suzy와 Billy의 문제를 다섯 변수로 적는다. ST(Suzy가 던진다), BT(Billy가 던진다), SH(Suzy의 공이 맞는다), BH(Billy의 공이 맞는다), BFO(병이 떨어진다)다. 구조 방정식은 세 개다.
+
+$$
+SH \leftarrow ST, \qquad BH \leftarrow BT \wedge \neg SH, \qquad BFO \leftarrow SH \vee BH
+$$
+
+Suzy가 던지면 Suzy의 공이 맞고, Billy의 공은 "Billy가 던졌고 Suzy의 공이 맞지 않았을 때"만 맞으며, 둘 중 하나라도 맞으면 병이 떨어진다. 어떤 변수가 어떤 변수의 식에 들어가는지를 화살표로 그리면 아래 그래프가 된다. $SH \to BH$ 화살표가 "Suzy의 공이 먼저 닿는다"는 사정을 담고 있다.
 
 ```mermaid
 flowchart LR
@@ -191,6 +199,14 @@ $$
 - $f^j$: $V_t^j$를 결정하는 인과 메커니즘. 비선형일 수 있다.
 - $pa(V_t^j)$: 인과적 부모, 곧 직접 원인이다. 자기 자신을 제외한 현재 또는 과거의 변수들이다. 자기 자신의 과거와 다른 변수의 과거가 모두 들어갈 수 있다.
 - $\eta_t^j$: $V_t^j$에만 붙는 잡음이다. 부모로 설명되지 않고 남는 영향을 나타낸다.
+
+변수가 셋인 경우를 그린 리뷰 논문의 그림을 보면 식, 그래프, 데이터가 어떻게 이어지는지 한눈에 들어온다.
+
+![변수 세 개짜리 시계열 SCM: 구조 방정식, 그래프, 관측 시계열](../../assets/img/study/causal-discovery/04-structural-causal-model/time-series-scm.webp){ width="480" }
+
+*왼쪽 위의 식 세 줄이 SCM이다. 가운데의 격자는 그 부모 관계를 시간 축($t-3$ ~ $t$)에 펼친 시계열 그래프이고, 검은 화살표가 시점 $t$의 변수로 들어오는 부모다. 그 왼쪽의 작은 그래프는 시점을 접은 것으로, 화살표 옆의 숫자가 지연이다. 맨 아래의 세 시계열이 이 모델에서 나온 관측 데이터다. 출처: Runge 외, "Causal inference for time series"의 그림 (a).*
+
+읽는 순서는 위에서 아래다. 식이 "각 변수는 부모와 잡음의 함수"라고 정하면, 누가 누구의 부모인지를 그린 것이 그래프이고, 그 규칙을 시점마다 반복해 적용한 결과가 맨 아래의 시계열이다. 인과 발견은 이 순서를 거꾸로 간다. 맨 아래의 시계열만 보고 가운데의 그래프를 알아내려는 것이다. 왼쪽 작은 그래프에서 $V^2 \to V^3$의 숫자 2는 $V^2$의 두 시점 전 값이 $V^3$의 현재 값에 영향을 준다는 뜻이고, $V^1 \to V^3$의 숫자 0은 같은 시점 안에서 영향을 준다는 뜻이다.
 
 지연 $\tau = 0$을 허용하는 이유는 유한한 시간 해상도 때문이다. 실제 지연이 1주인데 데이터가 월 단위로 집계되어 있으면 그 인과 관계는 같은 시점에서 나타난다.
 

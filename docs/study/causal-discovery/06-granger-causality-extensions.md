@@ -19,7 +19,7 @@ Granger causality는 시계열에서 인과를 다루는 가장 오래된 도구
 
 ### Pairwise Granger causality
 
-가장 단순한 형태는 정상(stationary) 선형 시스템을 가정하고 두 자기회귀 모델을 비교한다. $X^q$ 자신의 과거만 쓰는 제한 모델과
+방법은 "넣고 예측한 것"과 "빼고 예측한 것"을 견주는 것이다. 가장 단순한 형태는 정상(stationary) 선형 시스템을 가정하고 두 자기회귀 모델을 비교한다. $X^q$ 자신의 과거만 쓰는 제한 모델과
 
 $$
 X_t^q = a_{q,0} + \sum_{i=1}^{\tau} a_{q,i} X_{t-i}^q + \xi_t^q
@@ -31,7 +31,7 @@ $$
 X_t^q = a_{q,0} + \sum_{i=1}^{\tau} a_{q,i} X_{t-i}^q + \sum_{i=1}^{\tau} a_{p,i} X_{t-i}^p + \xi_t^q
 $$
 
-전체 모델의 예측 오차가 제한 모델보다 유의하게 작으면 $X^p$가 $X^q$를 Granger-cause한다고 판정한다. 판정에는 F 통계량, AIC/BIC, p-value 같은 지표를 쓴다.
+두 식의 차이는 $X^p$의 과거가 들어간 둘째 합 하나뿐이다. 이 항을 넣어서 예측이 나아졌는지를 본다. 전체 모델의 예측 오차가 제한 모델보다 유의하게 작으면 $X^p$가 $X^q$를 Granger-cause한다고 판정한다. 판정에는 F 통계량, AIC/BIC, p-value 같은 지표를 쓴다.
 
 ### Multivariate Granger causality
 
@@ -56,6 +56,8 @@ $$
 아래의 확장들은 이 가운데 주로 고차원과 비선형성을 겨냥한다. 동시점 관계와 숨은 교란 변수를 다루는 방법은 일부에 그친다.
 
 ## 2. 고차원: Lasso 계열
+
+변수가 많아지면 쌍마다 모델을 두 번씩 맞추어 비교하는 방식은 감당하기 어렵다. Lasso 계열의 생각은 비교를 반복하지 않는 것이다. 모든 변수의 과거를 한꺼번에 넣고 회귀를 한 번 하되, 필요 없는 변수의 계수가 정확히 0이 되도록 벌점을 건다. 그러면 0이 아닌 계수로 남은 변수가 곧 원인 후보다.
 
 ### Graphical Granger와 Lasso-Granger
 
@@ -110,7 +112,7 @@ Granger causality 검정의 가설은 다음과 같다.
 
 비선형 인과 관계를 모델 기반으로 잡는 일반적인 방법은 비선형 모델을 쓰는 것이다. Granger causality에서는 먼저 커널 방법으로의 확장이 이루어졌다. radial basis function을 써서 이변량 비선형 경우로 확장한 연구가 있었고, 이후 reproducing kernel Hilbert space(RKHS)를 이용한 확장과 다변량으로의 확장이 이어졌다.
 
-"Kernel method for nonlinear Granger causality"(2008)의 생각은 이렇다.
+"Kernel method for nonlinear Granger causality"(2008)의 생각은 이렇다. 직선으로 풀리지 않는 관계를, 직선으로 풀리는 공간으로 옮겨 놓고 원래의 선형 Granger causality를 그대로 쓴다.
 
 - 커널 함수로 입력을 고차원 feature 공간에 사상한다. 원래 공간에서 비선형이던 관계가 이 공간에서는 선형으로 나타난다. Gaussian RBF 커널이나 다항 커널을 쓴다.
 - 그 공간에서 선형 Granger causality를 수행한다. RKHS에서는 함수가 내적으로 표현되고 커널 함수 $K(x, x')$가 바로 그 공간에서의 내적이므로, 고차원 사상을 직접 계산하지 않아도 된다.
@@ -150,7 +152,7 @@ $$
 \mathbf{x}_j^{t} := g_j\big(\mathbf{x}_1^{1:(t-1)}, \ldots, \mathbf{x}_i^{1:(t-1)}, \ldots, \mathbf{x}_d^{1:(t-1)}\big) + u_j^t, \qquad 1 \le j \le d
 $$
 
-$g_j$는 정규화된 신경망으로 구현한 연속 함수다. 이 틀에서 Granger 비인과는 다음과 같이 정의된다. $x_i$가 $x_j$의 Granger 원인이 아니라면, 다른 입력은 그대로 두고 $x_i$의 과거만 바꾸었을 때 출력이 달라지지 않아야 한다.
+$g_j$는 정규화된 신경망으로 구현한 연속 함수다. 변수 $x_j$ 하나를 맡은 예측기라고 보면 된다. 이 틀에서 Granger 비인과는 "그 예측기가 어떤 입력을 쓰지 않는가"로 정의된다. $x_i$가 $x_j$의 Granger 원인이 아니라면, 다른 입력은 그대로 두고 $x_i$의 과거만 바꾸었을 때 출력이 달라지지 않아야 한다. 아래 식의 좌변과 우변은 $x_i$ 자리만 $x_{i'}$로 다르다.
 
 $$
 g_j\big(\mathbf{x}_1^{1:(t-1)}, \ldots, \mathbf{x}_i^{1:(t-1)}, \ldots, \mathbf{x}_d^{1:(t-1)}\big)

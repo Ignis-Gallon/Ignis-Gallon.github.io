@@ -11,7 +11,7 @@ tags: [Regularization, Batch Normalization, Optimizer, Adam, Weight Initializati
 작성일 2024-12-01
 { .post-date }
 
-신경망을 학습시킬 때 거의 항상 따라오는 세 가지 주제를 한 번에 복습한 노트다. 과적합을 막는 regularization, 파라미터를 갱신하는 optimizer, 학습의 출발점을 정하는 weight initialization을 차례로 본다. 이미 배운 내용을 다시 꺼내 정리한 것이어서, 유도보다는 "왜 그렇게 하는가"를 내 말로 적는 데 무게를 두었다. Optimizer의 갱신 식은 노트에 강의 슬라이드의 코드로 남아 있던 것을 수식으로 옮겼다.
+신경망을 학습시킬 때 거의 항상 따라오는 세 가지 주제를 한 번에 복습한 노트다. 과적합을 막는 regularization, 파라미터를 갱신하는 optimizer, 학습의 출발점을 정하는 weight initialization을 차례로 본다. 이미 배운 내용을 다시 꺼내 정리한 것이어서, 유도보다는 "왜 그렇게 하는가"를 내 말로 적는 데 무게를 두었다. Optimizer의 갱신 식은 노트에 강의 슬라이드의 코드로 남아 있던 것을 수식으로 옮기고, 필기가 적힌 슬라이드도 함께 실었다.
 
 ## 1. Regularization
 
@@ -118,24 +118,42 @@ $$
 
 이 규칙을 바꾸면 학습이 훨씬 빨라진다. 아래에서 $\eta$는 learning rate, $dw$는 gradient다.
 
-**Momentum.** Mini-batch를 쓰더라도 gradient에는 잡음이 섞여 있어 loss가 요동친다. Momentum은 이 요동을 moving average로 줄인다. 속도를 뜻하는 $v$와 hyperparameter $\mu$(보통 0.9)를 두고, 과거의 갱신 방향을 지수적으로 누적한다.
+**Momentum.** Mini-batch를 쓰더라도 gradient에는 잡음이 섞여 있어 loss가 요동친다. Momentum은 이 요동을 moving average로 줄인다. 공을 굴리는 것에 견줄 수 있다. 매번 그 자리의 기울기만 보고 한 걸음씩 옮기는 대신, 지금까지 굴러온 속도를 유지한 채 기울기로 속도를 조금씩 바꾼다.
+
+![Gradient descent와 momentum의 갱신 코드, 그리고 가파른 방향과 완만한 방향에서 gradient 부호가 변하는 모습을 그린 필기](../../assets/img/study/ai-fundamentals/07-training-techniques/momentum-update.webp)
+
+오른쪽의 손그림 두 개를 본다. 왼쪽의 좁고 가파른 골짜기에서는 양쪽 벽을 오가느라 gradient의 부호가 $+, -, +, -$로 계속 바뀐다. 오른쪽의 완만한 비탈에서는 부호가 $+, +, +$로 이어진다. 왼쪽 코드의 빨간 상자가 momentum의 갱신 식이고, 필기는 `mu`가 hyperparameter(0.9)라는 것을 표시한 것이다. 출처: 강의 슬라이드
+
+속도를 뜻하는 $v$와 hyperparameter $\mu$(보통 0.9)를 두고, 과거의 갱신 방향을 지수적으로 누적한다.
 
 $$
 v \leftarrow \mu\, v - \eta\, dw, \qquad w \leftarrow w + v
 $$
 
-부호가 계속 바뀌는 방향(가파른 골짜기를 좌우로 오가는 방향)의 변화는 서로 상쇄되어 작아지고, 같은 부호가 이어지는 방향(완만하게 내려가는 방향)의 변화는 쌓여서 커진다. 기억해 둘 점은 momentum에서는 계산한 velocity를 파라미터에 그대로 **더한다**는 것이다.
+$v$에는 지난 gradient들이 누적되어 있으므로, 손그림의 부호 나열을 그대로 더해 보면 된다. 부호가 계속 바뀌는 방향(가파른 골짜기를 좌우로 오가는 방향)의 변화는 $+$와 $-$가 서로 상쇄되어 작아지고, 같은 부호가 이어지는 방향(완만하게 내려가는 방향)의 변화는 쌓여서 커진다. 슬라이드 아래의 두 문장이 이 내용이다. 기억해 둘 점은 momentum에서는 계산한 velocity를 파라미터에 그대로 **더한다**는 것이다.
 
-**RMSprop.** Root Mean Squared Propagation. Momentum과 비슷한 목표를 다른 방식으로 이룬다. Decay rate라는 hyperparameter(예: 0.99)를 두고, gradient의 제곱에 대한 moving average를 cache에 쌓는다.
+**RMSprop.** Root Mean Squared Propagation. Momentum과 비슷한 목표를 다른 방식으로 이룬다. Momentum이 gradient의 방향을 다듬었다면 RMSprop은 gradient의 크기를 가중치마다 맞춰 준다.
+
+![RMSprop의 갱신 코드와, gradient를 자기 크기로 나누면 모든 성분의 크기가 1이 된다는 필기](../../assets/img/study/ai-fundamentals/07-training-techniques/rmsprop-update.webp)
+
+오른쪽 위의 필기가 핵심이다. Gradient가 $dw = (-1, 2, -3, 1000)$처럼 성분마다 크기가 크게 다를 때, 각 성분을 자기 크기 $|dw| = \sqrt{dw^2}$로 나누면 $(-1, 1, -1, 1)$이 되어 부호만 남고 크기는 모두 같아진다. 코드의 아래 줄에서 `np.sqrt(cache)`로 나누는 것이 이 계산이다. 출처: 강의 슬라이드
+
+Decay rate라는 hyperparameter(예: 0.99)를 두고, gradient의 제곱에 대한 moving average를 cache에 쌓는다.
 
 $$
 \mathrm{cache} \leftarrow \rho \cdot \mathrm{cache} + (1 - \rho)\, dw^2, \qquad
 w \leftarrow w - \eta\, \frac{dw}{\sqrt{\mathrm{cache}} + \epsilon}
 $$
 
-제곱을 하므로 큰 gradient는 더 크게, 작은 gradient는 더 작게 cache에 반영된다. 갱신할 때는 gradient를 cache의 제곱근으로 나눈다. 그러면 변화량이 컸던 가중치는 작게, 작았던 가중치는 크게 움직여서 모든 가중치가 비슷한 크기로 갱신된다. 일종의 정규화다. $\epsilon$은 0으로 나누는 것을 막기 위한 아주 작은 값이다.
+제곱을 하므로 큰 gradient는 더 크게, 작은 gradient는 더 작게 cache에 반영된다. 갱신할 때는 gradient를 cache의 제곱근으로 나눈다. 필기의 예에서 1000이던 성분이 1이 된 것처럼, 변화량이 컸던 가중치는 작게, 작았던 가중치는 크게 움직여서 모든 가중치가 비슷한 크기로 갱신된다. 일종의 정규화다. $\epsilon$(코드의 `1e-8`)은 0으로 나누는 것을 막기 위한 아주 작은 값이다.
 
-**Adam.** Momentum과 RMSprop을 합친 방식이다. Momentum의 velocity에 해당하는 $m$과 RMSprop의 cache에 해당하는 $v$를 함께 계산하고, $m$을 $\sqrt{v}$로 나눈 값으로 갱신한다. 요동을 줄이는 효과와 모든 가중치를 고르게 갱신하는 효과를 동시에 얻는다.
+**Adam.** Momentum과 RMSprop을 합친 방식이다.
+
+![Adam의 갱신 코드에서 momentum에 해당하는 줄, RMSprop에 해당하는 줄, bias correction에 해당하는 줄을 표시한 슬라이드](../../assets/img/study/ai-fundamentals/07-training-techniques/adam-update.webp)
+
+코드의 줄마다 어디서 온 것인지가 색 상자로 표시되어 있다. 초록 상자(`m`을 갱신하는 줄)가 momentum, 빨간 상자 두 개(`v`를 갱신하는 줄과 마지막에 `np.sqrt(vb)`로 나누는 줄)가 RMSprop, 파란 상자가 bias correction이다. 출처: 강의 슬라이드
+
+Momentum의 velocity에 해당하는 $m$과 RMSprop의 cache에 해당하는 $v$를 함께 계산하고, $m$을 $\sqrt{v}$로 나눈 값으로 갱신한다. 요동을 줄이는 효과와 모든 가중치를 고르게 갱신하는 효과를 동시에 얻는다.
 
 $$
 \begin{aligned}
@@ -146,7 +164,7 @@ w &\leftarrow w - \eta\, \frac{\hat{m}}{\sqrt{\hat{v}} + \epsilon}
 \end{aligned}
 $$
 
-셋째 줄은 bias correction이다. $m$과 $v$를 0에서 시작하므로 처음 몇 step 동안은 값이 실제보다 작게 나오는데, 이를 보정한다. $t$가 커지면 분모가 1에 가까워져 영향이 사라진다.
+셋째 줄(슬라이드의 파란 상자)은 bias correction이다. $m$과 $v$를 0에서 시작하므로 처음 몇 step 동안은 값이 실제보다 작게 나오는데, 이를 보정한다. 슬라이드의 표현으로는 $m$과 $v$가 "warm up"하는 데 시간이 걸리기 때문이다. $t$가 커지면 $\beta^t$가 0에 가까워지고 분모가 1에 가까워져 영향이 사라진다. 그래서 슬라이드에도 $t$가 작은 처음 몇 번의 반복에서만 의미가 있다고 적혀 있다.
 
 ## 3. Weight initialization
 

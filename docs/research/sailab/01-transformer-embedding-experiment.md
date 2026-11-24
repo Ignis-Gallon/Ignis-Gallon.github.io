@@ -46,7 +46,13 @@ CARD 저장소의 장기 예측 코드는 실행 스크립트의 `--model` 인�
 
 ### 데이터가 잘리는 방식
 
-입력 길이 `seq_len`은 96으로 고정하고, 예측 길이 `pred_len`은 96, 192, 336, 720을 쓴다. 디코더에는 입력의 마지막 48개(`label_len`)를 함께 넣는다. 샘플 하나는 시작 위치에서 `seq_len + pred_len`만큼을 잘라 만들기 때문에, 구간 길이가 $N$이면 샘플 수는 다음과 같다.
+모델에 들어가는 샘플 하나가 긴 시계열에서 어떻게 잘려 나오는지부터 확인했다. 코드를 읽으며 그린 그림이 아래다.
+
+![샘플 하나가 시계열에서 잘리는 방식](../../assets/img/research/sailab/01-transformer-embedding-experiment/data-window-sketch.webp){ width="520" }
+
+*검은 상자 전체가 샘플 하나다. 시작 위치(Index)부터 96개가 인코더 입력(`seq_x`)이고, 그 뒤의 파란 96개가 예측할 구간이다. 빨간 48개는 입력의 끝부분을 한 번 더 쓰는 label 구간으로, 예측 구간과 합쳐져 디코더 쪽 데이터(`seq_y`)가 된다.*
+
+입력 길이 `seq_len`은 96으로 고정하고, 예측 길이 `pred_len`은 96, 192, 336, 720을 쓴다. 디코더에는 그림의 빨간 구간, 곧 입력의 마지막 48개(`label_len`)를 함께 넣는다. 디코더가 아무 단서 없이 예측을 시작하지 않도록 직전의 실제 값을 쥐여 주는 것이다. 샘플 하나는 시작 위치에서 `seq_len + pred_len`만큼을 잘라 만들고 시작 위치를 한 칸씩 옮겨 가므로, 구간 길이가 $N$이면 샘플 수는 다음과 같다.
 
 $$
 N - \text{seq\_len} - \text{pred\_len} + 1
@@ -56,7 +62,19 @@ ETTm1의 학습 구간은 34,560개인데 실제 샘플 수가 34,369개로 찍�
 
 ### 모델 구조
 
-모델을 출력해 구조를 확인했다. 인코더 층은 self-attention과 feed-forward로 이루어지고, feed-forward는 kernel 크기 1의 `Conv1d` 두 개로 구현되어 있다. 디코더 층은 self-attention, cross-attention, feed-forward 순서다. 인코더와 디코더의 층을 모두 지난 뒤에는 `LayerNorm`이 한 번 더 있고, 디코더 끝에는 출력 차원으로 줄이는 선형 층이 있다.
+모델을 출력해 구조를 확인하고, 코드에서 읽은 대로 그림으로 옮겼다.
+
+![실험에 쓴 Transformer의 인코더와 디코더 구조](../../assets/img/research/sailab/01-transformer-embedding-experiment/model-architecture.webp)
+
+*왼쪽이 인코더, 오른쪽이 디코더다. 점선 상자 하나가 층 하나이고 N번 반복된다. 인코더의 출력은 가운데 선을 따라 디코더의 cross-attention으로 들어간다.*
+
+점선 상자 안을 아래에서 위로 읽으면 된다. 회색 상자 하나가 블록 하나이고, 블록을 지날 때마다 입력을 다시 더해 정규화하는 Add & Norm이 붙는다.
+
+- **인코더 층**은 블록이 두 개다. 아래가 self-attention, 위가 feed-forward다. feed-forward 자리에는 선형 층 대신 kernel 크기 1의 `Conv1d` 두 개가 GELU를 사이에 두고 들어 있다.
+- **디코더 층**은 그 사이에 cross-attention 블록이 하나 더 있어 self-attention, cross-attention, feed-forward 순서다. 인코더가 만든 표현을 읽어 오는 곳이 이 가운데 블록이다.
+- attention 블록 안의 Projection은 여러 head의 결과를 다시 `d_model` 차원으로 모으는 선형 층이다.
+
+눈여겨볼 곳은 점선 상자의 바깥이다. 인코더와 디코더 모두 층을 다 지난 뒤에 Norm(`LayerNorm`)이 한 번 더 있고, 디코더 끝에는 출력 차원으로 줄이는 Projection(선형 층)이 있다.
 
 코드를 읽으며 적어 둔 질문 가운데 실험으로 이어진 것은 "층을 모두 지난 뒤에 왜 `LayerNorm`을 한 번 더 두는가"였다. 이 질문은 9절의 추가 실험에서 다룬다.
 
@@ -87,6 +105,24 @@ outputs:  [1, 144, 7]     한 번의 forward로 전부 출력
 | PositionalEmbedding | 위치를 sinusoidal 함수로 인코딩한다 |
 | TimeFeatureEmbedding | 타임스탬프에서 뽑은 실수형 시간 특성을 선형 층으로 올린다 |
 | TemporalEmbedding, FixedEmbedding | 월, 일, 요일, 시 같은 정수를 `nn.Embedding`으로 조회한다 |
+
+이 가운데 TokenEmbedding은 값 하나를 벡터 하나로 바꾸는 선형 층과 달리, `Conv1d`로 이웃한 시점을 함께 본다. shape이 어떻게 바뀌는지 헷갈려서 작은 예를 손으로 그려 확인했다.
+
+![Conv1d 값 임베딩이 shape을 바꾸는 과정을 그린 메모](../../assets/img/research/sailab/01-transformer-embedding-experiment/conv1d-token-embedding-sketch.webp){ width="560" }
+
+*입력 (배치 2, 변수 2, 길이 4)가 (2, 4, 4)로 바뀌는 예. 빨간 상자가 kernel이다. 변수 2개를 한꺼번에 덮은 채 시간 축을 한 칸씩 움직이고, 파란 부분은 양 끝에 하나씩 붙인 padding이다.*
+
+그림에서 확인한 것은 세 가지다.
+
+- 시계열에서는 변수(feature)의 수가 `Conv1d`의 입력 채널이 된다. kernel은 변수 전체를 덮은 채 시간 축으로만 움직인다.
+- kernel 크기가 3이므로 출력의 한 시점은 인접한 세 시점의 값으로 만들어진다. 선형 층 기반의 값 임베딩과 갈리는 지점이고, 7절의 해석에서 다시 쓰인다.
+- filter(kernel)를 `d_model`개 두면 출력 채널이 `d_model`개가 된다. 그림의 예는 filter가 4개라 채널이 2에서 4로 늘었다.
+
+길이가 그대로 유지되는 것은 padding 덕분이다. 그림 왼쪽에 적은 식대로 padding을 $(\text{kernel} - 1)/2$로 두면 출력 길이는 다음과 같이 입력과 같아진다. kernel 3, padding 1, stride 1이면 $4 + 2 - 3 + 1 = 4$다.
+
+$$
+\text{new\_seq\_len} = \frac{\text{seq\_len} + 2 \times \text{padding} - \text{kernel}}{\text{stride}} + 1
+$$
 
 위치 인코딩의 식은 다음과 같다.
 
@@ -215,6 +251,16 @@ shuffle을 끈 쪽은 30 epoch을 모두 채웠다. 두 경우 모두 `pred_len`
 
 *ETTm1의 학습 손실과 검증 손실. 왼쪽은 shuffle을 끈 경우, 오른쪽은 켠 경우다. 켠 경우에는 3 epoch 이후 검증 손실이 다시 올라간다.*
 
+이 그림과 아래의 두 그림 모두 파란 선이 학습 손실, 빨간 선이 검증 손실이다. 봐야 할 것은 빨간 선의 모양이다. shuffle을 끈 왼쪽에서는 빨간 선이 끝까지 내려가고, 켠 오른쪽에서는 파란 선이 계속 내려가는데도 빨간 선이 초반에 바닥을 찍고 다시 올라간다. 학습 데이터에는 점점 잘 맞는데 처음 보는 데이터에는 점점 안 맞는, 전형적인 과적합의 모양이다. 나머지 두 데이터셋에서도 같았다.
+
+![Weather에서 shuffle 여부에 따른 손실 곡선](../../assets/img/research/sailab/01-transformer-embedding-experiment/shuffle-loss-weather.webp)
+
+*Weather. 왼쪽(shuffle 끔)은 검증 손실이 중간에 한 번 출렁인 뒤 30 epoch까지 내려간다. 오른쪽(켬)은 3 epoch에서 가장 낮고 그 뒤로 계속 올라 13 epoch에서 멈췄다.*
+
+![Exchange Rate에서 shuffle 여부에 따른 손실 곡선](../../assets/img/research/sailab/01-transformer-embedding-experiment/shuffle-loss-exchange.webp)
+
+*Exchange Rate. 왼쪽(끔)은 검증 손실이 초반에 가파르게 내려간 뒤 평평해진다. 오른쪽(켬)은 7 epoch 무렵 가장 낮았다가 다시 올라 17 epoch에서 멈췄다. 두 경우 모두 학습 손실과 검증 손실의 간격이 크다.*
+
 **분석.** 원인을 좁히려고 조건을 하나씩 바꿨다.
 
 | 시도 | 결과 |
@@ -225,11 +271,19 @@ shuffle을 끈 쪽은 30 epoch을 모두 채웠다. 두 경우 모두 `pred_len`
 | shuffle을 켠 채 모델을 키움(인코더 3층, 디코더 3층) | 큰 차이 없음 |
 | shuffle을 켠 채 모델을 줄임(인코더 1층, 디코더 1층, `d_model` 32) | 20 epoch 동안 early stopping 없이 학습됨 |
 
-문제를 일으키는 것은 학습 데이터의 shuffle이었고, 모델을 작게 만들면 증상이 사라졌다. 그래서 데이터의 실제 복잡도에 비해 모델이 너무 커서, 섞인 데이터에서 잘못된 특성을 외워 버린 것이 아닌가 하고 추측했다. 모델 크기와 학습률 스케줄을 몇 차례 더 바꿔 보았지만, ETTm1과 Weather에서 통하는 설정이 Exchange Rate에서는 통하지 않았다.
+![학습 데이터의 shuffle만 껐을 때의 손실 곡선](../../assets/img/research/sailab/01-transformer-embedding-experiment/train-shuffle-off-loss.webp)
+
+*표의 셋째 줄, 학습 데이터의 shuffle만 끄고 20 epoch을 돌린 결과다. 왼쪽부터 ETTm1, Weather, Exchange Rate. 세 데이터셋 모두 검증 손실(빨간 선)이 다시 올라가지 않고 끝까지 내려간다.*
+
+위 그림을 앞의 오른쪽 그림들과 비교하면 차이가 분명하다. 검증 데이터를 섞는지는 결과를 바꾸지 못했고, 학습 데이터를 섞지 않자 빨간 선이 되올라가는 현상이 사라졌다. 문제를 일으키는 것은 학습 데이터의 shuffle이었고, 모델을 작게 만들면 증상이 사라졌다. 그래서 데이터의 실제 복잡도에 비해 모델이 너무 커서, 섞인 데이터에서 잘못된 특성을 외워 버린 것이 아닌가 하고 추측했다. 모델 크기와 학습률 스케줄을 몇 차례 더 바꿔 보았지만, ETTm1과 Weather에서 통하는 설정이 Exchange Rate에서는 통하지 않았다.
 
 이 시기의 로그에는 30 epoch 무렵 학습률이 `0.0000000`으로 찍혀 있다. 학습률 스케줄이 CARD 모델용 설정으로 잡혀 있었다는 것을 뒤늦게 확인했고, 에폭마다 5%씩 줄이는 방식으로 바꾸자 이전보다 결과가 나아졌다. shuffle에서 본 현상에도 이 스케줄이 영향을 주었을 수 있다.
 
 **해결.** 원인을 끝까지 밝히지 못했다. 이 실험의 목적은 임베딩 비교이지 shuffle이 아니므로, shuffle은 끄고 진행하기로 했다. 풀지 못한 질문으로 남겼다.
+
+![shuffle을 끄고 처음 설정으로 다시 돌린 손실 곡선](../../assets/img/research/sailab/01-transformer-embedding-experiment/shuffle-off-rerun-loss.webp)
+
+*shuffle을 끄고 처음의 큰 모델 설정으로 돌아가 30 epoch을 돌린 결과다. 왼쪽부터 ETTm1, Weather, Exchange Rate. Weather에서 중간에 한 번 출렁이는 것을 빼면 검증 손실이 끝까지 내려간다.*
 
 ### 4.6 1차 파일럿에서 얻은 것
 
@@ -406,34 +460,106 @@ DSAttention은 고치다 만 상태로 두었고, 본 실험에서는 쓰지 않
 
 ### Attention map으로 본 차이
 
-Exchange Rate, `pred_len` 96에서 같은 조건으로 저장한 attention map을 비교했다. 세로축이 query, 가로축이 key다. 값이 0인 어두운 칸이 무작위로 흩어져 있는 것은, 이 코드의 FullAttention이 softmax 뒤에 dropout을 적용한 값을 돌려주고 그것을 학습 중에 저장했기 때문으로 보인다. 따라서 봐야 할 것은 밝은 칸이 어디에 모이는가이다.
+Exchange Rate, `pred_len` 96에서 같은 조건으로 저장한 attention map을 비교했다. 그림 하나에는 작은 map이 9장 들어 있다. 학습의 처음, 중간, 끝 시점에서 각각 배치 세 개를 뽑은 것이다(6절). map 하나에서 세로축은 query, 가로축은 key다. 한 칸이 밝을수록 그 query가 그 key를 많이 참고했다는 뜻이다.
+
+읽는 법은 두 가지만 알면 된다.
+
+- **밝은 세로줄**은 거의 모든 query가 같은 key 시점을 참고한다는 뜻이다. 세로줄이 여러 개 넓게 퍼져 있으면 여러 시점을 고르게 보는 것이고, 한두 개만 뚜렷하면 소수의 시점에 집중하는 것이다.
+- **무작위로 흩어진 어두운 칸**(값 0)은 무시한다. 이 코드의 FullAttention이 softmax 뒤에 dropout을 적용한 값을 돌려주고 그것을 학습 중에 저장했기 때문에 생긴 것으로 보인다.
+
+따라서 봐야 할 것은 밝은 칸이 어디에, 얼마나 넓게 모이는가이다. 오른쪽 색 눈금의 최댓값도 그림마다 다르므로 함께 본다. 최댓값이 클수록 일부 칸에 값이 몰려 있다는 뜻이다.
+
+#### 인코더 self-attention
+
+![Positional Embedding의 인코더 attention map](../../assets/img/research/sailab/01-transformer-embedding-experiment/attn-exchange-encoder-positional.webp){ width="640" }
+
+*Positional Embedding, 인코더 self-attention. 밝은 부분이 주로 왼쪽, 곧 입력의 앞쪽 key에 몰려 있다. 아래 세 방식과는 활성화되는 위치가 다르다.*
 
 ![Time Feature Embedding의 인코더 attention map](../../assets/img/research/sailab/01-transformer-embedding-experiment/attn-exchange-encoder-timef.webp){ width="640" }
 
 *Time Feature Embedding, 인코더 self-attention. 밝은 세로줄이 여러 key 위치에 걸쳐 넓게 퍼져 있다.*
 
+![Data Embedding의 인코더 attention map](../../assets/img/research/sailab/01-transformer-embedding-experiment/attn-exchange-encoder-data.webp){ width="640" }
+
+*Data Embedding, 인코더 self-attention. 전체적으로 어둡고, 가운데 부근의 몇몇 key 위치에만 가는 세로줄이 선다.*
+
 ![Data Embedding w/o pos의 인코더 attention map](../../assets/img/research/sailab/01-transformer-embedding-experiment/attn-exchange-encoder-data-wo-pos.webp){ width="640" }
 
-*Data Embedding w/o pos, 인코더 self-attention. 전체적으로 값이 낮고, 소수의 key 위치에만 강한 줄이 선다. 색 눈금의 최댓값도 위 그림의 두 배가 넘는다.*
+*Data Embedding w/o pos, 인코더 self-attention. 전체적으로 값이 낮고, 소수의 key 위치에만 강한 줄이 선다. 색 눈금의 최댓값도 Time Feature 그림의 두 배가 넘는다.*
 
-인코더에서 본 것은 다음과 같다.
+네 그림을 나란히 놓고 본 것은 다음과 같다.
 
-- Time Feature는 활성화가 가장 넓게 퍼진다. 시간 정보를 충분히 받아 여러 시점을 함께 고려하는 것으로 보았다.
-- Data와 Data w/o pos는 서로 비슷한 모양이고, 활성화가 특정 구간에 집중된다.
+- Time Feature는 활성화가 가장 넓게 퍼진다. 그림 전체가 밝고 세로줄이 여러 곳에 선다. 시간 정보를 충분히 받아 여러 시점을 함께 고려하는 것으로 보았다.
+- Data와 Data w/o pos는 서로 비슷한 모양이다. 바탕은 어둡고 활성화가 특정 구간에 집중된다.
 - Positional은 성능이 좋은 방식들과 다른 위치에서 활성화가 나타난다.
 
-디코더의 cross-attention에서는 다음을 보았다.
+#### 디코더 cross-attention
+
+디코더의 cross-attention은 세로축(query)이 144개로 길어진다. 위쪽 48개가 실제 값이 들어 있는 label 구간이고, 아래쪽 96개가 0으로 채워 넣은 예측 구간이다. 가로축(key)은 인코더 출력 96개다.
+
+![Positional Embedding의 디코더 cross-attention map](../../assets/img/research/sailab/01-transformer-embedding-experiment/attn-exchange-decoder-positional.webp){ width="640" }
+
+*Positional Embedding, 디코더 cross-attention. 밝은 점이 곳곳에 있지만 9장 사이에 공통된 모양이 없고, 학습이 진행되어도 뚜렷해지지 않는다.*
 
 ![Time Feature Embedding의 디코더 cross-attention map](../../assets/img/research/sailab/01-transformer-embedding-experiment/attn-exchange-decoder-timef.webp){ width="640" }
 
 *Time Feature Embedding, 디코더 cross-attention. query는 144개(label 48 + 예측 96)다. 강한 활성화는 query의 앞부분, 즉 실제 값이 들어 있는 label 구간에 모여 있다.*
 
+![Data Embedding의 디코더 cross-attention map](../../assets/img/research/sailab/01-transformer-embedding-experiment/attn-exchange-decoder-data.webp){ width="640" }
+
+*Data Embedding, 디코더 cross-attention. 바탕은 어둡고 몇몇 key 위치에 가는 세로줄이 선다.*
+
+![Data Embedding w/o pos의 디코더 cross-attention map](../../assets/img/research/sailab/01-transformer-embedding-experiment/attn-exchange-decoder-data-wo-pos.webp){ width="640" }
+
+*Data Embedding w/o pos, 디코더 cross-attention. 위의 Data Embedding과 거의 같은 모양이고, 세로줄이 서는 위치도 비슷하다.*
+
 - Time Feature는 인코더와 달리 특정 지점에 활성화가 집중되고, 학습이 진행될수록 뚜렷해진다.
 - Data와 Data w/o pos는 여기서도 서로 비슷하고, 특정 지점에서 강하게 활성화된다.
 - Positional은 학습이 진행되어도 뚜렷한 패턴이 생기지 않고 노이즈에 가깝다. 시간 의존성을 잘 잡지 못한 것으로 보았다.
-- ETTh1의 디코더에서는, 특히 Time Feature에서 왼쪽 위 영역의 활성화가 약하게 나타났다. 디코더 입력의 앞 48개만 실제 값이고 나머지는 0으로 채워지기 때문이라고 보았다(2절).
 
-처음에는 Data 계열의 집중된 활성화를 "단기 의존성을 잡는다"고 해석했다. 그런데 다시 보니 이상했다. query가 뒤쪽 시점인데 앞쪽 key에서 활성화가 생긴다면 그것을 단기 의존성이라고 부를 수는 없다. 그래서 해석을 다음과 같이 고쳤다. Time Feature는 풍부한 시간 정보를 받아 고려하는 지점이 많고, Data 계열은 소수의 중요한 지점에 집중한다. 집중하는 지점이 시간적으로 가까운지 먼지는 이 그림만으로 말할 수 없다.
+처음에는 Data 계열의 집중된 활성화를 "단기 의존성을 잡는다"고 해석했다. 그런데 다시 보니 이상했다. 그림에서 세로줄은 위에서 아래까지 이어진다. query가 뒤쪽 시점인데도 앞쪽 key에서 활성화가 생긴다면 그것을 단기 의존성이라고 부를 수는 없다. 그래서 해석을 다음과 같이 고쳤다. Time Feature는 풍부한 시간 정보를 받아 고려하는 지점이 많고, Data 계열은 소수의 중요한 지점에 집중한다. 집중하는 지점이 시간적으로 가까운지 먼지는 이 그림만으로 말할 수 없다.
+
+#### ETTh1에서도 같은가
+
+ETTh1에서도 같은 방식으로 map을 저장했다. 먼저 인코더다.
+
+![ETTh1에서 Positional Embedding의 인코더 attention map](../../assets/img/research/sailab/01-transformer-embedding-experiment/attn-etth1-encoder-positional.webp){ width="640" }
+
+*ETTh1, Positional Embedding, 인코더 self-attention. 어두운 바탕에 세로줄이 몇 개 선다.*
+
+![ETTh1에서 Time Feature Embedding의 인코더 attention map](../../assets/img/research/sailab/01-transformer-embedding-experiment/attn-etth1-encoder-timef.webp){ width="640" }
+
+*ETTh1, Time Feature Embedding, 인코더 self-attention. 네 방식 가운데 가장 밝고 빽빽하다. 색 눈금의 최댓값은 가장 작아, 값이 일부 칸에 몰리지 않고 넓게 나뉘어 있음을 알 수 있다.*
+
+![ETTh1에서 Data Embedding의 인코더 attention map](../../assets/img/research/sailab/01-transformer-embedding-experiment/attn-etth1-encoder-data.webp){ width="640" }
+
+*ETTh1, Data Embedding, 인코더 self-attention. 몇몇 key 위치의 세로줄에 활성화가 모인다.*
+
+![ETTh1에서 Data Embedding w/o pos의 인코더 attention map](../../assets/img/research/sailab/01-transformer-embedding-experiment/attn-etth1-encoder-data-wo-pos.webp){ width="640" }
+
+*ETTh1, Data Embedding w/o pos, 인코더 self-attention. 전체가 어둡고, 밝은 칸은 드문드문 있다.*
+
+Exchange Rate에서 본 것과 같다. Time Feature의 활성화가 빽빽하게 퍼지는 것은 데이터가 바뀌어도 유지되므로, 이 임베딩의 고유한 특성으로 보았다. Data와 Data w/o pos는 여기서도 특정한 활성화에 집중한다.
+
+다음은 디코더다.
+
+![ETTh1에서 Positional Embedding의 디코더 cross-attention map](../../assets/img/research/sailab/01-transformer-embedding-experiment/attn-etth1-decoder-positional.webp){ width="640" }
+
+*ETTh1, Positional Embedding, 디코더 cross-attention. 전체가 어둡고 뚜렷한 줄이 거의 없다.*
+
+![ETTh1에서 Time Feature Embedding의 디코더 cross-attention map](../../assets/img/research/sailab/01-transformer-embedding-experiment/attn-etth1-decoder-timef.webp){ width="640" }
+
+*ETTh1, Time Feature Embedding, 디코더 cross-attention. 네 방식 가운데 가장 밝고, 밝은 줄은 주로 위쪽 query에 모여 있다.*
+
+![ETTh1에서 Data Embedding의 디코더 cross-attention map](../../assets/img/research/sailab/01-transformer-embedding-experiment/attn-etth1-decoder-data.webp){ width="640" }
+
+*ETTh1, Data Embedding, 디코더 cross-attention. 일부 map에서 key 20 부근에 세로줄이 생기는데, 주로 아래쪽 query(예측 구간)에서 나타난다.*
+
+![ETTh1에서 Data Embedding w/o pos의 디코더 cross-attention map](../../assets/img/research/sailab/01-transformer-embedding-experiment/attn-etth1-decoder-data-wo-pos.webp){ width="640" }
+
+*ETTh1, Data Embedding w/o pos, 디코더 cross-attention. Data Embedding과 비슷하게 일부 map에서만 좁은 세로줄이 나타난다.*
+
+ETTh1의 디코더에서는, 특히 Time Feature에서 왼쪽 위 영역의 활성화가 약하게 나타났다. 디코더 입력의 앞 48개만 실제 값이고 나머지는 0으로 채워지기 때문이라고 보았다(2절).
 
 ### 집중을 만드는 것은 무엇인가
 
@@ -442,6 +568,12 @@ Data w/o pos와 Time Feature는 둘 다 값 임베딩에 시간 특성을 더한
 ![값 임베딩을 선형 층으로 바꾼 Data w/o pos의 인코더 attention map](../../assets/img/research/sailab/01-transformer-embedding-experiment/attn-exchange-encoder-wo-pos-linear.webp){ width="640" }
 
 *Data w/o pos에서 값 임베딩을 선형 층으로 바꾼 경우, 인코더 self-attention.*
+
+![값 임베딩을 선형 층으로 바꾼 Data w/o pos의 디코더 cross-attention map](../../assets/img/research/sailab/01-transformer-embedding-experiment/attn-exchange-decoder-wo-pos-linear.webp){ width="640" }
+
+*같은 변형의 디코더 cross-attention. 앞에서 본 Data w/o pos의 디코더 그림보다 바탕이 밝고, 밝은 줄이 위쪽 query(label 구간)의 여러 key 위치에 나뉘어 선다.*
+
+두 그림을 앞의 Data w/o pos 그림(인코더, 디코더)과 비교하면 된다. 바뀐 것은 값 임베딩 하나다.
 
 - 선형 층으로 바꾸자 활성화가 이전보다 넓게 퍼졌다. `Conv1d` 기반의 값 임베딩이 attention을 특정 구간에 집중시키는 효과가 있다고 볼 수 있다.
 - 그래도 Time Feature보다는 여전히 집중된 모양이다. 남은 차이는 dropout뿐이므로, 임베딩의 dropout도 attention을 sparse하게 만드는 쪽으로 작용한다고 보았다.
@@ -515,6 +647,12 @@ Transformer에서 가장 좋았던 Time Feature Embedding으로 두 모델을 �
 ![Informer 인코더의 attention map](../../assets/img/research/sailab/01-transformer-embedding-experiment/attn-etth1-encoder-informer.webp){ width="640" }
 
 *ETTh1, Informer 인코더의 self-attention. 대부분의 query 행은 균일한 값이고 일부 행만 다른 분포를 갖는다. ProbAttention이 선택한 query에서만 attention을 계산하고 나머지 행은 평균으로 채우기 때문이다.*
+
+![Exchange Rate에서 Informer 인코더의 attention map](../../assets/img/research/sailab/01-transformer-embedding-experiment/attn-exchange-encoder-informer.webp){ width="640" }
+
+*Exchange Rate, Informer 인코더의 self-attention. 여기서도 같은 모양이다. 균일한 바탕 위에 선택된 query의 가로줄만 드문드문 선다.*
+
+7절의 Transformer 그림과 비교하면 ProbAttention이 무엇을 바꾸는지 한눈에 보인다. FullAttention에서는 모든 query가 저마다의 분포를 가져 그림 전체가 얼룩덜룩했고, 눈에 띄는 것은 여러 query가 함께 보는 key, 곧 세로줄이었다. ProbAttention에서는 뽑힌 query만 제 분포를 갖고 나머지는 모두 같은 값이라, 눈에 띄는 것이 가로줄로 바뀐다. 위 해석에서 "일부 query만 본다"고 한 것이 이 가로줄이다.
 
 ## 9. 추가 실험
 

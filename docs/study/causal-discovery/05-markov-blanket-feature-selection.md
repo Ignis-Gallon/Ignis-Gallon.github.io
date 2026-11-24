@@ -70,6 +70,18 @@ flowchart TD
 - 자식을 거쳐 아래로 가는 경로도 chain이므로 자식을 조건에 넣으면 차단된다.
 - 그런데 자식은 $T$와 공동 부모(co-parent, spouse) 사이에서 collider다. 자식을 조건에 넣는 순간 $T$와 공동 부모 사이의 경로가 열린다. 그래서 공동 부모까지 조건에 넣어야 한다.
 
+노드가 더 많은 예에서 직접 골라 보면 감이 잡힌다. MMPC 논문의 예시 네트워크다.
+
+![베이지안 네트워크에서 T의 부모·자식 집합과 Markov blanket](../../assets/img/study/causal-discovery/05-markov-blanket-feature-selection/mmpc-pc-and-mb-example.webp){ width="460" }
+
+*가운데의 $T$가 타깃이다. 회색 노드가 $T$의 부모와 자식(PC)이고, 여기에 무늬가 있는 $O$를 더하면 MB가 된다. 출처: MMPC 논문 Figure 1.*
+
+- $U$, $V$, $X$는 $T$로 화살표를 보내는 부모이고, $W$, $Z$는 $T$에서 화살표를 받는 자식이다. 이 다섯이 회색이다.
+- $O$는 $T$와 직접 이어져 있지 않다. 그러나 $T$의 자식 $W$의 또 다른 부모이므로 공동 부모이고, MB에 들어간다.
+- $R$과 $S$는 부모의 부모(조부모), $M$은 자식의 자식(손자)이므로 들어가지 않는다. $Q$도 공동 부모 $O$의 부모일 뿐이다.
+
+$Q$, $R$, $S$, $M$ 넷은 $T$와 무관해서 빠지는 것이 아니다. 회색 노드와 $O$를 알고 나면 더 보탤 정보가 없어서 빠진다.
+
 MB는 d-separation의 관점에서 $T$를 바깥의 변수로부터 차단하는 최소 집합이다. 그리고 이 d-separation 관계를 데이터에서 실제로 확인하는 절차가 조건부 독립성 검정이다. MB를 찾는 알고리즘은 조건부 독립성 검정을 반복해 이 구조를 추정한다.
 
 ## 3. Dependency network와의 차이
@@ -104,7 +116,13 @@ DN은 결합 분포를 명시적으로 학습하지 않는다. 대신 각 노드
 
 "HITON: A Novel Markov Blanket Algorithm for Optimal Variable Selection"(2003)은 분류와 회귀를 위한 변수 선택을 MB 탐색으로 푼다. MB가 주어지면 다른 모든 변수는 $T$를 분류하는 데 불필요해진다는 점에 근거한다. 이전의 방법들은 휴리스틱에 의존해, 표본과 시간이 무한히 주어져도 잘못된 MB를 반환할 수 있었다는 것이 논문의 문제의식이다. 평가는 여러 생의학 데이터에서 이루어졌다.
 
-알고리즘은 세 부분으로 이루어진다.
+논문의 최상위 절차는 두 줄이다.
+
+![HITON 알고리즘의 최상위 의사코드](../../assets/img/study/causal-discovery/05-markov-blanket-feature-selection/hiton-pseudocode.webp){ width="500" }
+
+*입력은 데이터 $D$, 타깃 $T$, 분류기를 만드는 알고리즘 $A$다. 첫 줄에서 HITON-MB로 Markov blanket을 찾고, 둘째 줄에서 wrapper로 불필요한 변수를 더 덜어 낸다. 출처: HITON 논문의 의사코드.*
+
+첫 줄의 HITON-MB가 내부에서 HITON-PC를 부르므로, 알고리즘은 세 부분으로 이루어진다.
 
 1. **HITON-PC.** $T$의 부모와 자식(parents and children, PC)을 찾는다. 후보 집합을 두고 변수를 하나씩 넣어 가며, 어떤 조건 집합에서 $T$와 독립으로 판정되는 변수는 제외한다.
 2. **HITON-MB.** $T$의 PC를 찾은 뒤, 그 PC에 속한 변수들 각각의 PC를 다시 찾는다. 이렇게 모은 집합은 MB의 상위 집합(superset)이고, 여기서 조건부 독립성 검정으로 거짓 양성을 제거한다.
@@ -115,7 +133,7 @@ DN은 결합 분포를 명시적으로 학습하지 않는다. 대신 각 노드
 - 결합 분포가 어떤 BN에 faithful하다.
 - 학습 표본이 통계적 검정을 신뢰할 수 있을 만큼 충분하다.
 
-2번을 읽으며 "공동 부모를 직접 찾지 않는데 왜 MB의 상위 집합이 되는가"가 궁금했다. $T$의 자식의 PC에는 그 자식의 다른 부모, 곧 $T$의 공동 부모가 들어 있다. 그래서 PC의 PC를 모으면 공동 부모가 모두 포함된다. 대신 조부모나 손자처럼 MB가 아닌 변수도 함께 들어오므로 검정으로 걸러 내는 단계가 필요하다.
+2번을 읽으며 "공동 부모를 직접 찾지 않는데 왜 MB의 상위 집합이 되는가"가 궁금했다. $T$의 자식의 PC에는 그 자식의 다른 부모, 곧 $T$의 공동 부모가 들어 있다. 그래서 PC의 PC를 모으면 공동 부모가 모두 포함된다. 대신 조부모나 손자처럼 MB가 아닌 변수도 함께 들어오므로 검정으로 걸러 내는 단계가 필요하다. 2절의 예시 그림으로 보면, $T$의 자식 $W$의 PC를 구할 때 공동 부모 $O$가 들어오지만 손자 $M$도 함께 들어오고, 부모 $U$의 PC를 구할 때는 조부모 $R$이 들어온다. $M$과 $R$을 걸러 내는 것이 검정 단계의 일이다.
 
 ## 6. MMPC와 MMMB
 
@@ -164,7 +182,13 @@ MB는 정의상 타깃의 직접적인 이웃만 담는다. $I \to X \to Y$에�
 
 MB의 핵심 성질은 $P(Y \mid \text{나머지}) = P(Y \mid \text{MB}(Y))$다. MB는 관측 분포에서 최적이면서 최소인 예측 집합이다. 그러나 의사결정에서는 관측 데이터만 가진 채로, $X$에 개입한 뒤의 결과 분포 $P(Y \mid do(X))$를 알고 싶은 경우가 많다. 관측 분포에서의 MB는 개입 이후의 예측을 위한 집합이 아니다.
 
-이상적으로는 개입 이후의 그래프에서 $Y$의 MB를 쓰고 싶다. 그러나 잠재 교란 변수가 있으면 그 집합 $Z$에 대한 $P(Y \mid do(X), Z)$를 관측 데이터에서 식별하지 못할 수 있다. 논문은 관측 데이터로부터 식별할 수 있으면서 개입 이후의 예측에 가장 좋은 최소 변수 집합을 causal Markov boundary라고 정의한다. 논문의 예에서는 관측상의 MB가 $\{X, A, B\}$이지만 $P(Y \mid do(X), A, B)$가 식별되지 않아 $\{X, B\}$가 causal Markov boundary가 된다. 실험 데이터가 있더라도 표본이 적은 경우가 많으므로, 많은 관측 데이터와 적은 실험 데이터를 결합해 변수를 고르는 방법을 제안한다. 시계열을 다루는 논문은 아니다.
+이상적으로는 개입 이후의 그래프에서 $Y$의 MB를 쓰고 싶다. 그러나 잠재 교란 변수가 있으면 그 집합 $Z$에 대한 $P(Y \mid do(X), Z)$를 관측 데이터에서 식별하지 못할 수 있다. 논문은 관측 데이터로부터 식별할 수 있으면서 개입 이후의 예측에 가장 좋은 최소 변수 집합을 causal Markov boundary라고 정의한다.
+
+![causal Markov boundary를 설명하는 예시 그래프](../../assets/img/study/causal-discovery/05-markov-blanket-feature-selection/causal-markov-boundary-example.webp){ width="380" }
+
+*$X \to Y$가 알고 싶은 개입의 효과다. 양쪽에 화살촉이 있는 간선 세 개($A \leftrightarrow B$, $A \leftrightarrow X$, $B \leftrightarrow Y$)는 관측되지 않은 공통 원인을 뜻한다. 출처: "Causal Markov Boundaries" Figure 1.*
+
+이 그래프에서 $X$에 개입한 뒤의 $Y$의 MB는 $\{X, A, B\}$다. 그런데 셋을 모두 조건에 넣은 $P(Y \mid do(X), A, B)$는 관측 분포에서 식별되지 않는다. $A$나 $B$ 하나만 넣은 $P(Y \mid do(X), A)$와 $P(Y \mid do(X), B)$는 식별된다. 그래서 가장 많은 것을 알려 주는 $\{X, A, B\}$ 대신, 식별되는 것 가운데 가장 좋은 $\{X, B\}$가 causal Markov boundary가 된다. 실험 데이터가 있더라도 표본이 적은 경우가 많으므로, 많은 관측 데이터와 적은 실험 데이터를 결합해 변수를 고르는 방법을 제안한다. 시계열을 다루는 논문은 아니다.
 
 ### Necessary and Sufficient Conditions for Causal Feature Selection in Time Series with Latent Common Causes (ICML)
 

@@ -11,7 +11,7 @@ tags: [Foundation Model, 시계열 예측, LLM, Fine-tuning, Time-LLM]
 작성일 2024-11-26
 { .post-date }
 
-Foundation 모델이 무엇이고 시계열 분야에서는 어떤 방향으로 연구되고 있는지를 파악하려고 읽은 자료를 짧게 요약한 글이다. 개념과 분류는 LG AI연구원 블로그의 글 두 편에서, Time-LLM에 관한 내용은 논문 리뷰 영상에서 가져왔다. 이 글의 분류 체계와 예시는 그 자료들의 것이고, 여기에는 내가 이해한 골자와 읽으며 든 생각만 적는다. 자세한 설명과 그림은 글 끝의 원문을 보는 것이 좋다.
+Foundation 모델이 무엇이고 시계열 분야에서는 어떤 방향으로 연구되고 있는지를 파악하려고 읽은 자료를 짧게 요약한 글이다. 개념과 분류는 LG AI연구원 블로그의 글 두 편에서, Time-LLM에 관한 내용은 논문 리뷰 영상에서 가져왔다. 이 글의 분류 체계와 예시, 그림은 그 자료들의 것이고, 여기에는 내가 이해한 골자와 읽으며 든 생각만 적는다. 자세한 설명은 글 끝의 원문을 보는 것이 좋다.
 
 ## Foundation 모델이란
 
@@ -25,18 +25,13 @@ Foundation 모델은 아주 큰 데이터로 사전 학습(pre-training)해 두�
 
 자연어와 비전에서는 거대 모델을 가져와 fine-tuning해서 쓰는 방식이 일찍 자리 잡았다. 시계열은 그만큼 큰 데이터셋을 만들기 어려워서 그런 모델을 갖지 못했다. 최근에는 두 방향에서 이 간극을 메우려는 연구가 이어지고 있다. 하나는 이미 있는 거대 언어 모델(LLM)의 일반화 능력을 빌려 오는 것이고, 다른 하나는 거대한 시계열 데이터를 모아 시계열 전용 모델을 처음부터 학습시키는 것이다.
 
-```mermaid
-flowchart TD
-    A["시계열 foundation 모델"] --> B["LLM을 활용하는 방법"]
-    A --> C["시계열 전용 대형 모델을 처음부터 학습하는 방법"]
-    B --> B1["Without Adaptation"]
-    B --> B2["Adapt LLM"]
-    B --> B3["Adapt to LLM"]
-```
+![시계열 foundation 모델의 분류](../../assets/img/study/ai-fundamentals/05-time-series-foundation-models/taxonomy.webp)
+
+위쪽 가지가 LLM을 빌려 쓰는 방법이고 다시 셋으로 갈린다. 아래쪽 가지가 시계열 전용 대형 모델을 직접 만드는 방법이고, 데이터 수집과 모델링이 두 과제다. 출처: LG AI연구원 블로그 그림 1
 
 ### LLM을 활용하는 세 가지 방법
 
-세 갈래는 "LLM이 시계열에 대해 이미 얼마나 알고 있다고 보는가"에 대한 가정이 다르다.
+세 갈래는 "LLM이 시계열에 대해 이미 얼마나 알고 있다고 보는가"에 대한 가정이 다르다. 이미 안다고 보면 묻기만 하면 되고(Without Adaptation), 모른다고 보면 LLM을 가르쳐야 하며(Adapt LLM), 말로 바꿔 주면 안다고 보면 통역만 붙이면 된다(Adapt to LLM).
 
 | 방법 | 가정 | LLM의 학습 | 핵심 질문 | 예시 |
 |---|---|---|---|---|
@@ -46,15 +41,43 @@ flowchart TD
 
 각 갈래에서 기억해 둔 점은 다음과 같다.
 
-- **Without Adaptation.** 시계열을 숫자가 들어간 문장으로 바꿔 LLM에 묻는다. 여기서 숫자의 토큰화가 문제가 된다. Tokenizer가 숫자를 일정한 규칙 없이 쪼개기 때문에(어떤 수는 토큰 하나, 바로 옆의 수는 토큰 둘이 되는 식) LLM이 수를 제대로 이해하는지 의문이 생긴다. LLMTime은 숫자를 자릿수(digit) 단위로 토큰화하는 등의 처리로 이를 개선했고, 추가 학습 없이도 예측 성능이 괜찮게 나온다는 것을 보였다.
+**Without Adaptation.** 시계열을 숫자가 들어간 문장으로 바꿔 LLM에 묻는다.
+
+![시계열 값을 문장으로 써서 묻고 문장으로 답을 받는 PromptCast의 입출력](../../assets/img/study/ai-fundamentals/05-time-series-foundation-models/promptcast.webp)
+
+왼쪽 입력을 보면 관측값 32, 23, 20이 문장 안에 그대로 적혀 있고, 다음 날의 값을 질문으로 묻는다. 오른쪽 출력도 숫자가 든 문장이다. 출처: LG AI연구원 블로그 그림 2
+
+여기서 숫자의 토큰화가 문제가 된다. Tokenizer가 숫자를 일정한 규칙 없이 쪼개기 때문에 LLM이 수를 제대로 이해하는지 의문이 생긴다. 블로그가 든 예로는 480은 토큰 하나가 되는데 바로 옆의 481은 48과 1의 토큰 둘이 된다. LLMTime은 숫자를 자릿수(digit) 단위로 토큰화하는 등의 처리로 이를 개선했고, 추가 학습 없이도 예측 성능이 괜찮게 나온다는 것을 보였다.
+
+**Adapt LLM과 Adapt to LLM.** 나머지 두 방법은 구조가 같고, 어디를 학습시키느냐만 다르다.
+
+![Adapt LLM과 Adapt to LLM에서 학습되는 부분과 고정되는 부분](../../assets/img/study/ai-fundamentals/05-time-series-foundation-models/adapt-llm-vs-adapt-to-llm.webp)
+
+불꽃이 학습되는 부분(fine-tuned), 눈송이가 고정된 부분(frozen)이다. 두 줄 모두 LLM의 앞뒤에 초록색 adaptation layer가 붙어 있고 거기에는 불꽃이 있다. 가운데 LLM 아래를 보면 윗줄에는 불꽃과 눈송이가 함께 있고(일부 또는 전체를 학습), 아랫줄에는 눈송이만 있다. 출처: LG AI연구원 블로그 그림 3
+
 - **Adapt LLM.** OFA는 시계열을 patch로 잘라 토큰으로 만들고 LLM의 앞뒤에 linear layer를 붙였다. LLM의 파라미터는 일부만 학습시킨다. 출력 layer만 바꾸면 회귀, 분류 등 여러 시계열 task에 쓸 수 있다. TEMPO는 여기에 시계열 분해와 LoRA를 더했고, LLM4TS는 fine-tuning을 두 단계(시계열 전반에 익숙해지는 단계와 예측 같은 특정 task에 맞추는 단계)로 나누었다.
+
+    ![OFA의 구조와 Transformer block 안에서 학습되는 부분](../../assets/img/study/ai-fundamentals/05-time-series-foundation-models/ofa-architecture.webp)
+
+    아래에서 위로 읽는다. 시계열을 정규화하고 patch로 자른 뒤(instance norm + patching) embedding해서 사전 학습된 Transformer block에 넣고, 맨 위의 output linear layer가 답을 낸다. 오른쪽 확대 그림에서 "일부만 학습"의 뜻을 볼 수 있다. 사전 학습된 부분 가운데 multi-head attention과 feed forward는 고정하고(눈송이), layer norm과 positional embedding만 학습한다(불꽃). 출처: LG AI연구원 블로그 그림 4
+
 - **Adapt to LLM.** 구조는 Adapt LLM과 비슷하지만 LLM을 전혀 학습시키지 않는다는 점이 분명한 차이다. 양쪽의 adaptation layer가 시계열과 LLM의 표현 사이를 오가는 변환을 맡고, 가운데의 LLM은 변환된 입력을 받아 task를 수행한다.
+
+    ![시계열을 문장으로 바꾸고, 고정된 LLM이 답하고, 답을 다시 시계열로 바꾸는 과정](../../assets/img/study/ai-fundamentals/05-time-series-foundation-models/adapt-to-llm-intuition.webp){ width="520" }
+
+    아래에서 위로 읽는다. 첫 번째 빨간 화살표(학습되는 부분)가 시계열을 "내려갔다가 작은 등락과 함께 오르는 중"이라는 말로 바꾸고, 파란 화살표(고정된 LLM)가 "내려갈 것"이라고 답하며, 두 번째 빨간 화살표가 그 답을 다시 시계열로 바꾼다. 양쪽의 빨간 화살표가 통역이고 LLM은 자기가 아는 말로만 일한다. 출처: LG AI연구원 블로그 그림 5
 
 ### 시계열 전용 모델을 처음부터 학습하는 방법
 
 LLM에 기대지 않고 시계열 데이터만으로 거대 모델을 만든다. 이 방향의 연구에서 중요한 것은 두 가지다. 첫째는 일반화 능력을 얻을 만큼 큰 데이터를 모으는 일이다. 둘째는 관측 주기(frequency)나 도메인이 서로 다른, 이질적인(heterogeneous) 시계열들을 하나의 모델이 받아들일 수 있게 하는 일이다.
 
-대표적인 모델로 TimeGPT, TimesFM, Moirai가 있다. 모두 백억 개가 넘는 시점으로 이루어진 데이터를 모아 학습했고, 1억 개 이상의 파라미터를 가진 Transformer 계열의 구조를 쓴다. TimesFM은 Google Trends, Wikipedia 페이지뷰처럼 구하기 쉬운 데이터와 합성 데이터로 큰 데이터셋을 만들었다는 점이 눈에 띈다. Moirai는 관측 주기에 따라 patch의 크기를 다르게 쓰고, 학습 때 변수를 무작위로 뽑아 함께 넣는 방식으로 다변량 문제를 다룬다.
+대표적인 모델로 TimeGPT, TimesFM, Moirai가 있다.
+
+![TimeGPT, TimesFM, Moirai의 데이터셋 크기, 모델 크기, 주기, 공개 여부, 데이터 도메인](../../assets/img/study/ai-fundamentals/05-time-series-foundation-models/timegpt-timesfm-moirai.webp)
+
+첫 두 행이 규모다. 데이터셋은 100B, 100B, 27B개의 시점이고, 모델은 TimesFM이 200M, Moirai가 300M개의 파라미터다(TimeGPT는 공개되지 않았다). 맨 아래 행에서 TimesFM의 데이터 출처가 다른 둘과 다르다는 것도 보인다. 출처: LG AI연구원 블로그 그림 6
+
+표에서 보듯 모두 백억 개가 넘는 시점으로 이루어진 데이터를 모아 학습했고, 1억 개 이상의 파라미터를 가진 Transformer 계열의 구조를 쓴다. TimesFM은 Google Trends, Wikipedia 페이지뷰처럼 구하기 쉬운 데이터와 합성 데이터로 큰 데이터셋을 만들었다는 점이 눈에 띈다. Moirai는 관측 주기에 따라 patch의 크기를 다르게 쓰고, 학습 때 변수를 무작위로 뽑아 함께 넣는 방식으로 다변량 문제를 다룬다.
 
 구조는 모델마다 다르다. TimeGPT는 encoder-decoder, TimesFM은 decoder-only이고, Moirai는 논문에서 masked encoder 구조라고 설명한다.
 

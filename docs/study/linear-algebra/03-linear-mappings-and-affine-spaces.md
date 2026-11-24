@@ -40,9 +40,15 @@ $$
 2. **Surjective(전사)**: $\Phi(\mathcal{V}) = \mathcal{W}$. $\mathcal{W}$의 모든 원소가 $\Phi$를 통해 $\mathcal{V}$의 어떤 원소로부터 도달된다.
 3. **Bijective(전단사, 일대일대응)**: injective이면서 surjective다.
 
+![injective, surjective, bijective mapping을 화살표로 나타낸 그림](../../assets/img/study/linear-algebra/03-linear-mappings-and-affine-spaces/injective-surjective-bijective.webp)
+
+*왼쪽 타원이 $\mathcal{V}$, 오른쪽 타원이 $\mathcal{W}$이고 화살표가 mapping이다. 오른쪽 타원의 점에 화살표가 몇 개씩 닿는지를 보면 세 경우가 구분된다.*
+
+위 그림에서 오른쪽 점들에 닿는 화살표의 수를 세어 보면 된다. Injection(왼쪽 위)에서는 오른쪽의 어느 점에도 화살표가 둘 이상 닿지 않는다. 대신 화살표가 닿지 않는 점이 남아 있을 수 있다. Surjection(오른쪽 위)에서는 오른쪽의 모든 점에 화살표가 하나 이상 닿는다. 대신 한 점에 화살표가 여러 개 모일 수 있다. Bijection(아래)에서는 오른쪽의 모든 점에 화살표가 정확히 하나씩 닿는다.
+
 실수 함수의 그래프로 떠올리면, injective는 x축에 평행한 선을 어디에 그어도 그래프와 많아야 한 점에서 만난다는 것이고, surjective는 공역 안의 어느 높이에 x축과 평행한 선을 그어도 그래프와 만나는 점이 반드시 있다는 것이다.
 
-$\Phi$가 bijective하면 완전히 되돌릴 수 있다. $\Psi \circ \Phi(x) = x$를 만족하는 mapping $\Psi : \mathcal{W} \to \mathcal{V}$가 존재하며, 이를 $\Phi$의 inverse mapping이라 하고 $\Phi^{-1}$로 쓴다.
+$\Phi$가 bijective하면 완전히 되돌릴 수 있다. 그림의 Bijection에서 화살표의 방향을 모두 뒤집어도 여전히 mapping이 되는 것과 같다. $\Psi \circ \Phi(x) = x$를 만족하는 mapping $\Psi : \mathcal{W} \to \mathcal{V}$가 존재하며, 이를 $\Phi$의 inverse mapping이라 하고 $\Phi^{-1}$로 쓴다.
 
 ### 선형 사상의 종류
 
@@ -119,13 +125,19 @@ $$
 \tilde{A}_\Phi = T^{-1}A_\Phi S
 $$
 
-즉 $A_\Phi$와 양쪽 basis의 관계를 알면, 새 basis에서의 transformation matrix $\tilde{A}_\Phi$를 $A_\Phi$로 표현할 수 있다. 책의 그림은 이 식을 경로로 보여 준다. $\tilde{B}$의 좌표에서 출발해 $\tilde{C}$의 좌표로 바로 가는 대신, $B$와 $C$를 거쳐 돌아가는 것이다.
+즉 $A_\Phi$와 양쪽 basis의 관계를 알면, 새 basis에서의 transformation matrix $\tilde{A}_\Phi$를 $A_\Phi$로 표현할 수 있다. 식만 보면 왜 이 순서로 곱하는지 잘 보이지 않는데, 책의 그림은 이 식을 길 찾기로 보여 준다.
+
+![basis를 바꿀 때 transformation matrix 사이의 관계를 나타낸 도식](../../assets/img/study/linear-algebra/03-linear-mappings-and-affine-spaces/basis-change-diagram.webp)
+
+*윗줄은 vector space 사이의 mapping $\Phi$, 아래의 사각형은 같은 mapping을 좌표로 본 것이다. 사각형의 윗변이 원래 basis($B \to C$, 행렬 $A_\Phi$), 아랫변이 새 basis($\tilde{B} \to \tilde{C}$, 행렬 $\tilde{A}_\Phi$)이고, 세로 화살표가 basis를 바꾸는 $S$와 $T$다. 출처: Mathematics for Machine Learning 2.7.2절의 그림*
+
+구하려는 것은 사각형의 아랫변, 곧 $\tilde{B}$의 좌표를 $\tilde{C}$의 좌표로 바로 보내는 $\tilde{A}_\Phi$다. 아는 것은 윗변의 $A_\Phi$다. 그러니 아랫변을 직접 가는 대신 윗변으로 돌아가면 된다. 왼쪽 변을 따라 $S$로 올라가고($\tilde{B} \to B$), 윗변을 따라 $A_\Phi$로 건너간 뒤($B \to C$), 오른쪽 변으로 내려온다($C \to \tilde{C}$). 그런데 왼쪽 그림에서 오른쪽 변의 $T$는 위를 향한 화살표($\tilde{C} \to C$)라서 내려오는 데 쓸 수 없다. 오른쪽 그림은 이 화살표를 뒤집어 $T^{-1}$로 바꾼 것이고, 이제 세 화살표가 한 방향으로 이어진다.
 
 $$
 \tilde{B} \ \xrightarrow{\ S\ } \ B \ \xrightarrow{\ A_\Phi\ } \ C \ \xrightarrow{\ T^{-1}\ } \ \tilde{C}
 $$
 
-mapping의 합성으로 쓰면 다음과 같다. $\Phi_{CB}$는 $B$의 좌표를 $C$의 좌표로 보내는 mapping이고, $\Psi_{B\tilde{B}}$와 $\Xi_{C\tilde{C}}$는 각각 $S$와 $T$에 해당한다.
+vector에 먼저 적용되는 행렬이 오른쪽에 오므로, 이 경로를 행렬의 곱으로 적은 것이 $T^{-1}A_\Phi S$다. mapping의 합성으로 쓰면 다음과 같다. $\Phi_{CB}$는 $B$의 좌표를 $C$의 좌표로 보내는 mapping이고, $\Psi_{B\tilde{B}}$와 $\Xi_{C\tilde{C}}$는 각각 $S$와 $T$에 해당한다.
 
 $$
 \Phi_{\tilde{C}\tilde{B}} = \Xi_{\tilde{C}C} \circ \Phi_{CB} \circ \Psi_{B\tilde{B}} = \Xi_{C\tilde{C}}^{-1} \circ \Phi_{CB} \circ \Psi_{B\tilde{B}}
@@ -150,7 +162,11 @@ $$
 \text{Im}(\Phi) := \{w \in W \mid \exists v \in V : \Phi(v) = w\}
 $$
 
-책의 그림은 $V$ 안의 $\ker(\Phi)$ 전체가 $W$의 한 점 $\mathbf{0}_W$로 모이고, $V$ 전체는 $W$의 일부인 $\text{Im}(\Phi)$로 옮겨지는 모습을 보여 준다.
+![linear mapping의 kernel과 image](../../assets/img/study/linear-algebra/03-linear-mappings-and-affine-spaces/kernel-and-image.webp)
+
+*왼쪽 타원이 $V$, 오른쪽 타원이 $W$다. 점선은 어디가 어디로 옮겨지는지를 잇는다. 출처: Mathematics for Machine Learning 2.7.3절의 그림*
+
+그림에서 점선 두 쌍을 따라가 보면 된다. 안쪽 점선은 $V$ 안의 $\ker(\Phi)$에서 나와 $W$의 한 점 $\mathbf{0}_W$로 모인다. kernel에 속한 vector는 서로 달라도 모두 같은 곳, 영벡터로 간다는 뜻이다. 바깥쪽 점선은 $V$ 전체에서 나와 $W$ 안의 작은 타원 $\text{Im}(\Phi)$에 닿는다. $V$ 전체를 옮겨도 $W$를 다 채우지 못하고 그 일부에만 도달할 수 있다는 뜻이다. kernel은 출발하는 쪽 $V$에, image는 도착하는 쪽 $W$에 있다는 점도 그림에서 바로 확인된다.
 
 - $\Phi(\mathbf{0}_V) = \mathbf{0}_W$는 항상 성립하므로 $\mathbf{0}_V \in \ker(\Phi)$다. 즉 null space는 비어 있는 일이 없다.
 - $\text{Im}(\Phi) \subseteq W$는 $W$의 subspace이고, $\ker(\Phi) \subseteq V$는 $V$의 subspace다.

@@ -124,19 +124,23 @@ l1_cycle = series - l1_trend  # 원본에서 추세를 뺀 성분
 
 ### 매끄러운 추세
 
+아래 그림들은 모두 같은 방식으로 읽는다. 회색이 노이즈가 섞인 관측값이고, 검은 점선이 숨겨 둔 정답(실제 추세)이다. 빨간 선이 필터가 찾아낸 추세이므로, 빨간 선이 검은 점선에 얼마나 붙어 있는지를 보면 된다. 아래쪽에서 0 주위를 오가는 파란 선은 관측값에서 추세를 뺀 나머지다.
+
 ![HP filter, 매끄러운 추세](../../assets/img/research/sailab/04-hp-vs-l1-trend-filtering/hp-smooth-trend.webp)
 
 *HP filter($\lambda = 1600$). 회색은 관측값, 검은 점선은 실제 추세, 빨간 선은 추출한 추세, 파란 선은 원본에서 추세를 뺀 성분이다.*
 
 ![L1 trend filtering, 매끄러운 추세](../../assets/img/research/sailab/04-hp-vs-l1-trend-filtering/l1-smooth-trend.webp)
 
-*L1 trend filtering($\lambda = 1$).*
+*L1 trend filtering($\lambda = 1$). 빨간 선이 곡선이 아니라 자로 그은 선분을 이어 붙인 꺾은선이다.*
 
-HP filter는 매끄러운 추세만 뽑아낸다. L1 trend filtering은 같은 변동을 직선 조각으로 근사한다. 다만 이 그림에서는 L1 추세가 노이즈를 따라 여러 번 꺾이는 모습도 함께 보인다. 이 점은 4절에서 한계로 다시 다룬다.
+두 그림의 빨간 선을 비교하면 1절에서 식으로 본 차이가 그대로 보인다. HP filter의 빨간 선은 어디에도 모서리가 없는 곡선이고, 매끄러운 추세만 뽑아낸다. L1 trend filtering은 같은 변동을 직선 조각으로 근사해, 군데군데 모서리(kink)가 있다. 다만 이 그림에서는 L1 추세가 노이즈를 따라 여러 번 꺾이는 모습도 함께 보인다. 이 점은 4절에서 한계로 다시 다룬다.
 
 실제 추세가 이렇게 매끄럽기만 한 경우는 드물 것이라고 생각해, 추세에 급변을 넣은 데이터로 넘어갔다.
 
 ### 급변이 있는 추세
+
+이번에는 검은 점선이 $t = 50$에서 계단처럼 뛰어올랐다가 $t = 70$에서 내려오고, $t = 120$과 $140$에서 한 번 더 내려갔다 올라온다. 볼 것은 이 계단의 모서리에서 빨간 선이 어떻게 움직이는가이다.
 
 ![HP filter, 급변이 있는 추세, λ=1600](../../assets/img/research/sailab/04-hp-vs-l1-trend-filtering/hp-irregular-lambda-1600.webp)
 
@@ -144,11 +148,15 @@ HP filter는 매끄러운 추세만 뽑아낸다. L1 trend filtering은 같은 �
 
 ![HP filter, 급변이 있는 추세, λ=100](../../assets/img/research/sailab/04-hp-vs-l1-trend-filtering/hp-irregular-lambda-100.webp)
 
-*HP filter($\lambda = 100$).*
+*HP filter($\lambda = 100$). 빨간 선이 위 그림보다 실제 추세에 가까워졌지만, 계단의 모서리는 여전히 둥근 언덕으로 바뀌어 있다.*
 
 ![L1 trend filtering, 급변이 있는 추세](../../assets/img/research/sailab/04-hp-vs-l1-trend-filtering/l1-irregular-lambda-1.webp)
 
-*L1 trend filtering($\lambda = 1$).*
+*L1 trend filtering($\lambda = 1$). $t = 50$ 부근에서 빨간 선이 한 번 꺾인 뒤 가파른 직선으로 새 수준까지 올라간다.*
+
+![L1 trend filtering, 급변이 있는 추세, 다른 노이즈](../../assets/img/research/sailab/04-hp-vs-l1-trend-filtering/l1-irregular-another-run.webp)
+
+*같은 설정($\lambda = 1$)으로 한 번 더 돌린 결과. 시드를 고정하지 않아 노이즈가 다르다. 여기서도 급변 구간의 앞뒤에서 빨간 선이 꺾이며 수준 변화를 따라간다.*
 
 관찰한 내용은 다음과 같다.
 
@@ -188,13 +196,15 @@ series = true_trend + noise
 # series[100:100+int(n/2)] += np.random.normal(scale=0.5, size=int(n/2))
 ```
 
-필터를 적용하는 부분은 실험 1과 같다. 실험에 따라 추세에 사인파와 노이즈를 넣은 변형, 뒤쪽 절반의 노이즈를 키운 변형을 썼다. 아래 그림에서 파란 선이 실제 추세, 빨간 선이 L1 trend filtering의 결과다.
+필터를 적용하는 부분은 실험 1과 같다. 실험에 따라 추세에 사인파와 노이즈를 넣은 변형, 뒤쪽 절반의 노이즈를 키운 변형을 썼다. 아래 그림에서는 색이 실험 1과 다르다. 파란 선이 실제 추세, 빨간 선이 L1 trend filtering의 결과, 회색이 관측값이다. 빨간 선이 파란 선에서 벗어나는 곳이 곧 필터가 틀린 곳이다.
 
 ### 한계 1. 노이즈를 kink로 판단한다
 
 ![노이즈를 kink로 판단하는 경우](../../assets/img/research/sailab/04-hp-vs-l1-trend-filtering/l1-noise-as-kink.webp)
 
 *$\lambda = 0.1$. 확대한 두 부분에서 빨간 선(L1)이 실제 추세(파란 선)에는 없는 꺾임을 만든다.*
+
+확대한 상자 안을 보면 빨간 선이 파란 선에는 없는 자리에서 꺾인다. 회색 관측값이 그 자리에서 튄 것을 따라간 것이다.
 
 L1 trend filtering은 살아남은 kink를 abrupt change로 본다. 그런데 최적화 과정에서 노이즈가 완전히 걸러지지 않으면, 노이즈 때문에 생긴 꺾임도 kink로 남는다. 확대한 부분이 그런 경우다. 이는 L1 trend filtering이 찾아낸 abrupt change가 실제로는 노이즈일 수 있다는 뜻이다.
 
@@ -204,11 +214,13 @@ L1 trend filtering은 살아남은 kink를 abrupt change로 본다. 그런데 �
 
 ![λ=0.01](../../assets/img/research/sailab/04-hp-vs-l1-trend-filtering/l1-lambda-0-01.webp)
 
-*$\lambda = 0.01$. 추세가 관측값과 거의 같아진다.*
+*$\lambda = 0.01$. 빨간 선이 회색 관측값의 잔떨림까지 그대로 따라가 추세가 관측값과 거의 같아진다.*
 
 ![λ=0.5](../../assets/img/research/sailab/04-hp-vs-l1-trend-filtering/l1-lambda-0-5.webp)
 
-*$\lambda = 0.5$. 추세가 지나치게 매끄러워져 급변 구간의 모서리가 뭉개진다.*
+*$\lambda = 0.5$. 빨간 선의 잔떨림은 사라졌지만 추세가 지나치게 매끄러워져, 파란 선의 작은 굴곡과 급변 구간의 모서리가 뭉개진다.*
+
+두 그림은 $\lambda$라는 손잡이를 양쪽 끝으로 돌린 모습이다.
 
 - $\lambda$가 너무 작으면 smoothness 항의 영향이 거의 없어져 추세가 원본과 같아진다. 근접성은 높지만 노이즈를 걸러낸다는 trend filtering의 목적이 사라진다. overfitting이다.
 - $\lambda$가 너무 크면 sparsity가 지나치게 강해져 추세가 과도하게 smoothing되고, abrupt change를 제대로 반영하지 못한다. underfitting이다.
@@ -221,13 +233,13 @@ L1 trend filtering은 살아남은 kink를 abrupt change로 본다. 그런데 �
 
 ![λ=0.05, 구간별 노이즈](../../assets/img/research/sailab/04-hp-vs-l1-trend-filtering/l1-two-noise-levels-lambda-0-05.webp){ width="620" }
 
-*$\lambda = 0.05$. 노이즈가 약한 앞 구간은 실제 추세를 어느 정도 따라가지만, 노이즈가 강한 뒤 구간은 노이즈에 맞춰진다.*
+*$\lambda = 0.05$. 가운데 빨간 세로선이 $t = 100$이다. 노이즈가 약한 왼쪽 구간은 실제 추세를 어느 정도 따라가지만, 노이즈가 강한 오른쪽 구간은 빨간 선이 톱니처럼 흔들리며 노이즈에 맞춰진다.*
 
 ![λ=0.2, 구간별 노이즈](../../assets/img/research/sailab/04-hp-vs-l1-trend-filtering/l1-two-noise-levels-lambda-0-2.webp){ width="620" }
 
-*$\lambda = 0.2$. 뒤 구간은 전보다 추세를 잘 따라가지만, 앞 구간은 더 매끄러워진다.*
+*$\lambda = 0.2$. 오른쪽 구간은 톱니가 줄어 전보다 추세를 잘 따라가지만, 왼쪽 구간은 필요 이상으로 매끄러워진다.*
 
-뒤 구간의 overfitting을 없애려고 $\lambda$를 키우면 뒤 구간은 나아지지만, 노이즈가 약한 앞 구간에는 필요 이상의 smoothing이 걸려 abrupt change가 흐려진다. $\lambda$를 어떻게 잡아도 $t = 100$을 경계로 trade-off가 생긴다.
+두 그림을 위아래로 놓고 세로선의 왼쪽과 오른쪽을 따로 보면 된다. 왼쪽에 맞는 $\lambda$는 오른쪽에 너무 작고, 오른쪽에 맞는 $\lambda$는 왼쪽에 너무 크다. 뒤 구간의 overfitting을 없애려고 $\lambda$를 키우면 뒤 구간은 나아지지만, 노이즈가 약한 앞 구간에는 필요 이상의 smoothing이 걸려 abrupt change가 흐려진다. $\lambda$를 어떻게 잡아도 $t = 100$을 경계로 trade-off가 생긴다.
 
 DTF-net 논문은 전 구간에 같은 수준의 smoothing이 걸리는 현상을 constant smoothness라고 부른다. 논문은 이를 이차 차분의 제곱합에서 오는 문제로 설명하는데, 위 실험처럼 $\lambda$ 하나가 전 구간에 똑같이 적용된다는 점에서 L1 trend filtering도 같은 문제를 가진다고 판단했다. 이 해석이 논문의 의도와 맞는지는 확인이 필요한 질문으로 남겼다.
 
@@ -236,6 +248,8 @@ DTF-net 논문은 전 구간에 같은 수준의 smoothing이 걸리는 현상�
 ![delayed detection](../../assets/img/research/sailab/04-hp-vs-l1-trend-filtering/l1-delayed-detection.webp){ width="760" }
 
 *$\lambda = 1$. 직선 추세에 수준 변화만 넣은 데이터다. 확대한 부분에서 빨간 선(L1)이 실제 추세(파란 선)보다 늦게 새 수준에 도달한다.*
+
+확대한 상자에서 파란 선은 수직으로 올라가는데 빨간 선은 비스듬히 기울어 올라간다. 두 선 사이의 가로 간격이 지연이다.
 
 HP filter와 L1 trend filtering은 모두 이차 차분, 즉 곡률에 penalty를 준다. 추세가 갑자기 뛰는 지점은 곡률이 매우 큰 지점이므로 이 penalty가 급변 자체를 완만하게 만든다. 그 결과 추출된 추세는 실제 변화 시점보다 조금 늦게, 비스듬하게 새 수준에 도달한다. 이는 L1 trend filtering만의 문제가 아니라 이차 차분으로 smoothness를 얻는 방법 전체의 문제다.
 
@@ -254,7 +268,21 @@ DTF-net은 시계열에서 추세를 이루는 점(trend point)을 강화학습 
 - 어느 점을 남길지를 구간의 상태를 보고 정하므로, smoothing의 정도가 구간별로 달라질 수 있다(dynamic trend filtering). 한계 3에 대응한다.
 - 실제 데이터 포인트를 추세의 꼭짓점으로 삼으므로, 논리적으로는 급변 지점이 늦게 잡힐 이유가 없다. 한계 4에 대응한다.
 
-논문은 길이 1,000의 합성 신호에 abrupt change 11개를 넣고 표준편차 0.2의 Gaussian 노이즈를 더해 여러 방법을 비교한다. 이 실험을 내 데이터로 다시 해 보고 싶었다. 확인하려던 것은 세 가지다.
+논문은 두 방법의 차이를 Nasdaq 장중 데이터 위에서 다음 그림으로 보여 준다.
+
+![L1 trend filtering과 DTF-net의 정성적 비교](../../assets/img/research/sailab/04-hp-vs-l1-trend-filtering/paper-fig4-l1-vs-dtfnet-nasdaq.webp)
+
+*빨간 선이 각 방법이 뽑은 추세, 분홍 세로 띠가 임의로 정한 abrupt change 구간이다. 파란 점은 잡아낸 abrupt change, 하늘색 점은 L1의 constant smoothness를 나타낸다. 확대한 2번과 3번 상자에서 빨간 선이 굵은 회색 원본을 얼마나 따라가는지를 보면 된다. 노란 표시는 읽으면서 직접 칠한 것이다. 출처: DTF-net 논문 Figure 4*
+
+(a)의 $\lambda = 0.1$에서는 하늘색 점이 전 구간에 비슷한 간격으로 놓여 있고, 2번 상자를 보면 빨간 선이 원본의 굴곡을 직선 몇 개로 가로지른다. 3번 상자에서는 빨간 선이 급락의 바닥까지 내려가지 못한다. (b)처럼 $\lambda$를 아주 작게 하면 바닥에 닿지만, 하늘색 점이 훨씬 촘촘해져 평평한 구간의 잔떨림까지 따라간다. 어느 쪽이든 매끄러움의 정도는 전 구간에서 같다. 이것이 constant smoothness다. (c)의 DTF-net은 2번 상자에서 원본의 굴곡을 따라간다. 논문은 이 그림을 DTF-net이 구간마다 smoothing의 정도를 다르게 줄 수 있다는 근거로 든다.
+
+논문은 길이 1,000의 합성 신호에 abrupt change 11개를 넣고 표준편차 0.2의 Gaussian 노이즈를 더해 여러 방법을 비교한다.
+
+![논문의 합성 데이터](../../assets/img/research/sailab/04-hp-vs-l1-trend-filtering/paper-fig3-synthetic-data.webp){ width="560" }
+
+*논문이 비교에 쓴 합성 신호. 파란 원 11개가 abrupt change로 표시해 둔 지점이다. 급락, 수준이 올라간 채 크게 진동하는 구간, 끝부분의 완만한 사인파가 섞여 있다. 출처: DTF-net 논문 Figure 3*
+
+이 실험을 내 데이터로 다시 해 보고 싶었다. 확인하려던 것은 세 가지다.
 
 1. 구간마다 노이즈 수준이 다를 때 DTF-net은 L1 trend filtering보다 잘 걸러내는가?
 2. 두 방법 중 어느 쪽이 abrupt change를 더 잘 잡는가?
@@ -286,11 +314,17 @@ DTF-net은 시계열에서 추세를 이루는 점(trend point)을 강화학습 
 
 DTF-net은 원본의 점을 골라 그 사이를 잇는 방식이므로 추세가 원본 값의 범위를 넘을 수 없다. 원인을 찾아보니 DTF-net의 데이터 로더가 내부에서 `StandardScaler`로 표준화를 한 번 더 하고 있었다. 이미 표준화한 데이터를 다시 표준화하면서 출력과 비교 대상의 scale이 어긋난 것으로 추정했다.
 
-그래서 이번에는 표준화하지 않은 원래 scale의 데이터를 저장해 넣어 보았다(시드 2025, 노이즈 표준편차 0.3, 데이터의 표준편차는 약 3.9).
+그래서 이번에는 표준화하지 않은 원래 scale의 데이터를 저장해 넣어 보았다(시드 2025, 노이즈 표준편차 0.3, 데이터의 표준편차는 약 3.9). 먼저 이 데이터에 L1 trend filtering을 적용했다.
+
+![원래 scale의 합성 데이터에 적용한 L1 trend filtering](../../assets/img/research/sailab/04-hp-vs-l1-trend-filtering/l1-original-scale-lambda-0-2.webp)
+
+*L1 trend filtering($\lambda = 0.2$). 세로축이 2.5에서 20 사이인 원래 scale이다. 빨간 선(L1)이 파란 선(실제 추세)과 거의 겹친다.*
+
+L1은 전반적으로 실제 추세를 잘 따라갔다. 같은 데이터를 DTF-net에 넣은 결과는 달랐다.
 
 ![scale이 맞지 않는 결과](../../assets/img/research/sailab/04-hp-vs-l1-trend-filtering/dtfnet-scale-mismatch.webp)
 
-*원래 scale의 관측값과 실제 추세(위), 표준화된 scale로 나온 DTF-net의 추세(아래 빨간 선).*
+*원래 scale의 관측값과 실제 추세(위), 표준화된 scale로 나온 DTF-net의 추세(아래 빨간 선). 위의 선은 2.5에서 20 사이를 움직이는데 빨간 선은 0 근처에 따로 떨어져 있다.*
 
 DTF-net의 출력은 표준화된 scale이고 실제 추세는 원래 scale이라 아예 비교가 되지 않았다. 최종적으로 다음과 같이 정리했다.
 
@@ -302,13 +336,15 @@ DTF-net의 출력은 표준화된 scale이고 실제 추세는 원래 scale이�
 
 ### 노이즈가 균일할 때
 
+여기서부터의 그림은 4절과 같은 방식으로 읽는다. 파란 선이 실제 추세, 빨간 선이 각 방법이 뽑은 추세, 회색이 관측값이다. 두 그림에서 빨간 선이 파란 선 밖으로 얼마나 삐져나오는지를 비교한다.
+
 ![L1, 균일한 노이즈](../../assets/img/research/sailab/04-hp-vs-l1-trend-filtering/dtfnet-uniform-noise-l1.webp)
 
-*L1 trend filtering($\lambda = 0.2$).*
+*L1 trend filtering($\lambda = 0.2$). 빨간 선이 파란 선을 거의 덮는다. 둥글게 휘는 봉우리와 골에서만 조금 어긋난다.*
 
 ![DTF-net, 균일한 노이즈](../../assets/img/research/sailab/04-hp-vs-l1-trend-filtering/dtfnet-uniform-noise-dtfnet.webp)
 
-*DTF-net.*
+*DTF-net. 큰 흐름은 같지만 빨간 선이 곳곳에서 회색 관측값 쪽으로 뾰족하게 튄다.*
 
 - L1 trend filtering은 곡선으로 휘는 부분은 완전히 따라가지 못하지만, 직선에 가까운 부분은 전반적으로 잘 맞춘다. 전 구간의 노이즈가 같으니, 그 노이즈에 맞는 $\lambda$를 찾으면 실제 추세를 잘 따라가는 것이 당연한 결과다.
 - DTF-net은 전체적인 추세는 따라가지만, 곳곳에서 노이즈를 따라 튀는 부분이 보인다.
@@ -319,15 +355,15 @@ DTF-net의 출력은 표준화된 scale이고 실제 추세는 원래 scale이�
 
 ![구간별 노이즈 데이터](../../assets/img/research/sailab/04-hp-vs-l1-trend-filtering/dtfnet-segment-noise-data.webp){ width="720" }
 
-*구간별로 노이즈 수준이 다른 합성 데이터.*
+*구간별로 노이즈 수준이 다른 합성 데이터. 회색 관측값의 폭이 구간마다 다르고, 셋째 구간(500에서 750 사이)에서 가장 넓다.*
 
 ![L1, 구간별 노이즈](../../assets/img/research/sailab/04-hp-vs-l1-trend-filtering/dtfnet-segment-noise-l1.webp)
 
-*L1 trend filtering($\lambda = 1$).*
+*L1 trend filtering($\lambda = 1$). 노이즈가 큰 가운데 구간에서도 빨간 선이 파란 선 가까이에 머문다.*
 
 ![DTF-net, 구간별 노이즈](../../assets/img/research/sailab/04-hp-vs-l1-trend-filtering/dtfnet-segment-noise-dtfnet.webp)
 
-*DTF-net.*
+*DTF-net. 노이즈가 큰 가운데 구간에서 빨간 선이 회색 관측값을 따라 위아래로 크게 튄다.*
 
 예상과 달랐다.
 
@@ -348,7 +384,13 @@ DTF-net의 출력은 표준화된 scale이고 실제 추세는 원래 scale이�
 
 정리하면 DTF-net의 장점은 "어떤 데이터에서든 abrupt change를 더 잘 잡는다"가 아니라, 방법의 구조상 구간별로 smoothing을 다르게 할 수 있고 급변 지점을 직접 고르므로 지연이 생기지 않을 수 있다는 데 있다. 다만 그 구조가 실제로 그렇게 동작하려면 policy가 잘 학습되어야 하고, 학습된 policy가 새로운 데이터에서도 같은 지점을 고른다는 보장은 따로 확인해야 한다.
 
-논문의 실험에 대해서도 의문이 남았다. 논문의 합성 데이터 비교 표는 설명을 읽어 보면 노이즈가 더해진 신호와의 오차, 즉 원본과의 근접성을 재는 것으로 이해된다. 근접성이 높다는 것과 실제 추세를 잘 복원했다는 것은 다른 문제다. 근접성만 보면 $\lambda$를 아주 작게 잡아 원본을 그대로 따라가는 쪽이 유리하기 때문이다. 한편 abrupt change가 있는 구간에서 근접성이 높다는 것은 그 변화를 노이즈로 취급해 깎아내지 않았다는 뜻이므로, 그 자체로 의미 있는 검증이라는 점은 납득했다.
+논문의 실험에 대해서도 의문이 남았다. 의문이 생긴 표는 다음과 같다.
+
+![논문의 합성 데이터 비교 표](../../assets/img/research/sailab/04-hp-vs-l1-trend-filtering/paper-table1-synthetic-comparison.webp)
+
+*합성 데이터에서 여러 방법을 비교한 표. 왼쪽 두 열이 전체 구간, 오른쪽 두 열이 abrupt change 주변의 부분 구간이다. 맨 아래 세 줄의 $\ell_1$ 두 가지와 DTF-net을 비교해 보면 된다. 출처: DTF-net 논문 Table 1*
+
+논문의 합성 데이터 비교 표는 설명을 읽어 보면 노이즈가 더해진 신호와의 오차, 즉 원본과의 근접성을 재는 것으로 이해된다. 근접성이 높다는 것과 실제 추세를 잘 복원했다는 것은 다른 문제다. 근접성만 보면 $\lambda$를 아주 작게 잡아 원본을 그대로 따라가는 쪽이 유리하기 때문이다. 한편 abrupt change가 있는 구간에서 근접성이 높다는 것은 그 변화를 노이즈로 취급해 깎아내지 않았다는 뜻이므로, 그 자체로 의미 있는 검증이라는 점은 납득했다.
 
 ## 6. 정리
 

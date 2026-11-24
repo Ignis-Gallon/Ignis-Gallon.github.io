@@ -89,7 +89,13 @@ sup-Wald 계열의 한계로 등분산성이 나와서, 선형 회귀의 기본 
 
 DTF-net 논문은 structural break point를 시계열에서 나타나는 예상치 못한 변화로 설명하고, Chow, Augmented Dickey-Fuller(ADF), CUSUM 같은 통계적 검정으로 찾을 수 있다고 한다. 이 검정들은 F-value를 기준으로 그 지점이 structural break인지를 판정한다.
 
-논문이 지적하는 문제는 이 방법들이 offline 방식이라는 점이다. 시점을 옮겨 가며 두 구간을 비교하는데, 검정마다 자기 규칙으로 지점을 고르므로 불규칙한 지점들이 나온다. 입력 길이에 민감하고, 임계값도 경험적으로 정해야 한다.
+논문은 세 검정을 실제 시계열에 적용한 결과를 그림으로 보여 준다.
+
+![ADF, Chow, CUSUM이 고른 structural break point](../../assets/img/study/trend-filtering-cpd/04-change-point-terms/fig6a-statistical-tests.webp)
+
+*회색 선이 시계열이고 표식이 세 검정(ADF 빨강, Chow 파랑, CUSUM 초록)이 structural break로 판정한 지점이다. 지점이 앞쪽에 몰려 있고 나머지 구간에는 드문드문 찍혀 있다. 출처: DTF-net 논문 Figure 6(a)*
+
+논문이 지적하는 문제는 이 방법들이 offline 방식이라는 점이다. 시점을 옮겨 가며 두 구간을 비교하는데, 검정마다 자기 규칙으로 지점을 고르므로 그림처럼 불규칙한 지점들이 나온다. 회색 선은 전 구간에서 오르내리는데 표식은 일부에만 몰려 있으니, 이 지점들을 이어서는 추세가 되지 않는다. 입력 길이에 민감하고, 임계값도 경험적으로 정해야 한다.
 
 처음 이 부분을 읽을 때는 "추세에 쓰기 어려운 불규칙한 지점"이라는 표현 때문에 structural break가 anomaly를 뜻하는 것인지 헷갈렸다. 위의 정의를 정리한 뒤에야, 회귀 계수가 바뀌는 지점을 검정으로 찾는다는 뜻으로 이해했다.
 
@@ -159,6 +165,14 @@ Change point detection이 찾는 것은 generative parameter의 변화다. 데�
 즉 CPD에서 abrupt change는 그 자체가 찾으려는 대상이 아니라, 모수가 변하는 방식을 꾸미는 말이다. BOCPD는 change point가 일어날 사전 확률과 모수에 대한 prior를 두고, 새 데이터가 들어올 때마다 Bayesian 추론으로 change point의 발생 확률을 갱신한다. 찾아낸 변화는 mean shift일 수도, variance shift일 수도 있다.
 
 ### 비교
+
+두 관점이 실제로 서로 다른 지점을 고른다는 것은 DTF-net 논문의 그림 하나로 볼 수 있다. [3편](03-change-point-detection-overview.md)에서도 쓴 그림이다.
+
+![평균이 바뀌는 지점과 값이 꺾이는 지점](../../assets/img/study/trend-filtering-cpd/04-change-point-terms/fig6c-cpd-limitation.webp){ width="520" }
+
+*노란 띠가 구간별 평균 수준이다. 초록 원(Mean)은 평균 수준이 바뀌는 길목이고, 빨간 원(Var)은 값이 뾰족하게 꺾이는 꼭짓점이다. 출처: DTF-net 논문 Figure 6(c)*
+
+분포의 parameter를 보는 CPD는 평균 수준이 달라지는 초록 원을 주로 찾는다. 관측값의 모양을 보는 trend filtering에서 추세가 꺾여야 하는 곳은 빨간 원이다. 그림에서 두 종류의 원은 대부분 서로 다른 자리에 찍혀 있다. 표로 정리하면 다음과 같다.
 
 | | Trend filtering (L1, DTF-net) | Change point detection (BOCPD) |
 |---|---|---|

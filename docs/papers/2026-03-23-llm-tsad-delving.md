@@ -11,7 +11,7 @@ tags: [시계열 이상 탐지, LLM, 멀티모달, Zero-shot, De-seasonalization
 작성일 2026-03-23 · 최종 수정일 2026-04-07
 { .post-date }
 
-LLM을 시계열 이상 탐지(Time-Series Anomaly Detection, TSAD)에 쓰면 왜 기대만큼의 성능이 나오지 않는지를 understanding과 localization이라는 두 능력으로 나누어 진단하고, de-seasonalization과 index-aware prompting이라는 단순한 방법으로 이를 고친 논문이다. 글은 논문을 한 번 훑고 쓴 요약, 읽으면서 생긴 질문을 정리한 부분, 논문의 절 순서를 따라간 정리의 세 부분으로 되어 있다. 그림과 표는 옮기지 않고 글과 수식으로 다시 적었다.
+LLM을 시계열 이상 탐지(Time-Series Anomaly Detection, TSAD)에 쓰면 왜 기대만큼의 성능이 나오지 않는지를 understanding과 localization이라는 두 능력으로 나누어 진단하고, de-seasonalization과 index-aware prompting이라는 단순한 방법으로 이를 고친 논문이다. 글은 논문을 한 번 훑고 쓴 요약, 읽으면서 생긴 질문을 정리한 부분, 논문의 절 순서를 따라간 정리의 세 부분으로 되어 있다. 논문의 그림과 표는 그 내용을 설명하는 자리에 함께 실었다.
 
 LLM·VLM으로 시계열 이상 탐지를 다룬 다른 글로는 [VLM4TS](2026-01-22-vlm4ts.md)와 [Can Multimodal LLMs Perform Time Series Anomaly Detection?](2026-04-22-mllm-tsad-benchmark.md)이 있다.
 
@@ -90,17 +90,28 @@ LLM·VLM으로 시계열 이상 탐지를 다룬 다른 글로는 [VLM4TS](2026-
 
 ### 4. 논문의 제안 방법론
 
-- 이 논문은 새로운 trainable neural architecture를 제안하는 논문이 아니다.
-- 핵심은 MLLM/LLM + 외부 통계 전처리 + 프롬프트 설계이다.
+이 논문은 새로운 trainable neural architecture를 제안하는 논문이 아니다. 핵심은 MLLM/LLM + 외부 통계 전처리 + 프롬프트 설계이고, 아래 그림 한 장에 전부 들어 있다.
+
+![입력 시계열에서 seasonality를 제거한 뒤 image plot과 index가 붙은 prompt로 만들어 multimodal LLM에 넣는 전체 흐름](../assets/img/papers/2026-03-23-llm-tsad-delving/fig4-method-overview.webp)
+
+왼쪽 주황 상자가 seasonality를 걷어 내는 전처리이고, 오른쪽 회색 상자가 index를 붙인 prompt를 만들어 LLM에 넣는 부분이다. 맨 왼쪽의 입력은 톱니 모양의 반복에 가려 어디가 이상한지 잘 보이지 않지만, seasonality를 빼고 만든 "Image plot"에서는 아래로 튀는 지점과 꺾이는 지점이 드러난다. 출처: 논문 Figure 4
+
+그림을 왼쪽에서 오른쪽으로 따라가면 다음과 같다.
+
+- ACF가 입력에서 가장 두드러진 주기 $P^\ast$를 찾아 Time-series Decomposition에 넘긴다(외부 모듈 1: 시계열 de-seasonalization용 통계 decomposition).
+- 분해된 세 성분 가운데 Seasonality에만 빨간 사선이 그어져 있다. 버린다는 뜻이고, Trend와 Residual만 더해(⊕) 다음 단계로 보낸다.
+- 더한 시계열을 line plot(Image plot)과 `(0, 3.07), (1, 2.79), …` 형식의 텍스트(Prompt)로 만든다(외부 모듈 2: index-aware text formatting).
+- Multi-modal LLM이 이를 받아 anomaly interval의 시작과 끝을 JSON 형태로 직접 생성한다. 맨 오른쪽 Prediction의 노란 띠가 그 답이다.
+
+나머지 구성은 다음과 같다.
+
 - 백본 모델: MLLM/LLM
     - GPT-4o
     - Gemini-1.5-Flash
     - Qwen2.5-VL-72B-Instruct
     - InternVL2-Llama3-76B
-- 외부 모듈 1: 시계열 de-seasonalization용 통계 decomposition
-- 외부 모듈 2: index-aware text formatting
-- 입력 모달리티: text-only 또는 text+vision
-- 출력: anomaly interval의 시작/끝을 JSON 형태로 직접 생성
+- 입력 모달리티: text-only 또는 text+vision. text-only일 때는 그림의 Image plot 없이 Prompt만 넣는다.
+- 점선 상자의 Domain-specific Context는 기본 실험에서는 넣지 않는다. Context를 주는 실험은 논문 정리의 5.2절에서 다룬다.
 
 > 즉, 구조적으로는 Input time series → 계절성 제거 → text/image로 변환 → index-aware prompt와 함께 LLM/MLLM에 입력 → anomaly interval 직접 생성의 흐름이다.
 
@@ -145,7 +156,7 @@ LLM·VLM으로 시계열 이상 탐지를 다룬 다른 글로는 [VLM4TS](2026-
 ### 2. localization-only experiment는 anomaly interval을 잡아내는 실험인가?
 
 - 이 실험은 모델이 anomaly를 찾는 실험이 아니라, 이미 주어진 anomaly의 위치를 정확한 interval 출력으로 번역하는 실험이다.
-- 논문에서는 GT anomaly region을 이미지 위에 직접 하이라이트해 주고, 그 상태에서 모델이 x-axis 상의 anomaly interval을 반환하게 한다.
+- 논문에서는 GT anomaly region을 이미지 위에 직접 하이라이트해 주고(논문 정리 2절에 실은 Figure 1의 파란 띠와 같은 형태), 그 상태에서 모델이 x-axis 상의 anomaly interval을 반환하게 한다.
 - 좀 더 자세히 말하면, 주어진 anomaly 영역을 정확한 start/end interval로 출력하는 localization 능력만 따로 보는 실험이다.
 
 > 논문에 따르면, VLM이 instance의 anomaly 여부를 정확히 짚어 냈더라도 localization을 잘하는 것은 아닐 수 있다. 그러므로 이 부분을 반드시 구분해서 평가해야 한다고 말한다.
@@ -202,10 +213,10 @@ LLM·VLM으로 시계열 이상 탐지를 다룬 다른 글로는 [VLM4TS](2026-
 - 따라서 instance의 size에 따라 탐지 성능이 달라진다는 것은 말 자체가 성립하지 않는다. instance-level detection은 애초에 추론 과정에 반영되는 것이 아니기 때문이다.
 - 하지만 길이와 anomaly segment 구조가 localization에 영향을 준다는 점은 분명하다.
     - 시퀀스의 길이가 길어질수록 counting이 어려워진다.
-        - Section 3.2의 counting experiment에서, sequence length가 길어질수록 counting MAE가 증가하는 것을 알 수 있다.
+        - Section 3.2의 counting experiment(논문 정리 3.2절의 Figure 5)에서, sequence length가 길어질수록 counting MAE가 증가하는 것을 알 수 있다.
         - 즉, index-free prompting일 때는 길어진 입력이 localization을 더 어렵게 만든다.
     - anomaly segment의 개수와 분절(fragmentation)이 localization을 어렵게 만든다.
-        - Figure 3(c)와 그 설명에서, localization의 residual failure는 anomaly의 개수, 그리고 분절 정도(fragmentation)와 연관된다고 설명한다. 특히 frequency anomaly는 짧고 흩어진 segment가 많아서 localization이 더 어렵다고 말한다.
+        - Figure 3(c)(논문 정리 2.2절에 실은 그림의 오른쪽)와 그 설명에서, localization의 residual failure는 anomaly의 개수, 그리고 분절 정도(fragmentation)와 연관된다고 설명한다. 특히 frequency anomaly는 짧고 흩어진 segment가 많아서 localization이 더 어렵다고 말한다.
 
 ## 논문 정리
 
@@ -218,6 +229,8 @@ LLM·VLM으로 시계열 이상 탐지를 다룬 다른 글로는 [VLM4TS](2026-
     - ACF로 dominant period를 찾아내고, additive decomposition으로 dominant seasonality를 제거한다.
     - de-seasonalized time series를 시각화하고, prompt와 함께 VLM에 전달한다.
     - prompt에는 (index, normalized_value) 형식으로 전체 시계열의 정보를 제공한다.
+
+요약의 4번에 실은 Figure 4가 이 흐름을 그린 것이다.
 
 ### 1 Introduction
 
@@ -241,14 +254,18 @@ Contributions는 다음과 같다.
 
 **Analysis of common failure cases.**
 
-- AnomLLM의 failure case를 먼저 분석한다. Figure 1의 두 사례 (a), (b)는 모두 F1 score가 0이 나온 경우이다.
+논문은 AnomLLM의 failure case를 먼저 분석한다. 아래 두 사례는 점수로는 똑같이 F1 score 0이지만, 틀린 이유가 서로 다르다.
+
+![F1이 0인 두 실패 사례: anomaly가 없다고 답한 경우와, anomaly는 알아봤지만 위치를 틀린 경우](../assets/img/papers/2026-03-23-llm-tsad-delving/fig1-failure-cases.webp)
+
+파란 띠가 정답 구간(ground truth), 주황 띠가 LLM이 답한 구간이고, 아래 상자는 LLM에게 그렇게 답한 이유를 설명하게 한 것이다. (a)에는 주황 띠가 아예 없고, (b)에는 주황 띠가 있지만 파란 띠 바로 옆으로 비켜나 있다. 출처: 논문 Figure 1
+
 - (a)에서는 명시적인 trend shift anomaly가 나타났음에도 LLM이 이를 감지하지 못했다.
+    - Reasoning을 보면 "완만하게 증가하는 trend 위에 부드럽게 반복되는 sinusoidal pattern이 얹혀 있을 뿐"이라며 anomaly가 아예 없다고 결론짓는다. 여기서는 더 근본적인 failure가 발생한 것이다.
 - (b)에서는 LLM이 anomaly를 predict했으나, ground truth와 overlap되지 않는다.
-- 그런데 흥미로운 것은, (b)의 경우 모델에 reasoning을 시켜 보면 spike의 존재를 설명한다는 것이다.
-    - x축 779 ~ 819 부근에 눈에 띄는 급격한 하락이 있다는 식으로 답한다.
-    - 이를 해석해 보면, LLM이 time series pattern 자체는 정확히 이해한 것으로 보인다.
-    - 따라서 (b)에서 LLM이 detection에 실패한 것은 localization step의 문제이지, understanding의 문제가 아니라는 것을 알 수 있다.
-- 그러나 (a)의 경우, LLM은 anomaly가 아예 없다고 결론짓는다. 여기서는 더 근본적인 failure가 발생한 것이다.
+    - 그런데 흥미로운 것은, 모델에 reasoning을 시켜 보면 spike의 존재를 설명한다는 것이다. x축 779 ~ 819 부근에 눈에 띄는 급격한 하락이 있다는 식으로 답한다.
+    - 그림에서 실제로 아래로 급락하는 곳은 750 부근(파란 띠)이다. 급락이 있다는 사실은 맞게 봤고, 그 위치를 숫자로 옮기는 데서 틀린 것이다.
+    - 이를 해석해 보면, LLM이 time series pattern 자체는 정확히 이해한 것으로 보인다. 따라서 (b)에서 LLM이 detection에 실패한 것은 localization step의 문제이지, understanding의 문제가 아니라는 것을 알 수 있다.
 - 이러한 분석은 LLM-based zero-shot anomaly detection의 두 가지 큰 challenge를 제시한다.
     - understanding time-series dynamics
     - accurately localizing the anomaly intervals
@@ -261,10 +278,16 @@ Contributions는 다음과 같다.
 - TSAD의 최종 성능은 결국 localization capability에 좌우된다.
 - 따라서 우선 original problem을, precise localization 없이 entire sequence에 anomaly가 존재하는지 아닌지만 판단하는 간단한 문제로 바꿔 본다.
     - 이를 instance-level anomaly detection이라고 하며, 일종의 binary detection problem이다.
-- Figure 2는 anomaly type에 따른 LLM의 understanding capability를 보여 준다.
-- trend와 frequency anomaly에 대해서는, LLM이 입력과 무관하게 항상 같은 label을 내는 단순한 baseline(constant classifier)보다 조금 나은 정도이거나 오히려 더 떨어지는 성능을 보인다.
-- 반면 point와 range anomaly에 대해서는, image prompt(A ~ H)를 사용할 때 거의 만점에 가까운 성능을 보였다.
+
+![네 가지 anomaly type에서 21개 prompt(A ~ U)의 instance-level F1 score와 constant classifier baseline](../assets/img/papers/2026-03-23-llm-tsad-delving/fig2-instance-level-results.webp)
+
+막대 하나가 prompt 하나다(A ~ H는 image, I ~ U는 text 입력). 파란 점선은 입력과 무관하게 항상 같은 label을 내는 constant classifier의 점수이고, 점선 위로 올라온 초록 부분만이 의미 있는 향상이다. 왼쪽 두 칸에는 초록이 거의 없고, 오른쪽 두 칸에서는 A ~ H만 높이 올라간다. 출처: 논문 Figure 2
+
+- 위 그림은 anomaly type에 따른 LLM의 understanding capability를 보여 준다.
+- trend shift와 frequency change(왼쪽 두 칸)에 대해서는, 대부분의 prompt가 constant classifier보다 조금 나은 정도이거나 오히려 더 떨어지는 성능을 보인다. 점선에 못 미치는 막대도 많다.
+- 반면 point와 range anomaly(오른쪽 두 칸)에 대해서는, image prompt(A ~ H)를 사용할 때 거의 만점에 가까운 성능을 보였다.
     - image prompt는 시계열의 temporal representation을 image로 제공하고 instruction을 prompt로 제시하는 것이다. 일부에서는 CoT나 예시 문장을 추가한다.
+    - 같은 anomaly라도 text prompt(I ~ U)에서는 대부분 점선 높이에 머문다. 눈에 띄게 튀는 이상은 그림으로 볼 때 잘 잡힌다는 뜻이다.
 - 전체적으로, CoT나 in-context exemplar 등을 적용하더라도 temporal dynamics에 대한 understanding capability를 향상시키기 어려웠다.
 
 #### 2.2 Evaluating LLMs' time-series localization capability
@@ -272,19 +295,25 @@ Contributions는 다음과 같다.
 - LLM의 localization 성능을 점검하기 위하여, time-series understanding의 필요성을 제거하고 오직 localization만 수행하는 실험을 한다.
 - 구체적으로, time-series image에서 GT anomaly region을 하이라이트한다(Figure 1의 (a), (b)와 같은 형태).
     - 이 실험에서는 time-series image를 사용하지만, Section 4.2에서는 time-series text에 대한 localization을 실험한다.
-- 만약 localization이 bottleneck이 아니라면, 이러한 실험 세팅에서 LLM의 성능은 당연히 거의 만점에 가까워야 할 것이다.
-- 그러나 performance gain이 굉장히 제한적이라는 것을 확인할 수 있다.
+- 만약 localization이 bottleneck이 아니라면, 이러한 실험 세팅에서 LLM의 성능은 당연히 거의 만점에 가까워야 할 것이다. 정답이 어디인지 이미 칠해 주었기 때문이다.
+
+![정답 anomaly 구간을 알려 주었을 때 모델별, anomaly type별로 늘어난 F1과 남은 실패, 그리고 type별 anomaly 개수와 길이](../assets/img/papers/2026-03-23-llm-tsad-delving/fig3-localization-with-gt.webp)
+
+막대에서 회색은 정답 위치를 알려 주지 않았을 때의 F1, 초록은 알려 주어서 늘어난 부분, 빨강은 그래도 남은 실패다. (a)의 맨 윗줄(Total)을 보면 회색 38.0에 초록은 10.8뿐이고 빨강이 51.1이나 남는다. 출처: 논문 Figure 3
+
+- 그러나 performance gain이 굉장히 제한적이라는 것을 확인할 수 있다. (a)에서 네 모델 모두 초록이 6.9 ~ 13.5에 그친다.
 - anomaly type별로 자세히 들여다보면, localization difficulty에 대한 인사이트를 추가로 얻을 수 있다.
-- Figure 3(b)를 보면, trend/frequency anomaly는 point나 range anomaly보다 높은 성능 향상을 보인다.
-    - 이를 통해 localization difficulty는 anomaly type에 따라 다르다는 것을 알 수 있다.
-- Figure 3(c)는 이러한 interpretation을 더 자세히 보여 준다.
+- (b)를 보면, trend(+32.5)와 frequency(+13.3) anomaly는 point(+2.2)나 range(+6.1) anomaly보다 높은 성능 향상을 보인다.
+    - 다만 남은 실패는 type마다 크게 다르다. Trend는 7.7만 남고, frequency는 70.9가 남는다. 이를 통해 localization difficulty는 anomaly type에 따라 다르다는 것을 알 수 있다.
+- (c)는 이러한 interpretation을 더 자세히 보여 준다. 가로축이 시계열 하나에 들어 있는 anomaly의 평균 개수, 세로축이 anomaly 구간의 평균 길이이고, 괄호 안의 숫자가 (b)의 남은 실패다.
+    - Trend는 개수가 적고 길어서 왼쪽 위에, frequency는 개수가 많고 짧아서 오른쪽 아래에 있다. 화살표가 가리키는 오른쪽 아래로 갈수록 localization이 어렵다.
 - 분석에 따르면, anomaly가 자잘하게 넓게 퍼져 있을 경우 localization이 더 어렵다.
     - 그래서 frequency anomaly를 잡아내기가 더 힘들었다고 한다.
     - 다만 데이터셋마다 나타나는 anomaly의 특징은 다를 수 있다.
 
 ### 3 Methodology
 
-- 앞의 실험으로 확인한 두 가지 문제를 해결할 수 있는 방법론을 제시한다.
+- 앞의 실험으로 확인한 두 가지 문제를 해결할 수 있는 방법론을 제시한다. 전체 구조는 요약의 4번에 실은 Figure 4이고, 그림의 주황 상자가 3.1절, 회색 상자가 3.2절이다.
 - 시계열의 complex temporal dynamics를 이해하는 대표적인 방법은 decomposition이다.
 - 기존의 non-LLM method들은 이러한 decomposition을 end-to-end 학습으로 모델 내부에 넣는 경우가 많았다. 그러나 강력한 pretrained LLM에게 decomposition을 수행하도록 학습시키는 것은 오히려 pretrained capability를 저하시킬 수 있다.
 - 이에 따라 이 논문은 external tool로 time-series를 decompose하고 그 결과를 LLM에 전달하는 방식을 쓴다.
@@ -310,7 +339,13 @@ Contributions는 다음과 같다.
     - 따라서 LLM은 암시적으로 counting task를 수행해야 한다.
     - 그러나 token이나 semantic chunk를 counting하는 task는 LLM이 잘하지 못하는 challenge로 이미 널리 알려져 있다.
     - time-series domain에서 이 문제를 확인하기 위하여, LLM에게 제공된 sequence의 길이를 세어 보라는 간단한 실험을 진행한다.
+
+![sequence 길이 구간에 따른 LLM의 counting 오차(MAE): 모델별 비교와 구분자별 비교](../assets/img/papers/2026-03-23-llm-tsad-delving/fig5-counting-errors.webp){ width="560" }
+
+가로축은 세어야 하는 sequence의 길이 구간, 세로축은 LLM이 답한 길이와 실제 길이의 차이(MAE)다. (a)에서 네 모델 모두 길이가 길수록 오차가 커져서 900 ~ 1000 구간에서는 수백 개씩 틀린다. (b)에서 구분자를 space, comma, newline, tab으로 바꿔도 네 곡선이 거의 겹친다. 출처: 논문 Figure 5
+
 - 실험 결과, open-source와 proprietary LLM 모두 이러한 simple task에서 매우 저조한 성능을 보였다. separator를 다양하게 설정했을 때도 마찬가지였다.
+    - 전체 개수조차 수백 개씩 틀리는 모델에게 "몇 번째 값부터 몇 번째 값까지가 이상한가"를 세어서 답하게 하는 것은 무리라는 뜻이다.
 - 이러한 counting burden을 완화하기 위하여 index-aware prompting을 도입한다. 각 value를 positional index와 명시적으로 묶어 제시하는 방법이다.
     - 이를 통해 LLM이 counting을 수행하는 부담을 줄일 수 있고, LLM은 단순히 index를 곧바로 lookup하면 된다.
     - 또한 time-series plot에 index를 visualize하면 이미지가 난잡해지거나 overlap이 발생할 수 있으므로, textual form으로 제시하는 것이 매우 practical하다.
@@ -341,9 +376,13 @@ Contributions는 다음과 같다.
 
 **4.1.1 Main results**
 
-- 논문에서 제시한 방법론이 다양한 LLM backbone에서 TSAD 성능을 상당히 향상시킴을 확인했다.
-- 이전의 방법론들은 naive baseline의 성능을 뛰어넘기 어려워하거나 때때로 더 저조한 성능을 보여 주었다. 하지만 이 논문이 제안한 방법론은 명확하고 일관적인 gain을 제공한다.
-- 0shot-text prompt를 AnomLLM의 것과 비교해 보면, input condition이 동일함에도 performance gain이 매우 크다는 것을 확인할 수 있다.
+![AnomLLM benchmark에서 네 LLM에 대한 AnomLLM prompt 세 가지와 이 논문의 prompt 두 가지의 standard metric, affiliation metric](../assets/img/papers/2026-03-23-llm-tsad-delving/table1-main-results.webp)
+
+LLM마다 위 세 줄이 AnomLLM의 prompt, 아래 두 줄("Our")이 이 논문의 prompt다. "Avg. Diff." 열은 맨 윗줄 naive baseline(항상 정상이라고 답하는 predictor, 31.75)과의 차이로, 초록이면 baseline보다 낫고 빨강이면 그보다 못하다. 출처: 논문 Table 1
+
+- 논문에서 제시한 방법론이 다양한 LLM backbone에서 TSAD 성능을 상당히 향상시킴을 확인했다. 0shot-Text-Vision의 F1은 GPT-4o 70.04, Qwen-2.5 67.56, Gemini-1.5 63.31, InternVL2 34.66이다.
+- 이전의 방법론들은 naive baseline의 성능을 뛰어넘기 어려워하거나 때때로 더 저조한 성능을 보여 주었다(표의 빨간 칸). 하지만 이 논문이 제안한 방법론은 명확하고 일관적인 gain을 제공한다. "Our" 줄에는 빨간 칸이 없다.
+- 0shot-text prompt를 AnomLLM의 것과 비교해 보면, input condition이 동일함에도 performance gain이 매우 크다는 것을 확인할 수 있다. GPT-4o의 F1이 17.76에서 54.40으로, Gemini-1.5는 1.89에서 46.62로 오른다.
 - 물론 vision과 text를 결합하면 advantage를 얻을 수 있지만, de-seasonalization과 index-aware prompting을 적용한다면 text 하나만 사용하더라도 TSAD 성능을 개선할 수 있다는 것을 확인했다.
 
 **4.1.2 Model-wise performance discrepancy and analysis of underlying factors**
@@ -352,37 +391,57 @@ Contributions는 다음과 같다.
 - 이를 위해 다음 benchmark에 대한 각 모델의 score를 기록한다.
     - MMLU-Pro (language reasoning)
     - MMMU (visual reasoning)
-- Table 2를 보면, reasoning capability가 뛰어난 모델일수록 이 논문의 방법론을 적용했을 때 성능 향상 폭이 더 컸다.
+
+![네 LLM의 TSAD F1 향상 폭과 MMMU, MMLU-Pro 점수](../assets/img/papers/2026-03-23-llm-tsad-delving/table2-reasoning-ability.webp)
+
+셋째 줄(Δ TSAD)이 이 논문의 방법을 적용해 늘어난 F1이고, 아래 두 줄이 일반 reasoning benchmark 점수다. 왼쪽 열일수록 향상 폭이 크다. 출처: 논문 Table 2
+
+- 위 표를 보면, reasoning capability가 뛰어난 모델일수록 이 논문의 방법론을 적용했을 때 성능 향상 폭이 더 컸다. 두 benchmark 점수가 가장 높은 GPT-4o는 +28.01, 그다음인 Qwen2.5는 +20.91이고, MMLU-Pro가 가장 낮은 InternVL2는 +0.99에 그친다.
 - 이러한 trend는 general reasoning ability가 뛰어날수록 더 효과적인 anomaly detection을 수행할 가능성이 높다는 것을 의미한다.
 
 #### 4.2 In-depth analysis
 
 **4.2.1 Ablation study**
 
-- Table 3은 제안된 방법론의 각 component에 대해 ablation을 진행한 결과를 정리한 표이다.
+제안된 방법론의 요소를 하나씩 빼 보는 실험이다.
+
+![de-seasonalization, index, value, image를 하나씩 뺐을 때 세 LLM의 precision, recall, F1과 평균 하락 폭](../assets/img/papers/2026-03-23-llm-tsad-delving/table3-ablation.webp)
+
+맨 오른쪽 "Avg. Drop"이 그 요소를 뺐을 때 세 모델의 F1이 평균 얼마나 떨어지는지다. Index를 뺀 줄이 −23.36으로 가장 크다. 출처: 논문 Table 3
+
 - de-seasonalization을 제거하면 평균 5.64 %p의 F1 저하가 나타났다.
 - index information을 제거할 때 −23.36 %p로 가장 큰 성능 하락이 나타났다.
     - 이는 LLM이 positional reasoning을 어려워하며, explicit indexing이 accurate localization에 큰 benefit을 준다고 해석할 수 있다.
-- time-series의 value를 제거하거나 time-series image를 제거할 때도 성능이 저하되었으며, 이는 각 modality가 상호 보완적인 역할을 한다고 볼 수 있다.
+- time-series의 value를 제거하거나(−16.88) time-series image를 제거할 때도(−14.24) 성능이 저하되었으며, 이는 각 modality가 상호 보완적인 역할을 한다고 볼 수 있다.
 
 **4.2.2 Can LLMs perform time-series decomposition without external tool?**
 
 - 두 가지 task를 통해, LLM이 decomposition을 수행할 수 있는지를 검증한다.
     - component의 존재 여부 탐지하기
     - 각 component의 sequence를 개별적으로 생성하기
-- Figure 6을 보면, LLM은 statistical decomposition과 거의 유사한 성능으로, decomposed component가 time-series에 존재하는지를 탐지할 수 있었다.
-- 그러나 이를 generation할 때는 매우 저조한 성능을 보였다. 이를 통해 decomposition을 수행하는 external tool이 필요함을 확인했다.
+
+![trend와 seasonality에 대해 통계적 분해와 LLM을 비교한 결과: 존재 여부 탐지, 성분 생성의 오차, 생성 결과 예시](../assets/img/papers/2026-03-23-llm-tsad-delving/fig6-llm-decomposition.webp)
+
+(a)는 성분이 있는지 알아맞히는 과제이고, (b)와 (c)는 그 성분을 수열로 직접 써 내는 과제다. (a)에서는 Gemini-1.5-Flash(하늘색)가 통계적 분해(빨강)와 비슷한 높이다. 그러나 (b)에서는 LLM의 오차가 훨씬 크고, (c)에서는 LLM의 출력(보라)이 정답(회색)을 따라가지 못한 채 중간에서 끊긴다("LLM output ended"). 출처: 논문 Figure 6
+
+- 위 그림의 (a)를 보면, LLM은 statistical decomposition과 거의 유사한 성능으로, decomposed component가 time-series에 존재하는지를 탐지할 수 있었다.
+- 그러나 이를 generation할 때는 매우 저조한 성능을 보였다((b), (c)). 이를 통해 decomposition을 수행하는 external tool이 필요함을 확인했다.
 - 그럼에도 LLM이 decomposed component의 존재를 탐지하는 데는 성공했으므로, external decomposition tool을 언제 적용할지를 LLM이 결정하게 하는 것은 유의미할 것으로 보인다.
 
 **4.2.3 Index-Free vs. Index-Aware**
 
 - 기존 연구들에 따르면 input token이 길면 LLM의 performance가 떨어진다고 하며, 이 때문에 index-free prompt를 선호하는 연구들도 있다.
     - 이러한 이유로, index-free와 index-aware 방식을 GT-provided setting에서 비교한다.
-- Table 4를 보면, LLM은 index-free 상황에서 더 나쁜 성능을 보였다.
+
+![Gemini-1.5와 Qwen-2.5에서 baseline, index-free, index-aware prompt의 token 수, inference time, 탐지 성능](../assets/img/papers/2026-03-23-llm-tsad-delving/table4-index-free-vs-aware.webp)
+
+Index-free와 Index-aware 줄은 둘 다 정답 anomaly를 알려 준(GT ✓) 설정이고, 차이는 값에 index를 붙였느냐뿐이다. Input token은 약 5,100개에서 약 10,000개로 늘지만, F1은 Gemini에서 27.74 → 62.83, Qwen에서 20.33 → 60.16이 된다. 출처: 논문 Table 4
+
+- 위 표를 보면, LLM은 index-free 상황에서 더 나쁜 성능을 보였다.
 - index-aware prompt는 `(0, 0.3), (1, 0.5), …`처럼 값마다 index가 붙어 input token이 약 2배로 늘어나는데도, localization accuracy는 상승한 것이다.
-- input length는 inference time에도 영향을 미치지만, 실질적으로 wall-clock latency를 좌우하는 것은 output token의 수이므로 큰 차이는 없다.
+- input length는 inference time에도 영향을 미치지만, 실질적으로 wall-clock latency를 좌우하는 것은 output token의 수이므로 큰 차이는 없다. Gemini의 평균 inference time은 0.87초에서 1.20초가 된다.
 - 단, Qwen의 경우에는 index-free prompt가 때때로 verbose/rambling output을 생성하기도 했다(Appendix Figure 19).
-    - 이 때문에 decoding length와 inference time이 상당히 늘어나기도 했다.
+    - 이 때문에 decoding length와 inference time이 상당히 늘어나기도 했다. 표에서 Qwen의 index-free 줄은 평균 output token이 573.05개, inference time이 29.79초로, index-aware(59.01개, 6.45초)보다 오히려 길다.
     - 논문은 원인을 정확히 분석하지는 못했으나, positional index가 없어서 model이 따라갈 수 있는 구조가 명확히 제시되지 못했기 때문일 수 있다고 본다.
 - 결과적으로, index token을 추가하는 것은 input overhead가 매우 적으면서도 TSAD 성능을 향상할 수 있는 효과적인 방안이다.
 
@@ -402,9 +461,14 @@ Contributions는 다음과 같다.
 - 공정한 비교를 위해, anomaly label을 직접 예측하는 LLM-based method에 맞춰 모든 모델에 label-based evaluation metric을 적용한다.
 - conventional model에 대해서는 percentile, MAD, EVT-POT을 모두 적용해 보고 가장 좋은 성능이 나오는 방법으로 보고했다.
 - 실험에 드는 전체 cost를 줄이기 위해, TSB-AD-U benchmark에서 8개의 category를 선택하고 거기서 evaluation set을 골랐다. 이때 길이가 짧은 것 위주로 선택했다.
-- Figure 7은 이 실험의 결과를 보여 준다. 결과는 정확도와 속도로 나누어 읽어야 한다.
+
+![TSB-AD-U에서 기존 모델 16개, 이 논문의 방법, AnomLLM의 평균 F1 score와 평균 inference time](../assets/img/papers/2026-03-23-llm-tsad-delving/fig7-conventional-comparison.webp)
+
+빨간 막대가 이 논문의 방법(GPT-4o), 하늘색 막대가 AnomLLM(GPT-4o), 회색 막대가 anomaly score를 내는 기존 모델 16개다. 왼쪽(F1)에서 빨간 막대가 가장 높고, 오른쪽(inference time)에서도 빨간 막대가 가장 높다. 가장 정확하지만 가장 느리다는 뜻이다. 출처: 논문 Figure 7
+
+- 위 그림이 이 실험의 결과다. 결과는 정확도와 속도로 나누어 읽어야 한다.
     - 정확도: 이 논문의 LLM-based method가 conventional method들보다 높은, benchmark에서 가장 높은 평균 F1 score를 기록했다. domain-specific training 없이도 reasonable한 성능을 낸다는 것이다.
-    - 속도: anomaly segment를 textual description으로 decoding하는 과정의 overhead 때문에 inference speed는 매우 느리다.
+    - 속도: anomaly segment를 textual description으로 decoding하는 과정의 overhead 때문에 inference speed는 매우 느리다. 오른쪽 그림에서 ML/DL baseline은 막대가 바닥에 붙어 있고, 같은 zero-shot인 FM baseline(Chronos, TimesFM, Lag-Llama)도 느린 편이지만 이 논문의 방법은 그보다도 느리다.
 - 이러한 속도의 한계는 real-world scenario, 특히 실시간 환경에 적용할 때의 bottleneck이 될 수 있다.
 
 #### 5.2 Excluding known anomalies using context
@@ -415,9 +479,17 @@ Contributions는 다음과 같다.
 - 하지만 이는 true anomaly detection이라기보다는 pattern recognition에 더 가깝다.
 - 또한 real-world scenario는 이전에 보지 못한 unseen anomaly의 탐지를 요구하므로, 이미 알려진 패턴은 관심 대상이 아닐 수 있다.
 - context를 알려진 anomaly를 찾는 데 쓰면 그러한 specific pattern 쪽으로 bias가 생길 수 있다. 그래서 이 논문은 context를 알려진 anomaly를 제외하는 데 쓴다.
-- Figure 8은 forecasting에 주로 사용되는 ECL, ETTh2 데이터에 대한 qualitative result를 보여 준다. 여기에 표시된 anomaly들은 conventional model이 흔히 찾아내는 것들이다.
-- context가 제공되지 않으면, LLM은 conventional model과 유사하게 동작하며 abrupt dip이나 flat pattern을 anomaly로 판단한다.
+
+![Electricity와 ETTh2에서 context 없이, temporal context를 주고, pattern context를 주고 탐지한 anomaly 구간](../assets/img/papers/2026-03-23-llm-tsad-delving/fig8-context-filtering.webp)
+
+주황, 초록, 빨강 띠는 각각 context 없이, temporal context를 주고, pattern context를 주고 LLM이 anomaly라고 답한 구간이다. 빨간 타원으로 표시한 곳((a)의 급락, (b)의 평평한 구간)에는 주황 띠만 있고, 다른 anomaly에는 세 띠가 모두 남아 있다. 아래 상자가 실제로 준 context다. 출처: 논문 Figure 8
+
+- 위 그림은 forecasting에 주로 사용되는 ECL, ETTh2 데이터에 대한 qualitative result를 보여 준다. 여기에 표시된 anomaly들은 conventional model이 흔히 찾아내는 것들이다.
+- context가 제공되지 않으면(주황), LLM은 conventional model과 유사하게 동작하며 abrupt dip이나 flat pattern을 anomaly로 판단한다.
 - 그러나 temporal context와 prior knowledge of expected time-series behavior가 제공되면, LLM은 explainable anomaly를 filter out할 수 있다.
+    - (a)에서는 "2월 7일 저녁에 일시적인 전력 사용 제한이 있었다"(temporal context) 또는 "갑작스러운 시스템 점검으로 예고 없이 사용량이 1300 아래로 제한되는 일이 가끔 있다"(pattern context)는 한 문장을 주자 그 급락을 anomaly에서 뺐다.
+    - (b)에서는 "매월 말에 점검을 위해 sensing system이 중단된다", "평평한 패턴은 system shutdown으로 생긴 결측값을 처리한 결과일 수 있다"는 문장으로 평평한 구간을 뺐다.
+    - 두 경우 모두 context로 설명되지 않는 다른 anomaly는 그대로 남는다(그림의 "Preserved Predictions").
 - 이는 LLM의 강력한 장점을 보여 준다.
     - LLM은 natural language context를 직접 inference에 반영할 수 있으며,
     - interpretable context-aware filtering을 별도의 rule-based system이나 low-level code 구현 없이도 수행할 수 있다.
@@ -435,12 +507,21 @@ Contributions는 다음과 같다.
 
 **Our prompts.**
 
-이 논문은 0shot-Text와 0shot-Text-Vision 두 가지 prompt로 테스트를 수행한다.
+이 논문은 0shot-Text와 0shot-Text-Vision 두 가지 prompt로 테스트를 수행한다. 두 prompt는 거의 같고, 이미지를 함께 본다는 문구가 있느냐만 다르다.
+
+![0shot-Text-Vision prompt 전문과 응답 형식](../assets/img/papers/2026-03-23-llm-tsad-delving/prompt-0shot-text-vision.webp)
+
+`<history>` 안에 시계열 전체가 (index, value)로 한 줄씩 들어가고, 응답은 `[(start, end), …]` 형식의 list다. 출처: 논문 Figure 13
 
 - 0shot-Text-Vision의 주요 특징
     - time-series의 value를 (index, value) 형태로 넣어 준다.
-    - 최대 5개의 anomaly가 존재한다고 설명한다. 이렇게 제시하는 이유는 데이터의 특징 때문인가?
-    - 제시한 이미지를 고려하여 찾으라고 말한다.
+    - 최대 5개의 anomaly가 존재한다고 설명한다("Assume there are up to 5 anomalies."). 이렇게 제시하는 이유는 데이터의 특징 때문인가?
+    - 제시한 이미지를 고려하여 찾으라고 말한다("considering the plotted image").
+
+![0shot-Text prompt 전문과 응답 형식](../assets/img/papers/2026-03-23-llm-tsad-delving/prompt-0shot-text.webp)
+
+위 prompt에서 이미지에 관한 두 구절("along with a plotted time-series image", "considering the plotted image")만 빠져 있다. 출처: 논문 Figure 13
+
 - 0shot-Text의 주요 특징
     - time-series의 value를 (index, value) 형태로 넣어 준다.
     - 여기서도 마찬가지로 최대 5개의 anomaly가 존재한다고 설명한다.
@@ -452,9 +533,16 @@ Contributions는 다음과 같다.
 
 **D.5 Index-free vs Index-aware experiments in Section 4.2**
 
+4.2.3절의 실험(정답 anomaly를 알려 주고 위치만 찾게 하는 실험)에 쓴 index-aware prompt의 예다.
+
+![정답 anomaly의 값을 알려 주는 index-aware text prompt와 모델의 응답 예시](../assets/img/papers/2026-03-23-llm-tsad-delving/fig18-index-aware-gt-prompt.webp)
+
+맨 위가 (index, value)로 적은 시계열의 끝부분이고, 가운데의 "anomaly data 1 ~ 3"이 정답 anomaly 구간의 값을 그대로 알려 주는 부분이다. anomaly data 3의 0.74, 0.73, 0.78, …은 위 텍스트의 (984, 0.74), (985, 0.73), (986, 0.78), …과 같은 값이고, 모델의 응답에도 984 ~ 999가 들어 있다. 출처: 논문 Figure 18
+
 - prompt의 주요 특징
     - 최대 5개의 anomaly가 존재한다고 설명한다.
     - anomaly data에 대한 reference(anomaly에 해당하는 값의 나열)를 넣어 준다.
+    - 값마다 index가 붙어 있으므로, 모델은 알려 준 값이 나오는 자리를 찾아 그 index를 읽기만 하면 된다. Index-free prompt에서는 같은 일을 하려면 값의 개수를 세어야 한다.
 
 ## 참고 자료
 

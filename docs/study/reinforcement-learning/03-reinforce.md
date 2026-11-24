@@ -18,7 +18,19 @@ tags: [강화학습, Policy Gradient, REINFORCE, Monte Carlo, Stochastic Policy]
 - **Value-based (DQN)**: objective function을 두고 Value Function을 잘 근사한 뒤, 그 값이 가장 큰 action을 고른다. policy는 명시적으로 존재하지 않는다. 학습된 Q값을 보고 greedy하게 고를 뿐이다.
 - **Policy-based**: 특정한 값(Q)을 찾는 것이 목표가 아니다. policy $p(a_t \mid s_t)$ 자체를 찾는다. 앞에서는 policy를 $\epsilon$-greedy나 greedy로 고정했지만, 이제는 state마다 action을 고르는 분포를 직접 찾는다.
 
-분포를 찾으려면 분포의 형태는 미리 정해야 한다. 예를 들어 Gaussian policy라면, 신경망에 $s_t$를 넣었을 때 그 state에서의 policy를 이루는 parameter인 평균 $\mu$와 표준편차 $\sigma$가 나온다. 그리고 그 분포에서 action 하나를 뽑는다. 분포를 예측하고 거기서 action을 sampling한다는 것이 Policy-based 방법의 큰 특징이다.
+분포를 찾으려면 분포의 형태는 미리 정해야 한다. 가장 흔한 선택이 Gaussian이다.
+
+![평균과 표준편차로 정해지는 Gaussian policy](../../assets/img/study/reinforcement-learning/03-reinforce/gaussian-policy.webp)
+
+*가로축은 action $a_t$다. 종 모양의 중심이 평균 $\mu$, 퍼진 정도가 표준편차 $\sigma$이고, 이 두 숫자만 정하면 분포 전체가 정해진다.*
+
+Gaussian policy는 위 그림처럼 "$\mu$ 근처의 action을 가장 자주 뽑고, 멀어질수록 드물게 뽑는다"는 규칙이다. 분포의 모양이 $\mu$와 $\sigma$ 두 숫자로 정해지므로, 신경망은 action을 직접 내놓는 대신 이 두 숫자를 내놓으면 된다.
+
+![state를 받아 평균과 표준편차를 내놓는 policy network](../../assets/img/study/reinforcement-learning/03-reinforce/policy-network.webp)
+
+*신경망(NN)에 $s_t$를 넣으면 그 state에서의 policy를 이루는 parameter $\mu$와 $\sigma$가 나온다.*
+
+신경망에 $s_t$를 넣으면 그 state에서의 policy를 이루는 parameter인 평균 $\mu$와 표준편차 $\sigma$가 나오고, 그렇게 정해진 분포에서 action 하나를 뽑는다. 분포를 예측하고 거기서 action을 sampling한다는 것이 Policy-based 방법의 큰 특징이다. 연속적인 policy를 다루기에도 좋다.
 
 ## 왜 Policy-based인가
 
@@ -26,20 +38,27 @@ tags: [강화학습, Policy Gradient, REINFORCE, Monte Carlo, Stochastic Policy]
 
 DQN은 action마다 Q값을 하나씩 출력하므로 action이 연속적이면 쓸 수 없다. 반면 policy가 Gaussian이라면 평균과 분산만 알면 연속적인 action을 얼마든지 뽑을 수 있다.
 
-Q를 $a_t$까지 입력으로 받는 함수로 근사한다 해도 문제가 남는다. 어떤 state $s_t$에서 $a_t$에 따른 Q값이 봉우리가 여러 개인 곡선이라고 하자. 여기서 Q가 최대인 $a_t$를 찾는 것부터가 하나의 최적화 문제가 된다. gradient 기반으로 찾으려 하면, Q가 이렇게 굴곡진 함수일 때 local maximum에 갇힐 가능성이 크다. 즉 action space가 연속적이라는 이유만으로 "max Q 찾기"가 따로 풀어야 할 문제가 된다.
+Q를 $a_t$까지 입력으로 받는 함수로 근사한다 해도 문제가 남는다.
+
+![연속적인 action에 대한 Q값 곡선과 최댓값의 위치](../../assets/img/study/reinforcement-learning/03-reinforce/q-over-continuous-action.webp)
+
+*빨간 곡선은 어떤 state $s_t$에서 action $a_t$에 따른 Q값이다. 봉우리가 여러 개이고, 파란 선이 가장 높은 봉우리의 위치다.*
+
+어떤 state $s_t$에서 $a_t$에 따른 Q값이 위 그림의 빨간 곡선처럼 생겼다고 하자. action이 몇 개뿐이라면 Q값을 하나씩 비교해 가장 큰 것을 고르면 되지만, action이 연속적이면 비교할 후보가 무한히 많다. 파란 선의 위치, 곧 Q가 최대인 $a_t$를 찾는 것부터가 하나의 최적화 문제가 된다. gradient 기반으로 찾으려 하면, Q가 이렇게 굴곡진 함수일 때 왼쪽의 낮은 봉우리 같은 local maximum에 갇힐 가능성이 크다. 즉 action space가 연속적이라는 이유만으로 "max Q 찾기"가 따로 풀어야 할 문제가 된다.
 
 ### 2. Stochastic Policy를 찾을 수 있다
 
 $\epsilon$-greedy는 완전히 stochastic하다고 말하기 어렵다. $\epsilon$이 있더라도 본질은 greedy action이기 때문이다. policy의 분포를 찾고 거기서 action을 뽑아야 진짜 stochastic한 것이다.
 
-다음과 같은 격자 환경을 생각해 보자. 윗줄의 다섯 칸이 state이고, 아랫줄에는 함정(Die)과 목표(Goal)가 있다.
+결정적인 policy로는 풀 수 없는 문제가 실제로 있다. 다음과 같은 격자 환경을 생각해 보자.
 
-| $s_0$ | $s_1$ | $s_2$ | $s_3$ | $s_4$ |
-|:---:|:---:|:---:|:---:|:---:|
-| Die | (벽) | Goal | (벽) | Die |
+![서로 구분되지 않는 두 state가 있는 격자 환경](../../assets/img/study/reinforcement-learning/03-reinforce/partially-observable-grid.webp)
 
-- agent가 관측하는 state는 상하좌우에 벽이 있는지 여부뿐이라고 하자. 시작 위치는 $s_0 \sim s_4$ 중 하나다.
-- 그러면 $s_1$과 $s_3$은 위아래가 막혀 있고 좌우가 열려 있어 서로 구분되지 않는 같은 state가 된다. 이런 상황을 partially observable이라고 한다.
+*윗줄의 다섯 칸 $s_0 \sim s_4$가 state이고, 아랫줄에는 함정(Die) 둘과 목표(Goal)가 있다. 빨간 선으로 이은 $s_1$과 $s_3$은 agent에게 똑같이 보이는 칸이다.*
+
+- agent가 관측하는 state는 그림 위쪽에 적힌 대로 상하좌우에 벽이 있는지 여부뿐이라고 하자. 시작 위치는 $s_0 \sim s_4$ 중 하나다.
+- 그러면 $s_1$과 $s_3$은 위아래가 막혀 있고 좌우가 열려 있어 서로 구분되지 않는 같은 state가 된다. 그림에서 빨간 선으로 이어 둔 두 칸이다. 이런 상황을 partially observable이라고 한다.
+- 그런데 두 칸의 정답은 반대다. Goal은 $s_2$ 아래에 있으므로 $s_1$에서는 오른쪽으로, $s_3$에서는 왼쪽으로 가야 한다.
 - 만약 $Q(s_1, \text{left}) > Q(s_1, \text{right})$로 학습되었다면, $s_1$에서는 반드시 $s_0$으로 간다. 학습이 끝나 exploitation만 한다면 $s_0$에서는 다시 $s_1$로 돌아오고, 이 둘 사이를 계속 오간다. $s_3$에서는 왼쪽이 정답이므로, $s_3$에 맞춰진 결과라고 볼 수 있다.
 - 반대로 $Q(s_1, \text{left}) < Q(s_1, \text{right})$라면 이번에는 $s_3 \rightarrow s_4 \rightarrow s_3 \rightarrow \cdots$가 반복된다.
 
@@ -59,13 +78,23 @@ $$
 p(\tau) = p(s_0) \prod_{t=0}^{\infty} p(a_t \mid s_t) \, p(s_{t+1} \mid s_t, a_t)
 $$
 
-DQN에서는 Q를 알아내기 위해 Q를 parameterize했다. Policy-based에서는 policy를 parameterize하고, 이를 $p_\theta(a_t \mid s_t)$로 적는다. network $\theta$는 하나이고, 입력 state가 달라지면 출력되는 policy가 달라진다.
+DQN에서는 Q를 알아내기 위해 Q를 parameterize했다. Policy-based에서는 policy를 parameterize하고, 이를 $p_\theta(a_t \mid s_t)$로 적는다.
+
+![parameter θ를 가진 network가 state에서 분포의 parameter를 내놓는 구조](../../assets/img/study/reinforcement-learning/03-reinforce/parameterized-policy.webp)
+
+*가운데 상자가 weight $\theta$를 가진 network다. 출력은 분포의 parameter이며, 여기서는 Gaussian을 골랐지만 다른 분포여도 된다.*
+
+위 그림에서 학습으로 바뀌는 것은 가운데 상자의 $\theta$뿐이다. network $\theta$는 하나이고, 입력 state가 달라지면 출력되는 $\mu$와 $\sigma$, 곧 policy가 달라진다. 출력의 형태는 고른 분포에 따라 달라질 수 있다.
 
 $$
 J_\theta = \int_\tau G_0 \, p_\theta(\tau) \, d\tau
 $$
 
-목표가 최대화이므로 gradient ascent를 쓴다.
+![θ에 따른 objective J의 곡선과 현재 위치](../../assets/img/study/reinforcement-learning/03-reinforce/objective-over-theta.webp)
+
+*가로축은 $\theta$, 빨간 곡선은 그 $\theta$로 얻는 $J_\theta$다. 파란 점이 현재의 $\theta$이고, 곡선이 높아지는 쪽으로 옮겨 가야 한다.*
+
+$\theta$를 바꾸면 policy가 바뀌고, policy가 바뀌면 기대되는 return $J_\theta$가 바뀐다. 위 그림은 이 관계를 곡선으로 그린 것이다. 지금 서 있는 곳이 파란 점이라면, 그 자리에서 곡선의 기울기를 구해 오르막 쪽으로 $\theta$를 조금 옮기면 된다. loss를 줄이는 것이 아니라 return을 키우는 것이 목표이므로 gradient descent가 아니라 gradient ascent를 쓴다.
 
 $$
 \theta \leftarrow \theta + \alpha \cdot \nabla_\theta J_\theta

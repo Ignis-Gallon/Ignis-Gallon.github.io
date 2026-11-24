@@ -71,9 +71,24 @@ DTF-net 논문이 다루는 방법들을 계열별로 정리했다. 한계는 �
 | Clustering | TICC | 군집으로 묶인 구간마다 sparse한 Gaussian inverse covariance 행렬을 만든다 | 군집의 수를 hyperparameter로 미리 정해야 한다. 사전 지식이 필요하고 정해진 수의 change point만 찾는다 |
 | GP, Bayesian | ADAGA | Gaussian process의 kernel로 평균과 공분산 구조를 정한다 | kernel의 종류에 민감하다. 이것도 사전 지식이다 |
 
-몇 가지 덧붙인다.
+표만으로는 각 방법이 실제로 어떤 지점을 고르는지 감이 오지 않는다. 논문은 같은 시계열에 여러 방법을 돌려 고른 지점을 그림으로 보여 준다. 먼저 통계적 검정이다.
 
-- **통계적 검정**: 논문은 이 방법들이 offline 방식이라는 점을 한계로 든다. 시점을 옮겨 가며 앞뒤 두 구간을 비교하는데, 알고리즘마다 자기 규칙에 따라 지점을 고르기 때문에 불규칙한 지점들이 나오고, 이 지점들로는 추세를 만들기 어렵다는 것이다. 각 검정의 내용은 [4편](04-change-point-terms.md)에 정리했다.
+![통계적 검정이 고른 structural break point](../../assets/img/study/trend-filtering-cpd/03-change-point-detection-overview/fig6a-statistical-tests.webp)
+
+*회색 선이 시계열이고, 표식이 세 검정(ADF 빨강, Chow 파랑, CUSUM 초록)이 고른 지점이다. 지점이 앞쪽 100 이전에 몰려 있고 나머지는 띄엄띄엄 흩어져 있다. 출처: DTF-net 논문 Figure 6(a)*
+
+논문은 이 방법들이 offline 방식이라는 점을 한계로 든다. 시점을 옮겨 가며 앞뒤 두 구간을 비교하는데, 알고리즘마다 자기 규칙에 따라 지점을 고르기 때문에 위 그림처럼 불규칙한 지점들이 나온다. 한곳에 몰린 점과 드문드문 떨어진 점을 이어서는 회색 선의 굴곡을 따라가는 추세를 만들기 어렵다. 각 검정의 내용은 [4편](04-change-point-terms.md)에 정리했다.
+
+다음은 CPD 알고리즘들이다.
+
+![CPD 알고리즘이 고른 change point](../../assets/img/study/trend-filtering-cpd/03-change-point-detection-overview/fig6b-cpd-algorithms.webp)
+
+*같은 시계열에 ADAGA(빨강), TICC(파랑), KS(초록), BOCPD(보라)를 적용한 결과다. 통계적 검정보다 지점이 고르게 퍼져 있지만, 방법마다 고르는 위치와 개수가 다르다. 출처: DTF-net 논문 Figure 6(b)*
+
+논문에 따르면 이 그림은 ETTh1 데이터셋에서 CPD 알고리즘들이 탐지한 지점을 보여 주며, 이들이 주로 잡는 것은 평균이 바뀌는 지점(mean shift)이다. 이 점이 왜 문제가 되는지는 아래의 "CPD는 왜 trend filtering을 대신하지 못하는가"에서 다룬다.
+
+계열별로 몇 가지 덧붙인다.
+
 - **Segmentation**: 구간 단위로 나누는 방법은 구간 안에 있는 중요한 change point를 놓칠 수 있다. 구간 안은 모두 같은 분포라고 보기 때문일 것이라고 이해했다.
 - **GP 기반 방법**: Gaussian process는 mean-square differentiable한 함수로 매끄러움을 근사하기 때문에, 매끄럽지 않은 변화(non-smoothness)를 잡아내는 데 한계가 있다.
 
@@ -105,15 +120,49 @@ $D$가 기준값보다 크면 귀무가설을 기각해 두 표본이 다른 분
 
 ## CPD는 왜 trend filtering을 대신하지 못하는가
 
-DTF-net 논문은 합성 데이터 실험에서 CPD와 anomaly detection(AD) 알고리즘을 trend filtering 방법들과 함께 비교하고, 두 계열이 trend filtering에는 적합하지 않다고 결론 내린다. 처음에는 이 부분이 납득되지 않았다.
+DTF-net 논문은 합성 데이터 실험에서 CPD와 anomaly detection(AD) 알고리즘을 trend filtering 방법들과 함께 비교하고, 두 계열이 trend filtering에는 적합하지 않다고 결론 내린다.
+
+먼저 실험이 무엇을 재는지부터 본다. Trend filtering 방법을 정량적으로 비교하기는 어렵다. 실제 데이터에서는 진짜 추세가 무엇인지 알 수 없고, 어디가 abrupt change인지 label을 붙이기도 어렵기 때문이다. 그래서 논문은 정답을 아는 합성 신호를 직접 만든다.
+
+![abrupt change 11개를 넣은 합성 데이터](../../assets/img/study/trend-filtering-cpd/03-change-point-detection-overview/fig3-synthetic-data.webp){ width="460" }
+
+*점 1,000개로 된 합성 신호. 파란 원 11개가 일부러 넣은 abrupt change다. 100과 800 부근에서 값이 -2, -5 근처로 급락하고, 500에서 700 사이에서는 평균이 0에서 4로 옮겨 가며 분산이 커지고, 800부터 1000까지는 sine 한 주기가 이어진다. 여기에 표준편차 0.2의 Gaussian 노이즈를 더했다. 출처: DTF-net 논문 Figure 3*
+
+각 방법이 뽑은 추세가 이 신호에 얼마나 가까운지를 MSE와 MAE로 잰다. 시퀀스 전체(full-sequence)에서 한 번, abrupt change가 있는 구간(abrupt-sequence)만 떼어서 한 번 잰다.
+
+![합성 데이터에서의 방법별 MSE와 MAE](../../assets/img/study/trend-filtering-cpd/03-change-point-detection-overview/table1-synthetic-results.webp)
+
+*행은 방법으로, 위에서부터 CPD, AD, trend filtering(TF) 계열이다. 왼쪽 두 열이 전체 시퀀스, 오른쪽 두 열이 abrupt change 구간의 오차다. CPD 계열의 MSE가 1.0에서 7.0 사이인 반면 맨 아래 DTF-net은 0.03 안팎이라는 점, 그리고 DCdetector의 MSE가 전체 시퀀스에서는 0.0094로 작지만 abrupt 구간에서는 3.63으로 커진다는 점을 보면 된다. 출처: DTF-net 논문 Table 1*
+
+표에서 CPD 계열(ADAGA, RED-SDS)의 오차는 HP filter(MSE 0.23 안팎)나 DTF-net보다 훨씬 크다. AD 계열도 DCdetector의 전체 시퀀스 값을 빼면 마찬가지다. 즉 이 방법들이 고른 지점으로 만든 추세는 원본에서 멀다. TF 계열 안에서도 차이가 있다. EMD와 Median은 추세가 과도하게 매끄러워 오차가 크고, Wavelet과 $\lambda$가 작은 $\ell_1$은 오차가 0에 가깝지만 이는 노이즈까지 따라간(overfit) 결과다.
+
+CPD와 AD의 결과는 처음에는 납득되지 않았다.
 
 > CPD는 abrupt change, structural break, gradual change를 모두 포함하는 change point를 찾는 방법이다. 그렇다면 abrupt change를 찾아 추세를 만드는 일에서도 어느 정도는 성능이 나와야 하지 않는가?
 
 논문의 설명을 따라가며 정리한 답은 다음과 같다.
 
-- **CPD가 찾는 지점**: 확률 기반 CPD 알고리즘은 평균이 바뀌는 구간에서 주로 그 변화의 중간 지점(midpoint)을 찾는다. 급격한 변화가 시작되는 꼭짓점(vertex)은 분산의 흔들림(variance perturbation)으로 드러나는 지점인데, 확률 기반 알고리즘은 이를 잘 감지하지 못한다. extreme value는 outlier로 취급해 버린다.
-- **그 결과**: CPD가 찾은 지점들을 선형 보간해 추세를 만들면, 꼭짓점이 빠져 있으므로 추세가 과도하게 매끄러워진다. 논문은 BOCPD와 ADAGA가 실제로 mean shift의 중간 지점을 중심으로 잡는다고 보인다.
-- **AD가 찾는 지점**: anomaly detection은 extreme value를 잡아낸다는 점에서 DTF-net의 목표와 닮은 면이 있다. 그러나 이상한 점을 지나치게 많이 골라내고, distribution shift의 중간 지점은 잡지 못한다. 논문이 비교한 방법은 TimesNet, Anomaly Transformer, DCdetector다. Anomaly Transformer는 Gaussian kernel의 매끄러움 때문에 abrupt change를 제대로 잡지 못하고, DCdetector는 전체 시퀀스 기준으로는 잘 동작하지만 abrupt change가 있는 구간만 놓고 평가하면 성능이 낮다.
+**CPD가 찾는 지점.** 핵심은 아래 그림 한 장에 담겨 있다. 한 시계열 안에는 성격이 다른 두 종류의 지점이 있다.
+
+![CPD가 찾는 지점과 trend filtering에 필요한 지점](../../assets/img/study/trend-filtering-cpd/03-change-point-detection-overview/fig6c-cpd-limitation.webp){ width="520" }
+
+*노란 띠가 구간별 평균 수준이다. 초록 원(Mean)은 평균 수준이 한 띠에서 다음 띠로 넘어가는 길목, 곧 변화의 중간 지점(midpoint)이다. 빨간 원(Var)은 값이 뾰족하게 솟거나 꺼지는 꼭짓점(vertex)이다. 출처: DTF-net 논문 Figure 6(c)*
+
+확률 기반 CPD 알고리즘은 평균이 바뀌는 구간에서 주로 초록 원, 곧 변화의 중간 지점을 찾는다. 급격한 변화가 시작되는 빨간 원은 평균이 아니라 분산의 흔들림(variance perturbation)으로 드러나는 지점인데, 확률 기반 알고리즘은 이를 잘 감지하지 못한다. extreme value는 outlier로 취급해 버린다.
+
+**그 결과.** 추세를 원본에 가깝게 그리려면 선이 꺾여야 하는 곳은 빨간 원이다. CPD가 찾은 초록 원들만 선형 보간해 추세를 만들면 꼭짓점이 빠져 있으므로 추세가 과도하게 매끄러워진다. 논문은 BOCPD와 ADAGA가 실제로 mean shift의 중간 지점을 중심으로 잡는다는 것을 아래 그림으로 보인다.
+
+![ADAGA와 BOCPD가 고른 지점으로 만든 추세](../../assets/img/study/trend-filtering-cpd/03-change-point-detection-overview/fig7-cpd-trends.webp)
+
+*검은 선이 원본, 빨간 점이 알고리즘이 고른 지점, 색 선이 그 점들을 직선으로 이은 추세다. 왼쪽 ADAGA는 고른 점이 적어 300 이후가 수평선 하나로 뭉개진다. 오른쪽 BOCPD는 점이 더 많지만 280 부근의 봉우리와 370 부근의 골처럼 뾰족한 곳을 선이 가로질러 지나간다. 출처: DTF-net 논문 Figure 7(b), (c)*
+
+**AD가 찾는 지점.** Anomaly detection은 extreme value를 잡아낸다는 점에서 DTF-net의 목표와 닮은 면이 있다. 그러나 이상한 점을 지나치게 많이 골라내고, distribution shift의 중간 지점은 잡지 못한다. 논문이 비교한 방법은 TimesNet, Anomaly Transformer, DCdetector다.
+
+![anomaly detection 방법이 고른 지점으로 만든 추세](../../assets/img/study/trend-filtering-cpd/03-change-point-detection-overview/fig7-anomaly-detection.webp){ width="520" }
+
+*위에서부터 논문의 (d) TimesNet, (e) Anomaly Transformer, (f) DCdetector 패널이다. 맨 위는 극단적인 점 몇 개만 골라 추세가 원본과 크게 벌어지고, 아래 두 패널은 빨간 점을 훨씬 촘촘하게 고른다. 가운데 패널의 선은 80 부근의 깊은 골과 280 부근의 봉우리를 지나친다. 논문 그림에서 (e)와 (f)는 패널 제목과 범례의 이름이 서로 엇갈려 있다. 출처: DTF-net 논문 Figure 7(d), (e), (f)*
+
+TimesNet은 복잡한 패턴에 집중하는 탓에 지나치게 극단적인 이상치만 골라낸다. Anomaly Transformer는 Gaussian kernel의 매끄러움 때문에 abrupt change를 제대로 잡지 못한다. DCdetector는 위 표에서 본 것처럼 전체 시퀀스 기준으로는 잘 동작하지만 abrupt change가 있는 구간만 놓고 평가하면 성능이 낮다.
 
 논문은 이를 한 문장으로 정리한다.
 

@@ -38,12 +38,28 @@ XAI는 사람이 아니라 AI가 설명을 만들어 내고, 사람이 AI의 동
 
 ## 2. 설명 방법을 나누는 기준
 
-가장 먼저 나오는 기준은 설명의 범위다.
+가장 먼저 나오는 기준은 설명의 범위다. 입력 하나에 대한 답을 설명하느냐(local), 모델 전체를 설명하느냐(global)로 나눈다.
 
 | 구분 | 설명 대상 | 예 |
 |---|---|---|
 | Local | 개별 prediction. 입력 하나에 대해 왜 그런 결과가 나왔는지 설명한다 | 이 사진을 왜 고양이로 분류했는가 |
 | Global | 모델의 전반적인 동작. 데이터 전체에 대해 하나의 설명을 만든다 | 모델이 고양이에 대해 전반적으로 무엇을 학습했는가 |
+
+두 그림을 나란히 놓고 보면 차이가 바로 보인다.
+
+![Local explanation: 입력 하나에 대한 설명](../../assets/img/study/xai/01-xai-overview/local-explanation-diagram.webp){ width="520" }
+
+*Local. 입력 $x$ 하나가 black box 모델 $f$를 지나 출력 $\hat{y}$가 나오고, 설명 $g$는 "이 입력 하나"에 대해 만들어진다. 출처: XAI 개요 영상*
+
+![Global explanation: 모델 전체에 대한 설명](../../assets/img/study/xai/01-xai-overview/global-explanation-diagram.webp){ width="520" }
+
+*Global. 입력이 $x^{(1)}$부터 $x^{(n)}$까지 여러 개 들어가고, 설명 $g$는 입력 하나가 아니라 "모델"에 대해 하나만 만들어진다. 출처: XAI 개요 영상*
+
+Local explanation이 설명하는 "개별 prediction"이 무엇인지는 아래 그림처럼 생각하면 된다. 모델이 만드는 곡면 전체가 아니라, 빨간 원으로 표시한 점 하나하나에서 "왜 이 값이 나왔는가"를 묻는 것이다.
+
+![Local explanation은 개별 prediction을 설명한다](../../assets/img/study/xai/01-xai-overview/local-explanation-individual-prediction.webp)
+
+*곡면이 모델의 출력이고 빨간 원이 설명하려는 개별 prediction이다. 출처: 강의 "Local Explanation Methods" 슬라이드*
 
 Local explanation의 대표가 input attribution이다. 입력의 각 feature가 출력을 내는 데 기여한 정도를 계산한다. Input attribution은 다시 적용 범위에 따라 나뉜다.
 
@@ -54,9 +70,19 @@ Local explanation의 대표가 input attribution이다. 입력의 각 feature가
 
 ### LIME
 
-LIME(Local Interpretable Model-agnostic Explanations)의 아이디어는, 설명하고 싶은 입력 하나가 있을 때 그 입력 근방에서 원래 모델을 근사하는 해석 가능한 모델(interpretable model)을 찾는 것이다. 해석 가능한 모델로는 보통 선형 모델을 쓴다.
+LIME(Local Interpretable Model-agnostic Explanations)이 하려는 일은 한 문장으로 말할 수 있다. 복잡한 모델 전체를 이해하는 것은 포기하고, 설명하고 싶은 입력 하나의 **근방에서만** 원래 모델을 흉내 내는 단순한 모델을 만들어 그 단순한 모델을 읽는다. 이 단순한 모델을 해석 가능한 모델(interpretable model)이라고 하고, 보통 선형 모델을 쓴다.
 
-원래 모델의 decision boundary는 매우 복잡하게 학습되어 있겠지만, 특정 점 근방만 보면 선형 모델로 근사할 수 있다는 관점이다. 그렇게 적합한 회귀식의 계수를 읽어 모델이 그 점에서 어떻게 동작하는지 분석한다.
+왜 선형 모델인가. 선형 모델은 출력이 항들의 합이라서, 각 항 $w_i x_i$를 그대로 feature $x_i$의 기여도로 읽을 수 있기 때문이다.
+
+![선형 모델에서는 각 항이 그 feature의 기여도다](../../assets/img/study/xai/01-xai-overview/lime-linear-model-attribution.webp)
+
+*아래쪽 식에서 밑줄 친 항 하나하나가 해당 feature의 attribution이다. 출처: 강의 "Local Explanation Methods" 슬라이드*
+
+아래 그림이 LIME의 아이디어를 그대로 보여 준다. 왼쪽의 분홍색과 파란색 영역이 원래 모델이 나눈 두 클래스이고, 그 경계(decision boundary)는 구불구불하다. 하지만 설명하려는 점(굵은 빨간 십자) 주변의 원 안만 떼어 보면, 오른쪽처럼 점선 하나로 두 영역을 충분히 가를 수 있다. 이 점선이 LIME이 찾는 선형 모델이다. 점선이 원래 경계와 같은 것은 아니고 이 근방에서만 비슷하다. 그렇게 적합한 회귀식의 계수를 읽어 모델이 그 점에서 어떻게 동작하는지 분석한다.
+
+![복잡한 원래 모델을 한 점 근방에서 선형 모델로 근사한다](../../assets/img/study/xai/01-xai-overview/lime-local-approximation.webp)
+
+*왼쪽이 복잡한 원래 모델, 오른쪽이 원 안을 확대해 선형 모델로 근사한 모습이다. 출처: 강의 "Local Explanation Methods" 슬라이드*
 
 설명이 필요한 입력 $x$에 대해 LIME은 다음 objective를 최소화하는 $g$를 찾는다.
 
@@ -75,12 +101,22 @@ $$
 L(f, g, \pi_x) = \sum_{z, z'} \pi_x(z)\,\big(f(z) - g(z')\big)^2, \qquad \pi_x(z) = \exp\!\left(-\frac{D(x, z)^2}{\sigma^2}\right)
 $$
 
-절차는 네 단계다.
+식만 보면 복잡하지만 실제 절차는 네 단계다.
 
 1. 설명이 필요한 데이터를 고른다.
 2. 그 데이터를 perturbation해서 새로운 데이터셋을 만든다. Perturbation은 데이터에 의도적으로 작은 변화를 주는 것이다.
 3. 원본과 가까운 샘플일수록 큰 가중치를 준다.
 4. Objective를 최소화하는 해석 가능한 모델을 찾아 설명으로 제시한다.
+
+![LIME의 전체 절차](../../assets/img/study/xai/01-xai-overview/lime-overall-process.webp)
+
+*오른쪽 그림에서 굵은 빨간 십자가 고른 데이터(1번), 주변의 십자와 점들이 perturbation으로 만든 샘플(2번)이다. 표시가 클수록 가중치가 큰 샘플이고(3번), 점선이 그렇게 찾은 선형 모델이다(4번). 출처: 강의 "Local Explanation Methods" 슬라이드*
+
+2번과 3번을 그림으로 보면 다음과 같다. 가운데 보라색 점이 설명하려는 데이터이고, 노란 점들이 perturbation으로 새로 만든 샘플이다. 보라색 점을 중심으로 그린 동심원이 "가까움"의 기준이다. 안쪽 원에 들어온 노란 점일수록 큰 가중치를, 바깥에 있는 점일수록 작은 가중치를 받는다. 식의 $\pi_x$가 하는 일이 이것이다.
+
+![설명하려는 점 주변의 perturbation 샘플과 거리](../../assets/img/study/xai/01-xai-overview/lime-perturbed-samples-proximity.webp){ width="300" }
+
+*보라색 점이 설명 대상, 노란 점이 perturbation된 샘플, 동심원이 보라색 점에서의 거리다. 초록 상자 안에서는 검은 직선이 분홍색 영역의 굽은 경계를 대신한다. 출처: 노트에 캡처해 둔 그림*
 
 3번을 정리하다가 한 번 틀리게 이해했다. 처음에는 "예측값이 많이 변했다면 사라진 feature가 중요한 것"이라는 식으로, 가중치가 예측 결과의 변화에서 나온다고 적었다. 이것은 틀린 설명이다. 가중치는 예측 결과가 아니라 원본 샘플과 perturbation된 샘플 사이의 유사도로 정한다. 원본과 많이 다른 샘플에서는 정확히 무엇 때문에 결과가 달라졌는지 알기 어렵고, local하게 근사한다는 것이 선형회귀로 설명할 수 있는 근거이기 때문에 가까운 샘플에 높은 가중치를 주어야 한다.
 
@@ -91,14 +127,32 @@ $$
 3. 가중치는 `1 - (지워진 토큰의 비율)`로 준다. 많이 지울수록 원본과 달라졌으므로 가중치가 작아진다.
 4. 이 데이터셋에 선형 모델을 학습시키고 계수를 본다.
 
-이 예에서는 `channel!`의 계수가 가장 크게 나온다. 즉 `channel`이라는 단어가 스팸으로 판단하는 데 가장 크게 기여했다고 볼 수 있다.
+1번부터 3번까지를 한 표에 담은 것이 아래 그림이다. 한 행이 perturbation된 문장 하나다. 단어 칸의 1은 그 단어를 남겼다는 뜻, 0은 지웠다는 뜻이고, `prob`가 모델이 낸 스팸 확률, `weight`가 원본과의 가까움이다. 빨간 상자로 표시한 마지막 행이 "Christmas Song visit ;)"이다. 일곱 토큰 가운데 셋(`For`, `my`, `channel!`)을 지웠으므로 가중치는 $1 - 3/7 \approx 0.57$이다.
+
+![스팸 댓글을 perturbation해서 만든 데이터셋](../../assets/img/study/xai/01-xai-overview/lime-example-perturbation-table.webp)
+
+*`channel!` 칸이 1인 행(셋째, 넷째)은 스팸 확률이 0.99이고, 0인 행은 모두 0.17이라는 점을 보면 된다. 출처: 강의 "Local Explanation Methods" 슬라이드(C. Molnar, Interpretable Machine Learning의 예)*
+
+표만 보아도 `channel!`이 남아 있는지에 따라 확률이 갈린다는 것이 보인다. 4번에서 선형 모델을 학습시키면 이것이 계수로 드러난다.
+
+![LIME으로 얻은 단어별 계수](../../assets/img/study/xai/01-xai-overview/lime-example-result.webp)
+
+*`feature_weight`가 선형 모델의 계수다. `channel!`만 6.18이고 나머지 단어는 0이다. 출처: 강의 "Local Explanation Methods" 슬라이드(C. Molnar, Interpretable Machine Learning의 예)*
+
+`channel!`의 계수가 가장 크게 나온다. 즉 `channel`이라는 단어가 스팸으로 판단하는 데 가장 크게 기여했다고 볼 수 있다.
 
 - 장점: 다양한 모델에 쓸 수 있다.
 - 단점: proximity measure를 정하기 어렵다. Perturbation을 잘못 정하면 분포 밖(out of distribution)의 데이터를 만들게 되어 설명의 정확도가 떨어질 수 있다.
 
 ### Shapley value
 
-Shapley value는 협력 게임 이론에서 온 개념이다. 여러 플레이어가 협력해 게임에 참여하고 상금을 얻었을 때, 그 상금을 각 플레이어의 기여도에 따라 공정하게 나누는 방법이다. 머신러닝에는 다음과 같이 대응시킨다.
+Shapley value는 협력 게임 이론에서 온 개념이다. 여러 플레이어가 협력해 게임에 참여하고 상금을 얻었을 때, 그 상금을 각 플레이어의 기여도에 따라 공정하게 나누는 방법이다. 이것이 머신러닝과 어떻게 이어지는지는 아래 그림의 빨간 글씨를 따라 읽으면 된다.
+
+![협력 게임과 머신러닝 모델의 대응](../../assets/img/study/xai/01-xai-overview/shapley-game-to-ml.webp)
+
+*검은 글씨가 게임 이론의 용어, 빨간 글씨가 그에 대응하는 머신러닝의 용어다. 플레이어는 입력 feature, 게임은 예측 모델, 상금은 모델의 출력이고, 상금을 나누는 방법이 각 feature의 기여도가 된다. 출처: 강의 "Local Explanation Methods" 슬라이드*
+
+표로 옮기면 다음과 같다.
 
 | 게임 이론 | 머신러닝 |
 |---|---|
@@ -124,9 +178,25 @@ $$
 \phi_i(v) = \sum_{S \subseteq \{1, \dots, p\} \setminus \{i\}} \frac{|S|!\,(p - |S| - 1)!}{p!}\,\big(v(S \cup \{i\}) - v(S)\big)
 $$
 
-괄호 안의 $v(S \cup \{i\}) - v(S)$가 marginal contribution이다. Feature $i$가 있을 때와 없을 때의 차이다. 어떤 것의 기여도를 "그것이 있을 때와 없을 때의 차이"로 재는 것은 자연스럽다.
+식은 두 부분으로 나누어 읽으면 된다. 뒤쪽 괄호 $v(S \cup \{i\}) - v(S)$가 marginal contribution이고, 앞쪽의 합과 분수는 그것을 모든 부분집합 $S$에 대해 가중 평균한다는 뜻이다.
 
-문제는 marginal contribution이 함께 있는 feature에 따라 달라진다는 점이다. `공원 근처`, `평수`, `고양이를 키울 수 있는지` 세 feature로 집값을 예측한다고 하자.
+먼저 marginal contribution은 feature $i$가 있을 때와 없을 때의 차이다. 어떤 것의 기여도를 "그것이 있을 때와 없을 때의 차이"로 재는 것은 자연스럽다. `공원 근처`, `평수`, `고양이를 키울 수 있는지` 세 feature로 집값을 예측한다고 하자. 아래 그림에서 위 줄은 공원 근처의 50㎡ 집인데 고양이를 키울 수 없는 경우(3억 원), 아래 줄은 같은 집인데 고양이를 키울 수 있는 경우(3억 2,000만 원)다. 두 값의 차이 2,000만 원이 `고양이를 키울 수 있는지`의 marginal contribution이다.
+
+![고양이를 키울 수 있는지의 marginal contribution](../../assets/img/study/xai/01-xai-overview/shapley-marginal-contribution.webp)
+
+*나무가 `공원 근처`, 건물이 `평수`, 고양이가 `고양이를 키울 수 있는지`다. 체크는 그 조건이 있다는 뜻, X는 없다는 뜻이다. 빨간 화살표의 길이가 marginal contribution이다. 출처: 강의 "Local Explanation Methods" 슬라이드*
+
+문제는 이 차이가 함께 있는 feature에 따라 달라진다는 점이다. `평수` 정보 없이 `공원 근처`만 있으면 차이는 3,000만 원(2억 6,000만 원에서 2억 9,000만 원)이 되고, `평수`만 있으면 1,000만 원(3억 원에서 3억 1,000만 원)이 된다. 그림 아래의 빨간 밑줄 $S$가 이미 있는 feature, 검은 밑줄 $i$가 기여도를 재려는 feature다.
+
+![공원 근처만 있을 때의 marginal contribution](../../assets/img/study/xai/01-xai-overview/shapley-marginal-park-only.webp)
+
+*$S$가 `공원 근처` 하나일 때. 차이는 3,000만 원이다. 출처: 강의 "Local Explanation Methods" 슬라이드*
+
+![평수만 있을 때의 marginal contribution](../../assets/img/study/xai/01-xai-overview/shapley-marginal-area-only.webp)
+
+*$S$가 `평수` 하나일 때. 차이는 1,000만 원이다. 출처: 강의 "Local Explanation Methods" 슬라이드*
+
+세 경우를 표로 모으면 다음과 같다.
 
 | 이미 있는 feature | `고양이를 키울 수 있는지`가 만드는 차이 |
 |---|---|
@@ -134,7 +204,13 @@ $$
 | 공원 | 3,000만 원 |
 | 평수 | 1,000만 원 |
 
-그래서 Shapley value는 모든 경우를 고려한다. Feature $i$를 뺀 나머지로 만들 수 있는 모든 부분집합 $S$에 대해 marginal contribution을 구하고, 가중치를 곱해 모두 더한다. 한마디로 모든 상황에서의 기여도를 평균한 분배 방식이다.
+어느 한 경우만 골라 기여도라고 할 수는 없으므로 Shapley value는 모든 경우를 고려한다. Feature $i$를 뺀 나머지로 만들 수 있는 모든 부분집합 $S$에 대해 marginal contribution을 구하고, 가중치를 곱해 모두 더한다. 아래 그림은 나머지 feature가 셋일 때 고려해야 하는 $S$를 모두 나열한 것이다. 아무 feature도 없는 경우부터 셋이 다 있는 경우까지 여덟 가지다.
+
+![가능한 모든 feature 부분집합](../../assets/img/study/xai/01-xai-overview/shapley-all-subsets.webp){ width="620" }
+
+*강의에서 든 다른 예(`공원 근처`, `50㎡`, `2층`)로, 세 feature로 만들 수 있는 부분집합 여덟 개다. Shapley value는 이 각각에 대해 marginal contribution을 구한다. 출처: 강의 "Local Explanation Methods" 슬라이드*
+
+한마디로 Shapley value는 모든 상황에서의 기여도를 평균한 분배 방식이다.
 
 이것을 머신러닝에 그대로 적용하려면 두 가지 문제가 있다.
 
@@ -149,11 +225,23 @@ $$
 g(z') = \phi_0 + \sum_{j=1}^{M} \phi_j z'_j
 $$
 
-입력 $z'$은 원래 입력이 아니라 단순화된 입력(simplified input)이다. 각 feature가 있으면 1, 없으면 0인 이진 변수다. 입력을 9개 feature로 나누었다면, 전부 있을 때는 $z'_1, \dots, z'_9$가 모두 1이고, 4번과 5번만 있을 때는 $z'_4, z'_5$만 1이다. $\phi_0$는 모든 feature가 없을 때의 예측값이고, $\phi_j z'_j$는 $j$번째 feature가 있을 때만 그 기여도 $\phi_j$가 더해진다는 뜻이다.
+입력 $z'$은 원래 입력이 아니라 단순화된 입력(simplified input)이다. 각 feature가 있으면 1, 없으면 0인 이진 변수다. 아래 그림의 금붕어 사진처럼 입력을 9칸으로 나누어 9개 feature로 본다고 하자. 위쪽 사진처럼 9칸이 전부 있을 때는 $x'_1, \dots, x'_9$가 모두 1이다. 아래쪽 사진처럼 금붕어가 있는 4번과 5번 칸만 남기고 나머지를 검게 가리면 $z'_4, z'_5$만 1이고 나머지는 0이다. 가운데의 $h_x$는 이 0과 1의 벡터를 다시 원래 입력 공간의 사진으로 되돌리는 함수다.
+
+![원래 입력과 단순화된 입력](../../assets/img/study/xai/01-xai-overview/shap-simplified-inputs.webp)
+
+*왼쪽이 원래 입력, 오른쪽이 그에 대응하는 단순화된 입력이다. 빨간 글씨로 적힌 0이 가려진 칸이다. 출처: 강의 "Local Explanation Methods" 슬라이드*
+
+식에서 $\phi_0$는 모든 feature가 없을 때의 예측값이고, $\phi_j z'_j$는 $j$번째 feature가 있을 때만 그 기여도 $\phi_j$가 더해진다는 뜻이다.
 
 선형 모델은 그 자체로 설명이 가능하다. 계수와 값을 곱한 것이 그 feature의 기여도다. 결국 SHAP은 Shapley value를 기여도로 보는 방법이다.
 
-남은 일은 Shapley value를 실제로 구하는 것이다. 계산량이 너무 많으므로 근사해야 하고, 대표적인 방법이 **KernelSHAP**이다. 모든 부분집합을 계산하는 대신 LIME의 틀을 빌린다. Feature의 부분집합을 샘플링하고, 포함된 feature는 1, 빠진 feature는 0으로 표시한 이진 벡터를 입력으로, 그때의 모델 예측값을 출력으로 하는 선형회귀를 적합한다. 이때 LIME의 objective를 다음과 같이 설정하면 선형 모델의 계수가 Shapley value에 근사한다.
+남은 일은 Shapley value를 실제로 구하는 것이다. 계산량이 너무 많으므로 근사해야 하고, 대표적인 방법이 **KernelSHAP**이다. 모든 부분집합을 계산하는 대신 LIME의 틀을 빌린다. Feature의 부분집합을 샘플링하고, 포함된 feature는 1, 빠진 feature는 0으로 표시한 이진 벡터를 입력으로, 그때의 모델 예측값을 출력으로 하는 선형회귀를 적합한다.
+
+![KernelSHAP이 적합하는 선형회귀](../../assets/img/study/xai/01-xai-overview/kernelshap-regression.webp){ width="380" }
+
+*파란 칸은 포함된 feature(1), 회색 칸은 빠진 feature(0)다. 이런 샘플을 여러 개 모아 회귀를 적합하면 계수 $\beta$가 Shapley value에 근사한다. 출처: 노트에 캡처해 둔 그림*
+
+이때 LIME의 objective를 다음과 같이 설정하면 선형 모델의 계수가 Shapley value에 근사한다.
 
 $$
 \Omega(g) = 0, \qquad \pi_{x'}(z') = \frac{M - 1}{\binom{M}{|z'|}\,|z'|\,(M - |z'|)}, \qquad L(f, g, \pi_{x'}) = \sum_{z' \in Z} \big[f(h_x(z')) - g(z')\big]^2\,\pi_{x'}(z')
@@ -200,7 +288,7 @@ $$
 
 ## 4. Global explanation
 
-Global 방법은 모델 전체를 하나의 단위로 보고 설명한다. 입력 $x^{(1)}, \dots, x^{(n)}$과 출력 $\hat{y}^{(1)}, \dots, \hat{y}^{(n)}$ 전체에 대해 설명 하나를 만든다. 모델 전체를 다루므로 "어떻게(How)?"에 대한 설명이 많다. 모델이 어떻게 일반화되는지, 입력의 변화에 따라 어떻게 동작하는지 같은 질문이다.
+Global 방법은 모델 전체를 하나의 단위로 보고 설명한다. 2절의 두 번째 그림처럼 입력 $x^{(1)}, \dots, x^{(n)}$과 출력 $\hat{y}^{(1)}, \dots, \hat{y}^{(n)}$ 전체에 대해 설명 하나를 만든다. 모델 전체를 다루므로 "어떻게(How)?"에 대한 설명이 많다. 모델이 어떻게 일반화되는지, 입력의 변화에 따라 어떻게 동작하는지 같은 질문이다.
 
 - 복잡한 딥러닝 모델을 해석하기 쉬운 선형 모델로 축소하는 방법이 많다.
 - Rule-based 모델과 tree-based 모델이 대표적인 예다. 의사결정나무에서는 각 분기의 결정을 거슬러 올라갈 수 있으므로 모델 전체에 대한 설명 하나가 나온다.
@@ -229,11 +317,23 @@ XAI는 LIME, SHAP, LRP 가운데 하나만 보면 되는 것이 아니라 여러
 - **다변량이다.** 한 샘플 안에 여러 변수가 있고, 변수 사이의 상관관계가 복잡한 dynamics를 만든다. 변수 A가 올랐다고 해서 그것만으로 출력이 설명되지 않는다.
 - **사람에게 친숙하지 않다.** 자연어와 이미지는 사람이 보고 바로 이해할 수 있지만, 시계열은 trend나 변화를 바탕으로 해석해야 해서 한눈에 파악하기 어렵다.
 
-그래서 시계열 모델에는 설명이 더 필요하다. 입력 시계열과 예측만 보여 주는 것보다 입력, 출력, feature의 중요도를 함께 보여 주는 쪽이 개발자에게는 디버깅에, 최종 사용자에게는 신뢰에 도움이 된다.
+![다변량 시계열의 구조](../../assets/img/study/xai/01-xai-overview/ts-multivariate-nature.webp)
+
+*샘플 하나(Sample 1) 안에 변수 A, B, C의 곡선이 따로 있고, 그런 샘플이 N개 쌓여 있다. 한 시점의 값을 읽으려 해도 세 곡선을 함께 보아야 한다. 출처: 강의 "시계열 데이터에 대한 XAI 적용" 슬라이드(Spadon 외, 2021의 그림)*
+
+그래서 시계열 모델에는 설명이 더 필요하다. 아래 그림의 두 화면을 비교하면 된다. 왼쪽은 입력 시계열과 "Covid"라는 예측만 보여 준다. 오른쪽은 같은 입력 위에 어느 feature의 어느 시점이 예측에 얼마나 기여했는지를 색으로 함께 보여 준다. 오른쪽이 개발자에게는 디버깅에, 최종 사용자에게는 신뢰에 도움이 된다.
+
+![예측만 보여 주는 화면과 feature 중요도를 함께 보여 주는 화면](../../assets/img/study/xai/01-xai-overview/ts-need-for-xai.webp)
+
+*왼쪽은 입력과 예측뿐이고, 오른쪽은 feature별 중요도 heatmap이 함께 있다. 출처: 강의 "시계열 데이터에 대한 XAI 적용" 슬라이드*
 
 ### 설명의 종류
 
-시계열 XAI는 post-hoc인지 intrinsic인지 등 여러 기준으로 나눌 수 있지만, 강의에서는 설명의 단위를 기준으로 나누었다.
+시계열 XAI는 post-hoc인지 intrinsic인지 등 여러 기준으로 나눌 수 있지만, 강의에서는 설명의 단위를 기준으로 나누었다. 시계열 하나를 놓고 점 하나하나에 설명을 붙일 수도, 몇 개의 구간에 붙일 수도, 시계열 전체에 붙일 수도 있다는 것이다. 아래 그림에서 화살표와 괄호가 가리키는 범위가 왼쪽에서 오른쪽으로 갈수록 넓어지는 것을 보면 된다.
+
+![설명의 단위에 따른 시계열 XAI 분류](../../assets/img/study/xai/01-xai-overview/ts-taxonomy.webp)
+
+*맨 위의 시계열을 설명하는 네 가지 방식. Time points based는 점마다, subsequences based는 구간마다, instance based는 시계열 전체에 설명을 붙인다. 출처: 강의 "시계열 데이터에 대한 XAI 적용" 슬라이드*
 
 | 종류 | 설명 단위 | 대표 방법 |
 |---|---|---|
@@ -242,32 +342,109 @@ XAI는 LIME, SHAP, LRP 가운데 하나만 보면 되는 것이 아니라 여러
 | Instance based | 입력 전체를 하나로 | Prototype 샘플, counterfactual |
 | 그 밖 | | Rule-constrained network, Granger causal graph |
 
-**Time-point based.** 입력의 각 시점에 중요도(relevance score)를 부여한다. 센서 입력이 정상 심박인지 판별하는 모델이라면 중요한 시점은 진하게, 아닌 시점은 연하게 표시한다. 이미 개발한 모델에 설명을 나중에 붙이는 경우가 많은데, 그때 가장 쉽게 적용할 수 있는 방식이다. 여러 패키지가 지원해서 계산도 쉽다. 단점은 한눈에 보이는 것 이상의 깊은 해석이 어렵다는 것이다. 또 같은 입력이라도 방법마다 relevance가 다르게 나온다. Grad-CAM++, saliency map, SHAP이 같은 시점을 서로 다르게 평가하기도 한다. 서로 다른 방법이 준 중요도를 어떻게 해석할지가 어려운 부분이다.
+**Time-point based.** 입력의 각 시점에 중요도(relevance score)를 부여한다. 아래 그림의 왼쪽이 그 예다. 센서 입력(Sensor Input)이 정상 심박인지 판별하는 모델에 대해, 같은 입력 위에 중요한 시점은 진하게, 아닌 시점은 연하게 색을 칠했다.
 
-**Subsequence based.** 여러 입력에서 공통으로 나타나는 구간을 뽑아 분석한다. 시계열에서는 이것을 shapelet이라고 부르고, 일반적으로는 prototype이라고도 한다. 시점 단위보다 패턴을 관찰하기 쉽다.
+![Time-point based 설명: attribution과 attention](../../assets/img/study/xai/01-xai-overview/ts-time-point-based.webp)
 
-**Instance based.** 입력과 같은 길이의 샘플 단위로 설명한다. 정상 심박으로 예측했다면, 정상 심박이면서 입력과 비슷한 예시(prototype 샘플)를 보여 주는 식이다. 예시들과 입력을 비교하면 "처음에 급격히 떨어지고, 조금 오른 뒤 peak가 나타난다" 같은 전체적인 패턴이 보인다. Counterfactual도 여기에 속한다. 입력의 일부가 달랐다면 예측이 어떻게 바뀌었을지를 보여 준다. 전체적인 패턴을 파악하기에 좋지만, 눈에 띄는 패턴이 없으면 전문가의 지식이 필요하다.
+*왼쪽 세 칸은 같은 심박 입력에 Grad-CAM++, saliency map, SHAP을 적용한 결과다. 색이 진한 띠의 위치가 세 방법에서 서로 다르다는 점을 보면 된다. 오른쪽은 모델에 attention이 있을 때 attention으로 중요한 부분을 보여 주는 방식이다. 출처: 강의 "시계열 데이터에 대한 XAI 적용" 슬라이드(Jeyakumar 외, 2020과 Hsieh 외, 2021의 그림)*
 
-**그 밖.** Rule-constrained network는 규칙을 하나씩 추가했을 때 모델의 학습과 결과가 어떻게 바뀌는지로 설명한다. Granger causal graph는 feature를 노드로, feature 사이의 Granger causality를 edge로 하는 그래프를 학습해 인과관계를 보여 준다. 둘 다 특수한 모델 구조가 필요해 범용적이지 않고, 코드를 새로 구성해야 할 수 있다.
+이미 개발한 모델에 설명을 나중에 붙이는 경우가 많은데, 그때 가장 쉽게 적용할 수 있는 방식이다. 여러 패키지가 지원해서 계산도 쉽다. 모델에 attention이 있다면 그림 오른쪽처럼 attention을 이용해 입력의 어느 부분이 영향을 미쳤는지 보여 줄 수도 있다. 단점은 한눈에 보이는 것 이상의 깊은 해석이 어렵다는 것이다. 또 그림의 세 칸에서 보이듯 같은 입력이라도 방법마다 relevance가 다르게 나온다. 서로 다른 방법이 준 중요도를 어떻게 해석할지가 어려운 부분이다.
 
-같은 time-point based 설명이라도 heatmap으로 그릴 수도 있고 집계해서 feature importance로 보여 줄 수도 있다. 강의가 강조한 것은, 설명 하나만 보지 말고 여러 가지를 종합해서 보아야 한다는 점이다. 설명 방법을 적용했다고 설명이 끝나는 것이 아니라, 그 결과를 가공해 사용자가 이해할 수 있는 형태로 만드는 과정이 필요하다.
+**Subsequence based.** 여러 입력에서 공통으로 나타나는 구간을 뽑아 분석한다. 아래 그림의 오른쪽에서 Time Series 1과 Time Series 2는 전체 모양은 다르지만 굵게 그린 구간의 모양이 같다. 이 공통 구간(오른쪽 상자의 빨간 곡선)을 시계열에서는 shapelet이라고 부르고, 일반적으로는 prototype이라고도 한다. 시점 단위보다 패턴을 관찰하기 쉽다.
+
+![Subsequence based 설명: SAX와 shapelet](../../assets/img/study/xai/01-xai-overview/ts-subsequence-based.webp)
+
+*오른쪽이 shapelet의 예로, 두 시계열에서 굵게 표시한 공통 구간을 뽑아낸다. 왼쪽은 시계열을 구간별로 문자(a, b, c, d)로 바꾸어 문자열로 나타내는 SAX다. 출처: 강의 "시계열 데이터에 대한 XAI 적용" 슬라이드(Arnui와 Ahsan, 2021 등의 그림)*
+
+**Instance based.** 입력과 같은 길이의 샘플 단위로 설명한다. 아래 그림의 왼쪽에서, 정상 심박으로 예측한 Sensor Input 옆에 정상 심박이면서 입력과 비슷한 예시 셋(prototype 샘플)을 나란히 보여 준다. 예시들과 입력을 비교하면 "처음에 급격히 떨어지고, 조금 오른 뒤 peak가 나타난다" 같은 전체적인 패턴이 보인다.
+
+![Instance based 설명: prototype과 counterfactual](../../assets/img/study/xai/01-xai-overview/ts-instance-based.webp)
+
+*왼쪽은 입력과 비슷한 정상 심박 예시를 보여 주는 prototype 방식, 오른쪽은 counterfactual이다. 오른쪽 그래프의 앞부분에서 하늘색 선(정상 심박으로 예측된 원래 입력)과 분홍색 선(심근경색으로 예측이 바뀌는 입력)이 갈라진다. 출처: 강의 "시계열 데이터에 대한 XAI 적용" 슬라이드(Jeyakumar 외, 2020과 Delaney 외, 2021의 그림)*
+
+Counterfactual도 여기에 속한다. 입력의 일부가 달랐다면 예측이 어떻게 바뀌었을지를 보여 준다. 그림 오른쪽에서 두 선이 갈라지는 앞부분이 "이 부분이 이렇게 달랐다면 정상 심박이 아니라 심근경색으로 예측했을 것"이라는 설명이 된다. 전체적인 패턴을 파악하기에 좋지만, 눈에 띄는 패턴이 없으면 전문가의 지식이 필요하다.
+
+**그 밖.** Rule-constrained network는 규칙을 하나씩 추가했을 때 모델의 학습과 결과가 어떻게 바뀌는지로 설명한다. 아래 그림 왼쪽에서 검은 선이 입력 신호이고 빨간 막대와 초록 막대가 사람이 준 규칙(조건)이다. 규칙이 없는 기본 네트워크의 출력과 규칙을 준 네트워크의 출력이 어떻게 달라지는지를 비교한다. Granger causal graph는 feature를 노드로, feature 사이의 Granger causality를 edge로 하는 그래프를 학습해 인과관계를 보여 준다. 둘 다 특수한 모델 구조가 필요해 범용적이지 않고, 코드를 새로 구성해야 할 수 있다.
+
+![그 밖의 설명: rule-constrained network와 Granger causal graph](../../assets/img/study/xai/01-xai-overview/ts-other-types.webp)
+
+*왼쪽은 규칙을 주었을 때 출력이 [Pos 0.00, Neg 1.00]에서 [Pos 0.05, Neg 0.95]로 바뀌는 rule-constrained network의 예, 오른쪽은 다변량 시계열에서 Granger causal graph를 학습하는 구조다. 출처: 강의 "시계열 데이터에 대한 XAI 적용" 슬라이드*
+
+같은 time-point based 설명이라도 heatmap으로 그릴 수도 있고 집계해서 feature importance로 보여 줄 수도 있다. 아래 그림은 지금까지 나온 설명들을 한 장에 모은 것이다. 위쪽 줄이 시점별 heatmap과 예시 기반 설명, 아래쪽이 counterfactual, feature importance, prototype이다.
+
+![여러 종류의 설명을 한 장에 모은 그림](../../assets/img/study/xai/01-xai-overview/ts-various-explanations.webp)
+
+*같은 종류의 데이터에 대해서도 heatmap, counterfactual, feature importance, prototype처럼 여러 형태의 설명을 줄 수 있다. 출처: 강의 "시계열 데이터에 대한 XAI 적용" 슬라이드*
+
+강의가 강조한 것은, 설명 하나만 보지 말고 여러 가지를 종합해서 보아야 한다는 점이다. 설명 방법을 적용했다고 설명이 끝나는 것이 아니라, 그 결과를 가공해 사용자가 이해할 수 있는 형태로 만드는 과정이 필요하다. 설명을 보는 사람도 한 종류가 아니다. 아래 그림의 왼쪽처럼 개발자, 도메인 전문가, 최종 사용자가 각자 다른 자리에서 같은 모델의 설명을 본다.
+
+![시계열 XAI의 이해관계자](../../assets/img/study/xai/01-xai-overview/ts-key-takeaways.webp)
+
+*왼쪽 도식에서 환자(최종 사용자), 의사(도메인 전문가), 개발자가 XAI 프레임워크를 사이에 두고 연결되어 있다. 출처: 강의 "시계열 데이터에 대한 XAI 적용" 슬라이드*
 
 ### LRP 결과를 시계열에서 읽는 법
 
-이미지에서는 LRP 결과를 읽기 쉽다. 성 사진을 Castle로 분류했다면 강조된 영역을 보고 "이 부분을 보고 판단했다"고 말하면 된다. 시계열에서는 애매하다. 값이 치솟은 구간이 양의 relevance로 표시되었다고 해서 "값이 커서 중요하다"고 읽으면, 음의 relevance로 표시된 다른 구간의 해석과 충돌한다.
+이미지에서는 LRP 결과를 읽기 쉽다. 아래 그림의 왼쪽처럼 성 사진을 Castle로 분류했다면, 빨갛게 강조된 영역이 성의 윤곽과 겹치는 것을 보고 "이 부분을 보고 판단했다"고 말하면 된다. 시계열에서는 애매하다. 그림 오른쪽에서 빨간색이 양의 relevance, 파란색이 음의 relevance다. 200 부근에서 값이 치솟은 구간이 빨갛다고 해서 "값이 커서 중요하다"고 읽으면, 400에 조금 못 미친 곳에서 값이 똑같이 솟았는데 파랗게 칠해진 구간의 해석과 충돌한다.
 
-강의에서는 AudioMNIST(0부터 9까지를 발음한 음성)로 화자의 성별을 분류하는 예를 들었다. 음성은 시간 도메인 대신 mel spectrogram으로 바꾸어 시간별 주파수 강도를 입력으로 쓰고, 작은 ResNet으로 분류한다. 해석은 다음 순서로 한다.
+![이미지와 시계열에서의 LRP 결과](../../assets/img/study/xai/01-xai-overview/lrp-image-vs-time-series.webp)
 
-1. **극단값부터 본다.** 색이 가장 진한 지점에 먼저 집중한다. 양의 relevance는 예측을 지지한 부분이다. 여성으로 예측했다면 그 예측에 도움이 된 부분이다. 음의 relevance는 도움이 되지 않았거나 반대 결과를 강하게 지지한 부분이다.
-2. **여러 입력에서 패턴을 찾는다.** 비슷한 입력을 여러 개 가져와 relevance가 어떻게 달라지는지, 공통된 패턴이 있는지 본다. 주기적인 spike나 색이 일정한 구간이 있는지가 대표적인 확인 대상이다. 이 예에서는 200Hz 부근이 공통으로 양의 영역으로 나타났고, 여성으로 판단하는 데 중요한 역할을 했다고 볼 수 있다.
-3. **보는 사람에 맞게 가공한다.** 개발자는 2번까지로 충분할 수 있다. 관리자나 최종 사용자에게는 특정 구간만 보여 주거나 맥락을 단순화해야 한다. Time-point based 설명은 모든 데이터 포인트를 다루므로, 가장 중요한 한두 개만 보여 주거나 특정 이벤트에 대한 설명만 제공하는 식이다.
-4. **입력을 바꾸어 본다.** 입력을 perturbation하면서 relevance가 어떻게 변하는지 본다. 예를 들어 뒷부분의 신호가 오르지 않고 유지되도록 바꾸었는데 relevance가 거의 그대로라면, 뒷부분은 여전히 중요하지만 그 값의 상승과 하락 자체는 중요하지 않다는 두 가지를 알 수 있다.
+*왼쪽은 이미지에 대한 LRP로, 강조된 곳이 곧 물체다. 오른쪽은 시계열에 대한 LRP로, 값이 솟은 두 구간이 하나는 빨갛고 하나는 파랗다. 출처: 강의 "시계열 데이터에 대한 XAI 적용" 슬라이드*
+
+강의에서는 AudioMNIST(0부터 9까지를 발음한 음성)로 화자의 성별을 분류하는 예를 들었다. 음성은 시간 도메인 대신 mel spectrogram으로 바꾸어 시간별 주파수 강도를 입력으로 쓰고, 작은 ResNet으로 분류한다.
+
+![AudioMNIST의 음성 파형 예](../../assets/img/study/xai/01-xai-overview/lrp-audiomnist.webp)
+
+*숫자를 발음한 음성 두 개의 파형이다. 이 음성으로 화자가 남성인지 여성인지를 분류한다. 출처: 강의 "시계열 데이터에 대한 XAI 적용" 슬라이드*
+
+해석은 다음 순서로 한다.
+
+**1. 극단값부터 본다.** 색이 가장 진한 지점에 먼저 집중한다. 아래 그림에서 상자로 표시한 두 곳이 그런 지점이다. 양의 relevance(빨강)는 예측을 지지한 부분이다. 여성으로 예측했다면 그 예측에 도움이 된 부분이다. 음의 relevance(파랑)는 도움이 되지 않았거나 반대 결과를 강하게 지지한 부분이다.
+
+![1단계: 색의 의미를 이해하고 극단값을 찾는다](../../assets/img/study/xai/01-xai-overview/lrp-step1-extremes.webp)
+
+*여성으로 예측한 입력의 주파수별 relevance. 왼쪽 상자(200 부근, 빨강)가 예측을 지지한 구간, 오른쪽 상자(400에 조금 못 미친 곳, 파랑)가 예측에 반하는 구간이다. 출처: 강의 "시계열 데이터에 대한 XAI 적용" 슬라이드*
+
+**2. 여러 입력에서 패턴을 찾는다.** 비슷한 입력을 여러 개 가져와 relevance가 어떻게 달라지는지, 공통된 패턴이 있는지 본다. 주기적인 spike나 색이 일정한 구간이 있는지가 대표적인 확인 대상이다. 아래 그림에서 여성 화자의 두 그래프(아래 줄)를 보면 모델이 달라도 200 부근이 똑같이 진한 빨간색이다. 이렇게 공통으로 양의 영역으로 나타나는 구간이 여성으로 판단하는 데 중요한 역할을 했다고 볼 수 있다.
+
+![2단계: 여러 입력에서 공통된 패턴을 찾는다](../../assets/img/study/xai/01-xai-overview/lrp-step2-patterns.webp)
+
+*위 줄이 남성, 아래 줄이 여성 화자이고, 왼쪽이 시간 도메인 모델, 오른쪽이 주파수 도메인 모델이다. 아래 줄의 두 그래프는 200 부근에 진한 빨간 띠가 똑같이 있다. 출처: 강의 "시계열 데이터에 대한 XAI 적용" 슬라이드*
+
+**3. 보는 사람에 맞게 가공한다.** 개발자는 2번까지로 충분할 수 있다. 관리자나 최종 사용자에게는 특정 구간만 보여 주거나 맥락을 단순화해야 한다. Time-point based 설명은 모든 데이터 포인트를 다루므로, 가장 중요한 한두 개만 보여 주거나 특정 이벤트에 대한 설명만 제공하는 식이다. 200 부근만 잘라 여러 개를 보여 주면서 그때의 relevance를 설명하거나, interactive tool을 쓰는 방법도 있다.
+
+**4. 입력을 바꾸어 본다.** 입력을 perturbation하면서 relevance가 어떻게 변하는지 본다. 아래 슬라이드 오른쪽의 작은 그림 가운데 "Verification by perturbation"이 그 예다. 위쪽이 원래 시계열과 relevance이고, 아래쪽은 중요도가 높았던 뒷부분의 신호가 오르지 않고 평평하게 유지되도록 바꾼 것이다. 그런데도 아래쪽의 빨간색이 거의 그대로라면 두 가지를 알 수 있다. 뒷부분은 여전히 중요하다는 것, 그리고 그 값의 상승과 하락 자체는 중요하지 않다는 것이다.
+
+![맥락 단순화, interactive tool, 전문가 검증을 정리한 슬라이드](../../assets/img/study/xai/01-xai-overview/lrp-step4-simplify-validate.webp)
+
+*왼쪽 목록이 3번 이후의 내용이고(슬라이드의 번호는 이 글의 번호와 다르다), 오른쪽의 두 쌍이 입력을 바꾸어 relevance를 검증하는 예다. 왼쪽 쌍은 중요도가 높은 구간의 값을 0으로 만들고(High importance to zero), 오른쪽 쌍은 중요도가 높은 값들을 서로 바꾼다(High importance swap). 출처: 강의 "시계열 데이터에 대한 XAI 적용" 슬라이드(Visual Explainable AI for Time Series의 그림)*
 
 마지막으로 도메인 전문가와 맞추어 보는 것이 좋다. 전문가가 보기에도 납득이 되는 설명인지 묻는 것이다.
 
 ### 내부 activation을 설명하는 사례
 
-입력의 중요도 대신 CNN 내부의 feature를 설명하는 방법으로 강의에서는 PTAP을 소개했다. 채널에서 강하게 활성화된 노드를 고르고, 그 노드가 보는 입력 구간(receptive field)을 계산한 뒤, 모은 구간들 가운데 대표(prototype)를 MMD(Maximum Mean Discrepancy)로 선택한다. 미리 정의한 label 없이 "이 채널은 입력의 이런 모양을 보고 있다"를 보여 줄 수 있다. 스마트폰 센서로 사람의 활동을 분류하는 HAR 데이터셋에서는 첫 번째 layer가 세부적인 feature를, 세 번째 layer가 smoothing된 장기 추세를 잡는 것으로 나타났다.
+입력의 중요도 대신 CNN 내부의 feature를 설명하는 방법으로 강의에서는 PTAP(Prototypes of Temporally Activated Patterns)을 소개했다. 하려는 일은 "이 채널은 입력의 이런 모양을 보고 있다"를 예시 곡선으로 보여 주는 것이다. 미리 정의한 label이 필요 없다.
+
+![PTAP의 전체 구조](../../assets/img/study/xai/01-xai-overview/ptap-overview.webp)
+
+*왼쪽이 시계열 CNN, 오른쪽 위가 채널마다 대표 패턴(Prototype A, B, C)을 고르는 단계, 오른쪽 아래가 그 패턴을 입력 위에 색으로 표시한 결과다. 출처: 강의 "시계열 데이터에 대한 XAI 적용" 슬라이드*
+
+과정은 두 단계다. 첫 단계에서는 채널에서 강하게 활성화된 노드를 고르고, 그 노드가 보는 입력 구간(receptive field)을 계산한다. 아래 그림에서 빨간 상자로 표시한 Layer 2의 노드가 그런 노드이고, 그 노드에서 아래로 이어진 주황색 입력 점들이 receptive field다. Convolution 연산이므로 receptive field는 해석적으로 계산할 수 있다. 이렇게 잘라 낸 입력 구간을 TAP(Temporally Activated Pattern)이라고 한다.
+
+![활성화가 큰 노드에서 입력 구간을 잘라 내는 과정](../../assets/img/study/xai/01-xai-overview/ptap-tap-extraction.webp)
+
+*오른쪽의 세 단계: 채널 안 노드들의 activation을 구하고, threshold를 넘는 노드를 고르고, 그 노드의 receptive field에 해당하는 입력 구간을 잘라 낸다. 출처: 강의 "시계열 데이터에 대한 XAI 적용" 슬라이드*
+
+둘째 단계에서는 모은 TAP들 가운데 대표(prototype)를 MMD(Maximum Mean Discrepancy)로 선택한다. MMD는 두 분포의 통계적 차이를 재는 값이다. 한 채널의 TAP 전체와 후보 사이의 MMD를 계산해, 그 값이 가장 작은 후보, 곧 나머지와 가장 비슷한 TAP을 그 채널의 prototype으로 삼는다.
+
+![MMD로 prototype을 고르는 과정](../../assets/img/study/xai/01-xai-overview/ptap-prototype-selection.webp)
+
+*오른쪽 아래의 네 그림이 흐름이다. 입력 시계열에서 receptive field를 잘라 내고, 그 가운데 대표를 PTAP으로 고르고, 마지막에는 같은 채널의 다른 TAP들이 퍼진 정도까지 함께 그린다. 출처: 강의 "시계열 데이터에 대한 XAI 적용" 슬라이드*
+
+스마트폰 센서로 사람의 활동을 분류하는 HAR 데이터셋에 적용한 결과가 아래 그림이다. 위 줄(Layer 1, 빨강)의 상자는 폭이 좁고 뾰족한 변화 하나하나에 걸려 있다. 아래 줄(Layer 3, 보라·초록·주황)의 상자는 폭이 넓고, 색으로 칠한 패턴이 입력을 그대로 따라가기보다 완만하게 다듬어진 모양이다. 즉 첫 번째 layer는 세부적인 feature를, 세 번째 layer는 smoothing된 장기 추세를 잡는다.
+
+![HAR 데이터셋에서 layer별로 잡는 패턴](../../assets/img/study/xai/01-xai-overview/ptap-har-analysis.webp)
+
+*세로 방향이 layer(위에서부터 1, 2, 3), 가로 방향이 채널이다. 빨간 상자가 각 채널이 보는 입력 구간이다. 출처: 강의 "시계열 데이터에 대한 XAI 적용" 슬라이드*
 
 이 논문은 나중에 따로 읽었다. [PTAP 논문 리뷰](../../papers/2025-02-02-ptap.md)에 정리했다.
 

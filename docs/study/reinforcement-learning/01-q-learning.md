@@ -106,13 +106,19 @@ $$
 
     조금 더 정확히 적으면, 위에서 말한 대로 "앞으로는 계속 optimal하게 행동한다"고 가정했을 때의 Q가 optimal Q, 곧 $Q^*$다.
 
-$s_t$가 주어졌을 때 $Q^*(s_t, a_t)$는 $a_t$에 따라 값이 달라지는 함수다. 가로축을 $a_t$로 놓고 그리면 어딘가에 봉우리가 있고, 그 봉우리의 위치가 $a_t^*$다.
+그러면 optimal $Q$를 알 때 policy는 어떤 모양이어야 하는가. 아래 그림이 그 답이다.
+
+![optimal Q의 봉우리와 그 위치에만 확률을 모은 policy](../../assets/img/study/reinforcement-learning/01-q-learning/optimal-q-greedy-policy.webp)
+
+*위쪽 곡선은 $s_t$를 고정했을 때 action $a_t$에 따라 달라지는 optimal Q의 값이고, 아래쪽 화살표는 그 봉우리(Peak)의 위치 한 곳에만 확률을 모은 policy다.*
+
+위쪽 그래프부터 보자. $s_t$가 주어졌을 때 $Q^*(s_t, a_t)$는 $a_t$에 따라 값이 달라지는 함수다. 가로축을 $a_t$로 놓고 그리면 어딘가에 봉우리(Peak)가 있고, 그 봉우리의 위치가 $a_t^*$다.
 
 $$
 a_t^* \triangleq \operatorname*{arg\,max}_{a_t} Q^*(s_t, a_t)
 $$
 
-위의 적분을 최대로 만들려면 policy가 이 $a_t^*$만 집중적으로 뽑으면 된다. 즉 optimal policy는 $a_t^*$에 놓인 $\delta$ function과 같은 모양이 된다. 이것이 Q값이 가장 큰 action을 고르는 greedy action이다.
+$V$는 이 곡선에 policy를 곱해 적분한 값이므로, 낮은 곳에 확률을 조금이라도 나눠 주면 평균이 내려간다. 적분을 최대로 만들려면 policy가 봉우리 위치 $a_t^*$만 집중적으로 뽑으면 된다. 그림의 아래쪽 그래프처럼 optimal policy는 $a_t^*$에 놓인 $\delta$ function과 같은 모양이 된다. 이것이 Q값이 가장 큰 action을 고르는 greedy action이다.
 
 다만 greedy action만 하면 처음 찾은 길에만 머물 수 있으므로 $\epsilon$-greedy로 exploration도 해야 한다. 그리고 지금까지의 논의는 optimal Q를 이미 구했다는 가정 위에 서 있다. 그렇다면 optimal Q는 어떻게 구하는가? 아래의 두 방법이 그 답이다.
 

@@ -23,6 +23,10 @@ $$
 P(H \mid D) = \frac{P(D \mid H)\, P(H)}{P(D)}
 $$
 
+![베이즈 정리의 네 항에 이름을 붙인 그림](../../assets/img/study/bayesian/03-from-least-squares-to-bayesian-regression/bayes-rule-terms.webp)
+
+식의 어느 자리가 어떤 이름인지를 화살표로 짚은 그림이다. 가설 자리에 모수 theta가, $D$ 자리에 Data가 들어가 있을 뿐 위의 식과 같다. 출처: 강의 슬라이드(DSBA 세미나).
+
 | 항 | 이름 | 의미 |
 |---|---|---|
 | $P(H \mid D)$ | posterior | 데이터 $D$를 본 뒤 갱신된 믿음 |
@@ -32,7 +36,13 @@ $$
 
 절차는 네 단계다. prior $P(H)$에서 시작하고, 데이터를 모아 likelihood $P(D \mid H)$를 계산하고, 베이즈 정리로 prior를 posterior로 갱신하고, 데이터가 더 들어오면 이를 반복한다.
 
-머신러닝에서는 보통 표본 데이터로 변수 $A$와 $B$(target)의 관계를 학습한다. 대부분의 모델은 완전히 확신하는 것처럼 값 하나를 답으로 내놓지만, 실제 세계에서 $A$와 $B$의 관계에는 불확실성이 있다. 이 불확실성까지 학습하고 추론하려는 것이 베이즈 방식이다. 조건부 확률은 대개 모수 $\mathbf{w}$를 가진 모델로 표현한다.
+이 틀이 머신러닝과 어떻게 이어지는지 본다.
+
+![표본마다 Feature A와 Feature B가 있는 데이터 표](../../assets/img/study/bayesian/03-from-least-squares-to-bayesian-regression/sample-table.webp)
+
+행이 표본, 열이 변수인 데이터다. 회색으로 칠한 두 열 Feature A와 Feature B 사이의 관계가 알고 싶은 대상이다. 출처: 강의 슬라이드.
+
+머신러닝에서는 보통 이런 표본 데이터로 변수 $A$와 $B$(target)의 관계를 학습한다. 대부분의 모델은 완전히 확신하는 것처럼 값 하나를 답으로 내놓지만, 실제 세계에서 $A$와 $B$의 관계에는 불확실성이 있다. 이 불확실성까지 학습하고 추론하려는 것이 베이즈 방식이다. 조건부 확률은 대개 모수 $\mathbf{w}$를 가진 모델로 표현한다.
 
 $$
 P(B \mid A) = f(A; \mathbf{w})
@@ -123,7 +133,13 @@ $A$를 $\boldsymbol{\Phi}$로, $x$를 $\mathbf{w}$로, $b$를 $\mathbf{t}$로 �
 
 ### 문제: 과적합
 
-최소제곱으로 맞춘 곡선은 15개의 점을 모두 지나가도록 심하게 구불거린다. 제곱 오차는 0에 가깝게 줄일 수 있지만, 데이터 사이를 억지로 이은 것이라 새 데이터에 대한 예측은 좋지 않을 가능성이 크다. 제곱 오차가 0이 아니더라도 일반화(generalization)가 되는 모델이 바람직하다.
+이렇게 구한 $\mathbf{w}_{\mathrm{LS}}$로 곡선을 그려 보면 문제가 바로 보인다.
+
+![이상적인 곡선과 최소제곱으로 맞춘 곡선의 비교](../../assets/img/study/bayesian/03-from-least-squares-to-bayesian-regression/least-squares-overfit.webp)
+
+검은 점이 15개의 데이터, 빨간 선이 맞춘 곡선이다. 왼쪽은 바라는 모양(sin 곡선)이고, 오른쪽이 실제로 최소제곱이 내놓은 곡선이다. 출처: 강의 슬라이드.
+
+오른쪽 곡선은 15개의 점을 하나도 빠짐없이 지나가려고 심하게 구불거린다. 점 위에서의 제곱 오차는 0에 가깝게 줄일 수 있지만, 점과 점 사이를 억지로 이은 것이라 새 데이터에 대한 예측은 좋지 않을 가능성이 크다. 왼쪽 곡선은 점을 정확히 지나지 않아 제곱 오차가 0이 아니지만, 새 점이 들어와도 잘 맞을 것이다. 제곱 오차가 0이 아니더라도 이렇게 일반화(generalization)가 되는 모델이 바람직하다.
 
 ## 2단계: 정규화
 
@@ -139,7 +155,13 @@ $$
 \mathbf{w}_{\mathrm{PLS}} = \left( \boldsymbol{\Phi}^\top\boldsymbol{\Phi} + \lambda I \right)^{-1} \boldsymbol{\Phi}^\top \mathbf{t}
 $$
 
-hyperparameter $\lambda$는 $E_{\mathcal{D}}$와 $E_W$ 사이의 trade-off, 곧 데이터에 얼마나 강하게 맞출 것인가와 함수를 얼마나 매끄럽게 할 것인가를 정한다. $\lambda$에 따라 맞춰진 곡선이 달라진다. 너무 크면 곡선이 거의 평평해지고, 너무 작으면 다시 구불거린다.
+hyperparameter $\lambda$는 $E_{\mathcal{D}}$와 $E_W$ 사이의 trade-off, 곧 데이터에 얼마나 강하게 맞출 것인가와 함수를 얼마나 매끄럽게 할 것인가를 정한다. $\lambda$에 따라 맞춰진 곡선이 달라진다.
+
+![정규화 세기에 따라 달라지는 곡선과 validation error](../../assets/img/study/bayesian/03-from-least-squares-to-bayesian-regression/regularization-lambda.webp)
+
+아래쪽 그래프 네 개를 본다. 왼쪽 위는 데이터만 그린 것이고, 나머지 셋은 $\lambda$를 달리해 맞춘 빨간 곡선이다. 각 그래프의 제목에 validation error $E$가 적혀 있다. 출처: 강의 슬라이드.
+
+오른쪽 위($E = 2.11$)는 정규화가 너무 강한 경우다. 곡선이 거의 평평해져 데이터의 굴곡을 따라가지 못한다. 오른쪽 아래($E = 0.70$)는 정규화가 너무 약한 경우로, 1단계처럼 다시 구불거린다. 왼쪽 아래($E = 0.52$)가 그 사이에서 가장 잘 맞은 경우다. 곧 $\lambda$가 너무 크면 곡선이 평평해지고, 너무 작으면 구불거리며, 적당한 값을 골라야 한다.
 
 여기서 질문 하나를 적어 두었다. prior를 Gaussian으로 가정하고 posterior에 negative log를 취하면 L2 정규화가, Laplace 분포로 가정하면 L1 정규화가 나온다고 알고 있었는데, 지금의 정규화 항도 그렇게 해석할 수 있는가. 답은 4단계에서 나온다.
 
@@ -209,7 +231,13 @@ $$
 p(\mathbf{w} \mid \mathbf{t}, \alpha, \sigma^2) = \frac{p(\mathbf{t} \mid \mathbf{w}, \sigma^2)\, p(\mathbf{w} \mid \alpha)}{p(\mathbf{t} \mid \alpha, \sigma^2)}
 $$
 
-최소제곱과 달리 $\mathbf{w}$가 점 하나가 아니라 분포로 추정된다. 식을 읽으며 정리한 것들이다.
+최소제곱과 달리 $\mathbf{w}$가 점 하나가 아니라 분포로 추정된다. 조건 기호가 많아 한눈에 읽히지 않아서, 항마다 "왜 이 변수가 조건에 있는가"를 손으로 적어 보았다.
+
+![posterior 식의 각 항에 조건의 의미를 적은 손글씨 노트](../../assets/img/study/bayesian/03-from-least-squares-to-bayesian-regression/posterior-annotated-handwritten.webp)
+
+빨간 글씨가 각 항에 붙인 설명이다. 분자의 likelihood에는 $\mathbf{w}$가 이미 $\alpha$의 영향을 담고 있어 $\alpha$가 없고, prior에는 $\mathbf{w}$를 정하기 위해 $\alpha$가 주어지며, 분모는 가능한 모든 $\mathbf{w}$를 고려한 것이라 $\alpha$와 $\sigma^2$만 남는다.
+
+같은 내용을 글로 정리하면 다음과 같다.
 
 - 조건에서 입력 $\mathbf{x}$가 빠진 것은 관행이다. 지금은 $\mathbf{w}$의 분포에 관심이 있고 $\mathbf{x}$는 고정된 값이므로 생략한다.
 - likelihood $p(\mathbf{t} \mid \mathbf{w}, \sigma^2)$에 $\alpha$가 없는 이유는, $\mathbf{w}$가 정해지면 $\mathbf{t}$의 분포는 $\alpha$와 무관하기 때문이다. $\alpha$의 영향은 $\mathbf{w}$를 통해서만 전달된다.
@@ -220,6 +248,20 @@ p(\mathbf{t} \mid \alpha, \sigma^2) = \int p(\mathbf{t} \mid \mathbf{w}, \sigma^
 $$
 
 - "$\alpha$와 $\sigma^2$이 주어졌다"는 말을 처음에는 "완전히 정해진 값"으로 받아들였는데, 그렇게 보면 안 된다는 것을 뒤에서 알았다. 이들은 조건으로 걸려 있는 변수일 뿐이고, 6단계에서는 이들도 확률변수로 다룬다.
+
+분모인 evidence가 "모든 $\mathbf{w}$에 대해 합친 것"이라는 말은 넓이로 그려 보면 이해하기 쉽다.
+
+![evidence를 넓이의 합으로 그린 손그림](../../assets/img/study/bayesian/03-from-least-squares-to-bayesian-regression/evidence-area-handwritten.webp)
+
+$\alpha$와 $\sigma^2$을 생략하고, $\mathbf{w}$가 "어떤 값 $w$이거나 그 밖의 값($\neg w$)이거나" 두 경우뿐이라고 단순화한 그림이다. 가로 폭이 각 경우의 확률 $P(w)$, $P(\neg w)$이고, 세로 높이가 그 경우에 $t$가 나올 확률 $P(t \mid w)$, $P(t \mid \neg w)$다. 오른쪽의 검은 글씨는 공부할 당시 이해한 대로 적은 메모다.
+
+빗금 친 두 넓이를 더한 것이 evidence다.
+
+$$
+P(t) = P(w)\, P(t \mid w) + P(\neg w)\, P(t \mid \neg w)
+$$
+
+posterior $P(w \mid t)$는 빗금 친 전체 넓이 가운데 빨간 넓이가 차지하는 비율이다. $\mathbf{w}$가 연속인 실제 문제에서는 경우가 둘이 아니라 무한히 많으므로, 이 합이 위의 적분이 된다.
 
 likelihood와 prior가 모두 Gaussian이므로 posterior도 Gaussian이고, 평균과 공분산이 닫힌 형태로 구해진다.
 
@@ -331,9 +373,28 @@ $$
 - **evidence는 신경 쓰지 않아도 되는가.** 정규화 상수는 비례 관계에 영향을 주지 않는다. $p(\mathbf{w} \mid t_1, t_2) \propto p(t_2 \mid \mathbf{w})\, p(\mathbf{w} \mid t_1)$에서 $p(\mathbf{w} \mid t_1)$을 정규화된 것으로 쓰든 아니든 $\mathbf{w}$에 대한 함수의 모양은 같고, 마지막에 한 번 정규화하면 된다.
 - **이 방식의 한계는 무엇인가.** 두 가지를 가정하고 있다. 데이터 점들이 ($\mathbf{w}$가 주어졌을 때) 서로 독립이라는 것, 그리고 모든 데이터가 같은 $\mathbf{w}$에서 나왔다는 것이다. 중간에 데이터를 만드는 분포 자체가 바뀌면 그 전까지 쌓은 posterior는 새 구간에서 의미가 없을 수 있다. 변화점 탐지 알고리즘인 BOCPD가 변화점 이후에 모수를 새로 가정하는 이유가 이것이라고 이해했다.
 
-PRML은 직선 $y(x, \mathbf{w}) = w_0 + w_1 x$를 맞추는 예제로 이 과정을 그림으로 보여 준다. 실제 값 $a_0 = -0.3$, $a_1 = 0.5$로 만든 직선에서 $x$를 $U(-1, 1)$로 뽑고 표준편차 0.2의 Gaussian 노이즈를 더해 데이터를 만든다. 모수가 둘뿐이라 $(w_0, w_1)$ 평면에 prior와 posterior를 직접 그릴 수 있다. 데이터를 보기 전에는 원점 주변에 넓게 퍼진 prior뿐이고, 거기서 뽑은 직선들은 제각각이다. 데이터가 하나, 둘 들어오면 posterior가 실제 값 쪽으로 좁아지고, 점이 많아지면 실제 값 근처의 작은 영역으로 모여 거기서 뽑은 직선들이 거의 겹친다. 데이터가 무한히 많아지면 posterior는 실제 모수 값에 놓인 delta 함수가 된다.
+PRML은 직선 $y(x, \mathbf{w}) = w_0 + w_1 x$를 맞추는 예제로 이 과정을 그림으로 보여 준다. 실제 값 $a_0 = -0.3$, $a_1 = 0.5$로 만든 직선에서 $x$를 $U(-1, 1)$로 뽑고 표준편차 0.2의 Gaussian 노이즈를 더해 데이터를 만든다. 목표는 데이터만 보고 $a_0$, $a_1$을 되찾는 것이다. 모수가 둘뿐이라 $(w_0, w_1)$ 평면에 prior와 posterior를 직접 그릴 수 있다.
 
-강의의 그림도 같은 내용이다. 관측된 점이 많아질수록 posterior가 달라지고, posterior에서 뽑은 함수들이 실제 함수에 더 가깝게 모인다.
+![직선 맞추기 예제에서 데이터가 늘어남에 따라 posterior가 좁아지는 과정](../../assets/img/study/bayesian/03-from-least-squares-to-bayesian-regression/prml-sequential-update.webp)
+
+행은 위에서 아래로 데이터가 늘어나는 순서다. 가운데 열이 $(w_0, w_1)$ 평면 위의 prior/posterior(붉을수록 확률이 높다), 왼쪽 열이 방금 들어온 데이터 점 하나의 likelihood, 오른쪽 열이 가운데 분포에서 뽑은 $\mathbf{w}$로 그린 직선(빨간 선)과 지금까지 본 데이터(파란 원)다. 흰 십자가 실제 값이다. 출처: PRML Figure 3.7.
+
+한 행씩 따라가면 순차 갱신이 눈에 보인다.
+
+- **첫 행(데이터 없음)**: 가운데는 원점 주변에 둥글게 퍼진 prior뿐이고, 거기서 뽑은 오른쪽의 직선들은 방향이 제각각이다.
+- **둘째 행(점 하나)**: 왼쪽의 likelihood는 그 점 하나를 지나는 직선들에 해당하는 비스듬한 띠다. 윗행의 prior에 이 띠를 곱한 것이 가운데의 posterior여서, 둥글던 분포가 띠 방향으로 길쭉해졌다. 오른쪽의 직선들은 모두 그 점 근처를 지난다.
+- **셋째 행(점 둘)**: 새 점의 likelihood는 다른 방향의 띠다. 윗행의 posterior를 prior 삼아 곱하면 두 띠가 겹치는 작은 영역만 남는다.
+- **넷째 행(점 여럿)**: posterior가 흰 십자 근처의 작은 점으로 모이고, 거기서 뽑은 직선들은 거의 겹친다.
+
+"앞 행의 가운데 그림 × 이 행의 왼쪽 그림 = 이 행의 가운데 그림"이라는 관계가 곧 위에서 식으로 쓴 순차 갱신이다. 데이터가 무한히 많아지면 posterior는 실제 모수 값에 놓인 delta 함수가 된다.
+
+강의의 그림도 같은 내용을 이 글의 sin 데이터로 보여 준다.
+
+![관측한 점의 수에 따라 달라지는 posterior와 거기서 뽑은 함수들](../../assets/img/study/bayesian/03-from-least-squares-to-bayesian-regression/sequential-inference.webp)
+
+아래쪽 그래프의 윗줄과 아랫줄을 비교한다. 왼쪽에서 빨간 X가 쳐진 점이 관측된 데이터이고, 가운데가 posterior, 오른쪽이 posterior에서 뽑은 함수들이다. 출처: 강의 슬라이드.
+
+윗줄은 일부 점만 관측한 상태이고 아랫줄은 더 많은 점을 관측한 상태다. 관측된 점이 많아지면 가운데의 posterior가 달라지고, 오른쪽에서 posterior로부터 뽑은 함수들이 실제 함수에 더 가깝게 모인다. 윗줄에서는 관측하지 못한 오른쪽 구간에서 함수들이 제각각 흩어지는데, 아랫줄에서는 그 구간에서도 한데 모인다.
 
 ## 5단계: 예측 분포와 marginalization
 
@@ -350,6 +411,12 @@ $$
 $$
 p(t_* \mid \mathbf{t}, \alpha, \sigma^2) = \int p(t_* \mid \mathbf{w}, \sigma^2)\, p(\mathbf{w} \mid \mathbf{t}, \alpha, \sigma^2)\, d\mathbf{w}
 $$
+
+![예측 분포의 적분식에서 각 항의 의미를 적은 손글씨 노트](../../assets/img/study/bayesian/03-from-least-squares-to-bayesian-regression/predictive-annotated-handwritten.webp)
+
+식의 세 덩어리에 빨간 글씨로 뜻을 적은 것이다. 좌변은 새 입력 $x_*$에 대해 $t_*$가 따르는 분포(구하려는 것), 적분 안의 첫 항은 $\mathbf{w}$가 정해졌을 때 그 $\mathbf{w}$가 $x_*$를 받아 $t_*$를 낼 확률, 둘째 항은 $\mathbf{w}$의 posterior다.
+
+읽는 법은 이렇다. $\mathbf{w}$ 하나를 정하면 예측 하나가 나온다(첫 항). 그런데 $\mathbf{w}$가 무엇인지 모르므로, 각 $\mathbf{w}$가 얼마나 그럴듯한지(둘째 항)를 곱해 모든 $\mathbf{w}$에 대해 더한다. 왜 이렇게 해야 하는지는 아래에서 다시 따진다.
 
 적분 안의 첫 항은 기존 데이터에 썼던 것과 같은 Gaussian 모델을 새 입력에 적용한 것이다. 기존 데이터가 $\mathbf{w}$와 $\sigma^2$으로 만들어졌다고 가정했으므로, 새 데이터도 같은 방식으로 만들어진다고 가정한다.
 
@@ -467,7 +534,19 @@ $$
 
 Occam's razor는 모델이 데이터를 설명하는 데 필요한 것보다 더 복잡해서는 안 된다는 원칙이다. 베이즈 틀은 이 원칙을 따로 넣지 않아도 따른다. 너무 단순한 모델에도, 너무 복잡한 모델에도 낮은 확률을 준다.
 
-강의는 marginal likelihood $p(\mathbf{t} \mid \alpha)$를 그린 그림으로 이를 설명한다. 가로축은 가능한 모든 데이터셋 $\mathbf{t}$를 한 줄로 늘어놓은 것으로, 왼쪽일수록 매끄러운 함수에서 나온 단순한 데이터이고 오른쪽일수록 복잡한 함수에서 나온 데이터다. $\alpha$가 큰 모델은 매끄러운 함수만 만들 수 있으므로 왼쪽의 좁은 범위에 확률을 몰아 준다. $\alpha$가 작은 모델은 온갖 복잡한 함수를 만들 수 있어 넓은 범위를 덮지만, 확률의 총합은 1이므로 각 데이터셋에 돌아가는 확률은 낮다. 노이즈가 섞인 sin 데이터는 그 사이에 있어서, 중간 크기의 $\alpha$가 가장 높은 확률을 준다.
+강의는 marginal likelihood $p(\mathbf{t} \mid \alpha)$를 그린 그림으로 이를 설명한다.
+
+![alpha가 큰 모델, 중간인 모델, 작은 모델의 marginal likelihood를 비교한 도식](../../assets/img/study/bayesian/03-from-least-squares-to-bayesian-regression/occam-razor-marginal-likelihood.webp)
+
+색 상자 세 개가 세 모델이다. 상자의 폭은 그 모델이 설명할 수 있는 데이터셋의 범위, 높이는 각 데이터셋에 주는 확률이다. 점선이 우리가 가진 데이터(노이즈가 섞인 sin 데이터)의 위치다. 출처: 강의 슬라이드(Tipping 논문 Figure 6).
+
+가로축은 가능한 모든 데이터셋 $\mathbf{t}$를 한 줄로 늘어놓은 것으로, 왼쪽일수록 매끄러운 함수에서 나온 단순한 데이터이고 오른쪽일수록 복잡한 함수에서 나온 데이터다. 세 상자를 차례로 보면 이렇다.
+
+- **파란 상자($\alpha$가 큼)**: 매끄러운 함수만 만들 수 있으므로 왼쪽의 좁은 범위에 확률을 몰아 준다. 상자가 좁고 높다. 하지만 점선까지 닿지 못해, 우리 데이터에는 확률을 거의 주지 않는다.
+- **녹색 상자($\alpha$가 작음)**: 온갖 복잡한 함수를 만들 수 있어 넓은 범위를 덮는다. 점선도 덮기는 하지만, 확률의 총합은 1이므로 넓게 펼친 만큼 상자가 낮아져 각 데이터셋에 돌아가는 확률이 낮다.
+- **빨간 상자($\alpha$가 중간)**: 점선을 덮으면서도 녹색 상자보다 높다.
+
+노이즈가 섞인 sin 데이터는 너무 단순한 모델과 너무 복잡한 모델 사이에 있어서, 중간 크기의 $\alpha$가 가장 높은 확률을 준다. 핵심은 세 상자의 넓이가 모두 1로 같다는 점이다. 많은 것을 설명할 수 있는 모델은 그 대가로 하나하나에 낮은 확률을 줄 수밖에 없다.
 
 Type-II maximum likelihood가 marginal likelihood를 최대화하는 $\alpha$를 고르는 것은 결국 이 기준으로 모델의 복잡도를 정하는 일이다. hyperparameter $\alpha$라는 변수가 추가로 생기기는 했지만, $\alpha$를 크게 가져갈수록 모델은 더 매끄럽고 단순해진다. PRML도 같은 점을 강조한다. 선형 회귀를 베이즈 방식으로 다루면 maximum likelihood의 과적합을 피할 수 있고, 모델의 복잡도를 훈련 데이터만으로 정할 수 있다.
 
