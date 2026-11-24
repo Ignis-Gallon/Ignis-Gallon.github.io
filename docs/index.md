@@ -7,7 +7,7 @@ hide:
 
 <div class="profile" markdown>
 
-![프로필 사진](assets/img/profile.svg){ .profile__photo }
+![프로필 사진](assets/img/profile.jpg){ .profile__photo }
 
 <div class="profile__text" markdown>
 
